@@ -24,6 +24,9 @@ for i in {1..3}; do
 
     sleep 5
 
+    virsh attach-interface "mc-$i" network default \
+        --model virtio --config
+
     virsh vol-create-as uvtool --format qcow2 \
         "mc-${i}-sata1.qcow" 34359738368
 
@@ -40,22 +43,22 @@ for i in {1..3}; do
     virsh attach-disk "mc-$i" \
         "/var/lib/uvtool/libvirt/images/mc-${i}-sata1.qcow" \
         sda \
-        --subdriver qcow2 --targetbus sata --persistent
+        --subdriver qcow2 --targetbus sata --config
 
     virsh attach-disk "mc-$i" \
         "/var/lib/uvtool/libvirt/images/mc-${i}-sata2.qcow" \
         sdb \
-        --subdriver qcow2 --targetbus sata --persistent
+        --subdriver qcow2 --targetbus sata --config
 
     virsh attach-disk "mc-$i" \
         "/var/lib/uvtool/libvirt/images/mc-${i}-virtio1.qcow" \
         vdc \
-        --subdriver qcow2 --targetbus virtio --persistent
+        --subdriver qcow2 --targetbus virtio --config
 
     virsh attach-disk "mc-$i" \
         "/var/lib/uvtool/libvirt/images/mc-${i}-virtio2.qcow" \
         vdd \
-        --subdriver qcow2 --targetbus virtio --persistent
+        --subdriver qcow2 --targetbus virtio --config
 
     virsh start "mc-$i"
 done
