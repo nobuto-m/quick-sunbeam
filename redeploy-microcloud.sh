@@ -24,6 +24,7 @@ for i in {1..3}; do
 
     sleep 5
 
+    # TODO: doc needs to be updated to clarify this requirement
     virsh attach-interface "mc-$i" network default \
         --model virtio --config
 
@@ -65,15 +66,19 @@ done
 
 
 
-# https://github.com/canonical/microcloud/issues/68
 for i in {1..3}; do
     uvt-kvm wait "mc-$i"
     uvt-kvm ssh "mc-$i" -- -t '
+        # https://github.com/canonical/microcloud/issues/68
         sudo snap refresh snapd --edge
         sudo snap refresh lxd --stable
         sudo snap install microovn --edge
         sudo snap install microceph --edge
         sudo snap install microcloud --edge
+
+        # https://github.com/canonical/microcloud/issues/89
+        # may require netplan conf changes to survive after a reboot
+        sudo ip link set enp7s0 up
     '
 done
 
