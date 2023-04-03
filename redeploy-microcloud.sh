@@ -71,7 +71,8 @@ for i in {1..3}; do
     uvt-kvm ssh "mc-$i" -- -t '
         # https://github.com/canonical/microcloud/issues/68
         sudo snap refresh snapd --edge
-        sudo snap refresh lxd --stable
+        # https://github.com/canonical/microcloud/issues/90
+        sudo snap refresh lxd --edge
         sudo snap install microovn --edge
         sudo snap install microceph --edge
         sudo snap install microcloud --edge
