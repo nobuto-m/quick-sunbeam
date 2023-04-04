@@ -14,16 +14,12 @@ for i in {1..3}; do
         --cpu 4 --memory 8192 \
         --disk 16 \
         --host-passthrough \
+        --no-start \
         "mc-$i" \
         release=jammy
 done
 
 for i in {1..3}; do
-    uvt-kvm wait "mc-$i"
-    virsh shutdown "mc-$i"
-
-    sleep 5
-
     # TODO: doc needs to be updated to clarify this requirement
     virsh attach-interface "mc-$i" network default \
         --model virtio --config
