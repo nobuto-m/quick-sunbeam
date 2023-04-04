@@ -70,7 +70,7 @@ for i in {1..3}; do
         sudo netplan set ethernets.enp7s0.accept-ra=false
         sudo netplan apply
 
-        # https://github.com/canonical/microcloud/issues/68
+        # https://github.com/canonical/microcloud/issues/69
         sudo snap refresh --channel latest/edge     snapd
         sudo snap refresh --channel latest/stable   lxd
         sudo snap install --channel latest/edge     microovn
