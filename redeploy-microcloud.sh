@@ -8,7 +8,6 @@ for i in {1..3}; do
 done
 
 
-
 for i in {1..3}; do
     uvt-kvm create \
         --cpu 4 --memory 8192 \
@@ -18,6 +17,7 @@ for i in {1..3}; do
         "mc-$i" \
         release=jammy
 done
+
 
 for i in {1..3}; do
     # TODO: doc needs to be updated to clarify this requirement
@@ -61,32 +61,19 @@ for i in {1..3}; do
 done
 
 
-
 for i in {1..3}; do
     uvt-kvm wait "mc-$i"
     uvt-kvm ssh "mc-$i" -- -t '
+        # https://github.com/canonical/microcloud/issues/89
+        sudo netplan set ethernets.enp7s0.dhcp4=false
+        sudo netplan apply
+
         # https://github.com/canonical/microcloud/issues/68
         sudo snap refresh --channel latest/edge     snapd
         sudo snap refresh --channel latest/stable   lxd
         sudo snap install --channel latest/edge     microovn
         sudo snap install --channel latest/edge     microceph
         sudo snap install --channel latest/edge     microcloud
-    '
-done
-
-# https://github.com/canonical/microcloud/issues/89
-netplan_override="\
-network:
-  version: 2
-  ethernets:
-    enp7s0:
-      dhcp4: no
-"
-
-for i in {1..3}; do
-    printf '%s' "$netplan_override" | uvt-kvm ssh "mc-$i" '
-        sudo tee /etc/netplan/90-local-ovs-port.yaml
-        sudo netplan apply
     '
 done
 
