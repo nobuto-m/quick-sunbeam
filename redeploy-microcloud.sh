@@ -70,12 +70,11 @@ for i in {1..3}; do
     uvt-kvm wait "mc-$i"
     uvt-kvm ssh "mc-$i" -- -t '
         # https://github.com/canonical/microcloud/issues/68
-        sudo snap refresh snapd --edge
-        # https://github.com/canonical/microcloud/issues/90
-        sudo snap refresh lxd --channel latest/edge
-        sudo snap install microovn --edge
-        sudo snap install microceph --edge
-        sudo snap install microcloud --edge
+        sudo snap refresh --channel latest/edge     snapd
+        sudo snap refresh --channel latest/stable   lxd
+        sudo snap install --channel latest/edge     microovn
+        sudo snap install --channel latest/edge     microceph
+        sudo snap install --channel latest/edge     microcloud
 
         # https://github.com/canonical/microcloud/issues/89
         # may require netplan conf changes to survive after a reboot
