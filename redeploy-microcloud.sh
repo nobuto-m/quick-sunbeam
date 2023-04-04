@@ -71,10 +71,22 @@ for i in {1..3}; do
         sudo snap install --channel latest/edge     microovn
         sudo snap install --channel latest/edge     microceph
         sudo snap install --channel latest/edge     microcloud
+    '
+done
 
-        # https://github.com/canonical/microcloud/issues/89
-        # may require netplan conf changes to survive after a reboot
-        sudo ip link set enp7s0 up
+# https://github.com/canonical/microcloud/issues/89
+netplan_override="\
+network:
+  version: 2
+  ethernets:
+    enp7s0:
+      dhcp4: no
+"
+
+for i in {1..3}; do
+    printf '%s' "$netplan_override" | uvt-kvm ssh "mc-$i" '
+        sudo tee /etc/netplan/90-local-ovs-port.yaml
+        sudo netplan apply
     '
 done
 
