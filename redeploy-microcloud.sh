@@ -73,7 +73,7 @@ for i in {1..3}; do
         # https://github.com/canonical/microcloud/issues/69
         sudo snap refresh --channel latest/edge     snapd
         sudo snap refresh --channel latest/stable   lxd
-        sudo snap install --channel latest/edge     microovn
+        sudo snap install --channel 22.03/stable    microovn
         sudo snap install --channel latest/edge     microceph
         sudo snap install --channel latest/edge     microcloud
     '
