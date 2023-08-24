@@ -94,4 +94,4 @@ for i in {1..3}; do
 done
 
 
-uvt-kvm ssh mc-1
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "$(uvt-kvm ip mc-1)"
