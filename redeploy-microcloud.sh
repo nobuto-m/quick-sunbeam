@@ -21,8 +21,15 @@ done
 
 for i in {1..3}; do
     # TODO: doc needs to be updated to clarify this requirement
+    # for OVN
     virsh attach-interface "mc-$i" network default \
         --model virtio --config
+
+    # for more traffic seggregation such as Ceph access/replication
+    for j in {1..3}; do
+        virsh attach-interface "mc-$i" network "isolated-$j" \
+            --model virtio --config
+    done
 
     virsh vol-create-as uvtool --format qcow2 \
         "mc-${i}-sata1.qcow" 34359738368
