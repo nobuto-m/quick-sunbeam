@@ -71,6 +71,8 @@ done
 for i in {1..3}; do
     uvt-kvm wait "mc-$i"
     uvt-kvm ssh "mc-$i" -- -t '
+        set -e
+
         # https://github.com/canonical/microcloud/issues/89
         sudo netplan set ethernets.enp7s0.dhcp4=false
         sudo netplan set ethernets.enp7s0.dhcp6=false
