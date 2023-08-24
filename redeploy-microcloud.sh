@@ -77,6 +77,11 @@ for i in {1..3}; do
         sudo netplan set ethernets.enp7s0.dhcp4=false
         sudo netplan set ethernets.enp7s0.dhcp6=false
         sudo netplan set ethernets.enp7s0.accept-ra=false
+
+        sudo netplan set ethernets.enp8s0.dhcp4=true
+        sudo netplan set ethernets.enp9s0.dhcp4=true
+        sudo netplan set ethernets.enp10s0.dhcp4=true
+
         sudo netplan apply
 
         # https://github.com/canonical/microcloud/issues/69
