@@ -31,8 +31,8 @@ done
 
 for i in {1..3}; do
     uvt-kvm wait "sunbeam-$i"
-    uvt-kvm ssh "sunbeam-$i" -- true
 done
 
 
-ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "$(uvt-kvm ip sunbeam-1)"
+uvt-kvm ssh sunbeam-1 -- sudo snap install openstack --channel 2023.1
+uvt-kvm ssh sunbeam-1 -- 'sunbeam prepare-node-script | bash -x'
