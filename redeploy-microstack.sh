@@ -11,7 +11,7 @@ done
 for i in {1..3}; do
     uvt-kvm create \
         --machine-type q35 \
-        --cpu 4 --memory 8192 \
+        --cpu 16 --memory 16384 \
         --disk 64 \
         --ephemeral-disk 16 \
         --host-passthrough \
