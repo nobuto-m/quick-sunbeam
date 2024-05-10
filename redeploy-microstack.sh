@@ -34,5 +34,5 @@ for i in {1..3}; do
 done
 
 
-uvt-kvm ssh sunbeam-1 -- sudo snap install openstack --channel 2023.1
+uvt-kvm ssh sunbeam-1 -- sudo snap install openstack --channel 2024.1/edge
 uvt-kvm ssh sunbeam-1 -- 'sunbeam prepare-node-script | bash -x'
