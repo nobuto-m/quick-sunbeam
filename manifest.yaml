@@ -8,6 +8,6 @@ software:
   juju:
     bootstrap_args:
       - --debug
-      - --model-default test-mode=true
-      - --model-default disable-telemetry=true
-      - --model-default logging-config='<root>=INFO;unit=DEBUG'
+      - --model-default='test-mode=true'
+      - --model-default='disable-telemetry=true'
+      - --model-default='logging-config="<root>=INFO;unit=DEBUG"'
