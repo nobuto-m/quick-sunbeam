@@ -1,0 +1,12 @@
+deployment:
+  bootstrap:
+    management_cidr: 192.168.123.0/24
+    metallb: 192.168.123.81-192.168.123.90
+    osd_devices: /dev/vdc
+software:
+  juju:
+    bootstrap_args:
+      - --debug
+      - --model-default test-mode=true
+      - --model-default disable-telemetry=true
+      - --model-default logging-config='<root>=INFO;unit=DEBUG'
