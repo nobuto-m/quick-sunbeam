@@ -17,6 +17,7 @@ for i in {1..3}; do
         --disk 64 \
         --ephemeral-disk 16 \
         --host-passthrough \
+        --unsafe-caching \
         --no-start \
         "sunbeam-$i" \
         release=jammy
