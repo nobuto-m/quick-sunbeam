@@ -3,6 +3,7 @@ deployment:
     proxy_required: false
   bootstrap:
     management_cidr: 192.168.123.0/24
+  addons:
     metallb: 192.168.123.81-192.168.123.90
     osd_devices: /dev/vdc
 software:
