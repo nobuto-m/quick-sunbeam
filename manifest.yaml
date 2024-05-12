@@ -5,6 +5,7 @@ deployment:
     management_cidr: 192.168.123.0/24
   addons:
     metallb: 192.168.123.81-192.168.123.90
+  microceph_config:
     osd_devices: /dev/vdc
 software:
   juju:
