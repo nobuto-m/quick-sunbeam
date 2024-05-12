@@ -11,7 +11,7 @@ software:
       - --debug
       - --model-default=test-mode=true
       - --model-default=disable-telemetry=true
-      - --model-default=logging-config='<root>=INFO;unit=DEBUG'
+      - --model-default=logging-config=<root>=INFO;unit=DEBUG
   charms:
     aodh-k8s:
       channel: 2024.1/edge
