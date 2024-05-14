@@ -16,6 +16,7 @@ for i in {1..3}; do
         --cpu 16 --memory 16384 \
         --disk 64 \
         --ephemeral-disk 16 \
+        --ephemeral-disk 16 \
         --host-passthrough \
         --unsafe-caching \
         --no-start \

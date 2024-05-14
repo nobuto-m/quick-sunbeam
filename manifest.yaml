@@ -7,7 +7,7 @@ deployment:
     metallb: 192.168.123.81-192.168.123.90
   microceph_config:
     sunbeam-1:
-      osd_devices: /dev/vdc
+      osd_devices: /dev/vdc,/dev/vdd
 software:
   juju:
     bootstrap_args:
