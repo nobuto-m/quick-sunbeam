@@ -18,14 +18,21 @@ for i in {1..3}; do
         --disk 64 \
         --ephemeral-disk 16 \
         --ephemeral-disk 16 \
-        --bridge default \
-        --bridge default \
         --host-passthrough \
         --unsafe-caching \
         --no-start \
         "sunbeam-${i}.localdomain" \
         release=jammy
 done
+
+
+for i in {1..3}; do
+    virsh attach-interface "sunbeam-${i}.localdomain" network default \
+        --model virtio --config
+
+    virsh start "sunbeam-${i}.localdomain"
+done
+
 
 for i in {1..3}; do
     uvt-kvm wait "sunbeam-${i}.localdomain"
