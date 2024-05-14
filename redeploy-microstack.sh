@@ -36,11 +36,30 @@ done
 
 for i in {1..3}; do
     uvt-kvm wait "sunbeam-${i}.localdomain"
+
+    uvt-kvm ssh "sunbeam-${i}.localdomain" -- -t sudo snap install openstack --channel 2024.1/edge
+    uvt-kvm ssh "sunbeam-${i}.localdomain" -- 'sunbeam prepare-node-script | bash -x'
+
 done
 
-uvt-kvm ssh sunbeam-1.localdomain -- -t sudo snap install openstack --channel 2024.1/edge
 uvt-kvm ssh sunbeam-1.localdomain -- tee deployment_manifest.yaml < manifest.yaml
 #uvt-kvm ssh sunbeam-1.localdomain -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
-uvt-kvm ssh sunbeam-1.localdomain -- 'sunbeam prepare-node-script | bash -x'
-uvt-kvm ssh sunbeam-1.localdomain -- -t time sunbeam cluster bootstrap --manifest deployment_manifest.yaml --role control --role compute --role storage \
-    || (juju model-default --cloud sunbeam-microk8s logging-config='<root>=INFO;unit=DEBUG'; juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG')  # LP: #2065490
+
+uvt-kvm ssh sunbeam-1.localdomain -- -t \
+    time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
+        --role control --role compute --role storage
+
+# LP: #2065490
+juju model-default --cloud sunbeam-microk8s logging-config='<root>=INFO;unit=DEBUG'
+juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG'
+
+uvt-kvm ssh sunbeam-2.localdomain -- -t \
+    time sunbeam cluster join --role control --role compute --role storage \
+        --token "$(uvt-kvm ssh sunbeam-1.localdomain -- sunbeam cluster add --name sunbeam-2.localdomain -f value)"
+
+uvt-kvm ssh sunbeam-3.localdomain -- -t \
+    time sunbeam cluster join --role control --role compute --role storage \
+        --token "$(uvt-kvm ssh sunbeam-1.localdomain -- sunbeam cluster add --name sunbeam-3.localdomain -f value)"
+
+uvt-kvm ssh sunbeam-1.localdomain -- -t \
+    time sunbeam cluster resize
