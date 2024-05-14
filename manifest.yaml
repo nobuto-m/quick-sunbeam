@@ -44,8 +44,9 @@ software:
       channel: 2024.1/edge
     magnum-k8s:
       channel: 2024.1/edge
+    # LP: #2065470
     microceph:
-      channel: reef/edge
+      channel: latest/edge
     neutron-k8s:
       channel: 2024.1/edge
     nova-k8s:
