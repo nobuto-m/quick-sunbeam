@@ -6,7 +6,7 @@ deployment:
   addons:
     metallb: 192.168.123.81-192.168.123.90
   microceph_config:
-    sunbeam-1:
+    sunbeam-1.localdomain:
       osd_devices: /dev/vdc,/dev/vdd
 software:
   juju:
