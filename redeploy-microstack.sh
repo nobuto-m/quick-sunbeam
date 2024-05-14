@@ -50,8 +50,8 @@ uvt-kvm ssh sunbeam-1.localdomain -- -t \
         --role control --role compute --role storage
 
 # LP: #2065490
-juju model-default --cloud sunbeam-microk8s logging-config='<root>=INFO;unit=DEBUG'
-juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG'
+uvt-kvm ssh sunbeam-1.localdomain -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
+uvt-kvm ssh sunbeam-1.localdomain -- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
 
 uvt-kvm ssh sunbeam-2.localdomain -- -t \
     time sunbeam cluster join --role control --role compute --role storage \
