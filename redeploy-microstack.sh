@@ -36,8 +36,8 @@ for i in {1..3}; do
     uvt-kvm wait "sunbeam-$i"
 done
 
+uvt-kvm ssh sunbeam-1 -- -t sudo snap install openstack --channel 2024.1/edge
 uvt-kvm ssh sunbeam-1 -- tee deployment_manifest.yaml < manifest.yaml
 uvt-kvm ssh sunbeam-1 -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
-uvt-kvm ssh sunbeam-1 -- -t sudo snap install openstack --channel 2024.1/edge
 uvt-kvm ssh sunbeam-1 -- 'sunbeam prepare-node-script | bash -x'
 uvt-kvm ssh sunbeam-1 -- -t time sunbeam cluster bootstrap --manifest deployment_manifest.yaml --role control --role compute --role storage
