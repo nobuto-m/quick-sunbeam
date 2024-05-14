@@ -6,7 +6,8 @@ cd "$(dirname "$0")"
 
 ## clean up
 for i in {1..3}; do
-    uvt-kvm destroy "sunbeam-$i" || true
+    # FIXME: the requirement of FQDN is not documented well in each tutorial
+    uvt-kvm destroy "sunbeam-${i}.localdomain" || true
 done
 
 
@@ -20,21 +21,21 @@ for i in {1..3}; do
         --host-passthrough \
         --unsafe-caching \
         --no-start \
-        "sunbeam-$i" \
+        "sunbeam-${i}.localdomain" \
         release=jammy
 done
 
 
 for i in {1..3}; do
-    virsh attach-interface "sunbeam-$i" network default \
+    virsh attach-interface "sunbeam-${i}.localdomain" network default \
         --model virtio --config
 
-    virsh start "sunbeam-$i"
+    virsh start "sunbeam-${i}.localdomain"
 done
 
 
 for i in {1..3}; do
-    uvt-kvm wait "sunbeam-$i"
+    uvt-kvm wait "sunbeam-${i}.localdomain"
 done
 
 uvt-kvm ssh sunbeam-1 -- -t sudo snap install openstack --channel 2024.1/edge
