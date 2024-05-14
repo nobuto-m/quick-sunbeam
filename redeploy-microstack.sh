@@ -22,6 +22,7 @@ for i in {1..3}; do
         --bridge default \
         --host-passthrough \
         --unsafe-caching \
+        --no-start \
         "sunbeam-${i}.localdomain" \
         release=jammy
 done
