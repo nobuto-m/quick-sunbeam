@@ -22,6 +22,8 @@ software:
       - --model-default=test-mode=true
       - --model-default=disable-telemetry=true
       - --model-default=logging-config=<root>=INFO;unit=DEBUG
+      # LP: #2065700
+      - --model-default=ignore-machine-addresses=true
   charms:
     aodh-k8s:
       channel: 2024.1/edge
@@ -54,8 +56,6 @@ software:
     # LP: #2065470
     microceph:
       channel: latest/edge
-      binding:
-        "": space-mgmt
     neutron-k8s:
       channel: 2024.1/edge
     nova-k8s:
