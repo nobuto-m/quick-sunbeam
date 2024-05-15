@@ -47,7 +47,7 @@ uvt-kvm ssh sunbeam-1.localdomain -- tee deployment_manifest.yaml < manifest.yam
 
 uvt-kvm ssh sunbeam-1.localdomain -- -t \
     time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
-        --role control --role compute --role storage
+        --role control
 
 # LP: #2065490
 uvt-kvm ssh sunbeam-1.localdomain -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
@@ -63,6 +63,7 @@ uvt-kvm ssh sunbeam-3.localdomain -- -t \
 
 # LP: #2065700
 # TODO: add compute and storage after having a working Calico IP address
+# or after disabling Calico VXLAN
 
 uvt-kvm ssh sunbeam-1.localdomain -- -t \
     time sunbeam cluster resize
