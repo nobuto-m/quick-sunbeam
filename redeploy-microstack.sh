@@ -54,12 +54,15 @@ uvt-kvm ssh sunbeam-1.localdomain -- 'juju model-default --cloud sunbeam-microk8
 uvt-kvm ssh sunbeam-1.localdomain -- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
 
 uvt-kvm ssh sunbeam-2.localdomain -- -t \
-    time sunbeam cluster join --role control --role compute --role storage \
+    time sunbeam cluster join --role control \
         --token "$(uvt-kvm ssh sunbeam-1.localdomain -- sunbeam cluster add --name sunbeam-2.localdomain -f value)"
 
 uvt-kvm ssh sunbeam-3.localdomain -- -t \
-    time sunbeam cluster join --role control --role compute --role storage \
+    time sunbeam cluster join --role control \
         --token "$(uvt-kvm ssh sunbeam-1.localdomain -- sunbeam cluster add --name sunbeam-3.localdomain -f value)"
+
+# LP: #2065700
+# TODO: add compute and storage after having a working Calico IP address
 
 uvt-kvm ssh sunbeam-1.localdomain -- -t \
     time sunbeam cluster resize
