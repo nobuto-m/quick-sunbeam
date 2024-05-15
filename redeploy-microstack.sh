@@ -45,6 +45,13 @@ done
 uvt-kvm ssh sunbeam-1.localdomain -- tee deployment_manifest.yaml < manifest.yaml
 #uvt-kvm ssh sunbeam-1.localdomain -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
 
+# LP: #2065700 - only bootstrap the control plane first
+uvt-kvm ssh sunbeam-1.localdomain -- -t \
+    time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
+        --role control
+
+# rebootstrap with the data plane
+uvt-kvm ssh sunbeam-1.localdomain -- juju add-space space-mgmt 192.168.123.0/24
 uvt-kvm ssh sunbeam-1.localdomain -- -t \
     time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
         --role control --role compute --role storage

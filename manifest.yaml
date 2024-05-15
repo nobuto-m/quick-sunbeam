@@ -54,6 +54,8 @@ software:
     # LP: #2065470
     microceph:
       channel: latest/edge
+      binding:
+        "": space-mgmt
     neutron-k8s:
       channel: 2024.1/edge
     nova-k8s:
