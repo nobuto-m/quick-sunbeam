@@ -21,6 +21,7 @@ software:
       - --debug
       - --model-default=test-mode=true
       - --model-default=disable-telemetry=true
+      # LP: #2065490
       - --model-default=logging-config=<root>=INFO;unit=DEBUG
       # LP: #2065700
       - --model-default=ignore-machine-addresses=true
