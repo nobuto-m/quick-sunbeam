@@ -44,6 +44,9 @@ for i in {1..3}; do
     uvt-kvm ssh "sunbeam-${i}.localdomain" -- -t sudo snap install openstack --channel 2024.1/edge
     uvt-kvm ssh "sunbeam-${i}.localdomain" -- 'sunbeam prepare-node-script | bash -x'
 
+    # LP: #2065911
+    # TODO: make it permanent across reboots
+    uvt-kvm ssh "sunbeam-${i}.localdomain" -- sudo ip link set enp9s0 up
 done
 
 uvt-kvm ssh sunbeam-1.localdomain -- tee deployment_manifest.yaml < manifest.yaml
