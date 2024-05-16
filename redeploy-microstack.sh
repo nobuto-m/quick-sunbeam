@@ -47,7 +47,7 @@ for i in {1..3}; do
 done
 
 uvt-kvm ssh sunbeam-1.localdomain -- tee deployment_manifest.yaml < manifest.yaml
-#uvt-kvm ssh sunbeam-1.localdomain -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
+uvt-kvm ssh sunbeam-1.localdomain -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
 
 uvt-kvm ssh sunbeam-1.localdomain -- -t \
     time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
