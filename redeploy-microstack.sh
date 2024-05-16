@@ -72,4 +72,7 @@ uvt-kvm ssh sunbeam-1.localdomain -- -t \
     time sunbeam configure --openrc demo-openrc --manifest deployment_manifest.yaml
 
 uvt-kvm ssh sunbeam-1.localdomain -- -t \
+    'time sunbeam openrc > admin-openrc'
+
+uvt-kvm ssh sunbeam-1.localdomain -- -t \
     time sunbeam launch ubuntu --name test
