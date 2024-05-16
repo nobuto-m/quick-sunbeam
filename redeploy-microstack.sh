@@ -68,18 +68,8 @@ uvt-kvm ssh sunbeam-3.localdomain -- -t \
 uvt-kvm ssh sunbeam-1.localdomain -- -t \
     time sunbeam cluster resize
 
-#uvt-kvm ssh sunbeam-1.localdomain -- -t \
-#    time sunbeam configure --openrc demo-openrc --manifest deployment_manifest.yaml
+uvt-kvm ssh sunbeam-1.localdomain -- -t \
+    time sunbeam configure --openrc demo-openrc --manifest deployment_manifest.yaml
 
-#Local or remote access to VMs [local/remote] (local): remote
-#CIDR of network to use for external networking (10.20.20.0/24): 10.0.123.0/24
-#IP address of default gateway for external network (10.0.123.1):
-#Start of IP allocation range for external network (10.0.123.2): 10.0.123.51
-#End of IP allocation range for external network (10.0.123.254): 10.0.123.80
-#Network type for access to external network [flat/vlan] (flat):
-#Populate OpenStack cloud with demo user, default images, flavors etc [y/n] (y):
-#Username to use for access to OpenStack (demo):
-#Password to use for access to OpenStack (qj********):
-#Network range to use for project network (192.168.122.0/24): 192.168.1.0/24
-#List of nameservers guests should use for DNS resolution (10.0.123.1):
-#Enable ping and SSH access to instances? [y/n] (y):
+uvt-kvm ssh sunbeam-1.localdomain -- -t \
+    time sunbeam launch ubuntu --name test

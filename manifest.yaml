@@ -15,6 +15,20 @@ deployment:
       osd_devices: /dev/vdc,/dev/vdd
   external_network:
     nic: enp9s0
+    cidr: 10.0.123.0/24
+    gateway: 10.0.123.1
+    start: 10.0.123.51
+    end: 10.0.123.80
+    network_type: flat  # or vlan
+    #segmentation_id:
+  user:
+    remote_access_location: remote
+    run_demo_setup: true
+    username: demo
+    password: demo
+    cidr: 192.168.1.0/24
+    nameservers: 10.0.123.1
+    security_group_rules: true
 software:
   juju:
     bootstrap_args:
