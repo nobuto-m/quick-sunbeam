@@ -27,7 +27,11 @@ done
 
 
 for i in {1..3}; do
-    virsh attach-interface "sunbeam-${i}.localdomain" network default \
+    virsh detach-interface "sunbeam-${i}.localdomain" network
+
+    virsh attach-interface "sunbeam-${i}.localdomain" network virbr-sunbeam \
+        --model virtio --config
+    virsh attach-interface "sunbeam-${i}.localdomain" network virbr-sunbeam \
         --model virtio --config
 
     virsh start "sunbeam-${i}.localdomain"

@@ -1,16 +1,17 @@
 ## Prep
 
-Limit the default DHCP range so we can use the remaining for OVN.
+Define a new bridge with a subnet in the 10.0.0.0/16 range to avoid
+[LP: #2065700](https://launchpad.net/bugs/2065700).
 
 ```
-virsh net-update default delete \
-    ip-dhcp-range \
-    '<range start="192.168.122.2" end="192.168.122.254"/>' \
-    --live --config
-
-
-virsh net-update default add \
-    ip-dhcp-range \
-    '<range start="192.168.122.101" end="192.168.122.254"/>' \
-    --live --config
+cat <<EOF | virsh net-define /dev/stdin
+<network>
+  <name>virbr-sunbeam</name>
+  <bridge name='virbr-sunbeam' stp='off'/>
+  <forward mode='nat'/>
+  <ip address='10.0.123.1' netmask='255.255.255.0'/>
+</network>
+EOF
+virsh net-autostart virbr-sunbeam
+virsh net-start virbr-sunbeam
 ```
