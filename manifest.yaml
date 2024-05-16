@@ -2,9 +2,9 @@ deployment:
   proxy:
     proxy_required: false
   bootstrap:
-    management_cidr: 192.168.123.0/24
+    management_cidr: 10.0.123.0/24
   addons:
-    metallb: 192.168.123.81-192.168.123.90
+    metallb: 10.0.123.81-10.0.123.90
   microceph_config:
     sunbeam-1.localdomain:
       # LP: #2065470, LP: #2065698
