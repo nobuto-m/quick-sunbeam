@@ -39,6 +39,9 @@ network:
       accept-ra: false
       addresses:
         - 10.0.123.1${i}/24
+      routes:
+        - to: default
+          via: 10.0.123.1
       nameservers:
         addresses:
           - 10.0.123.1
