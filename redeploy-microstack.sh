@@ -99,8 +99,10 @@ ssh_to 1 -t -- \
 ssh_to 1 -t -- \
     time sunbeam configure --openrc demo-openrc --manifest deployment_manifest.yaml
 
-ssh_to 1 -t -- \
-    'time sunbeam openrc > admin-openrc'
+for i in {1..3}; do
+    ssh_to "${i}" -t -- \
+        'time sunbeam openrc > admin-openrc'
+done
 
 ssh_to 1 -t -- \
     time sunbeam launch ubuntu --name test
