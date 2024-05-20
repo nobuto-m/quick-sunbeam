@@ -13,7 +13,7 @@ done
 function ssh_to() {
     local ip="10.0.123.1${1}"
     shift
-    ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null "ubuntu@${ip}" "$@"
+    ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
 
 for i in {1..3}; do
@@ -62,12 +62,12 @@ done
 
 
 for i in {1..3}; do
-    until ssh_to "${i}" -- cloud-init status --wait; do
+    until ssh_to "${i}" -t -- cloud-init status --wait; do
         sleep 1
     done
 
     ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
-    ssh_to "${i}" -- 'sunbeam prepare-node-script | bash -x'
+    ssh_to "${i}" -t -- 'sunbeam prepare-node-script | bash -x'
 
     # LP: #2065911
     # TODO: make it permanent across reboots
