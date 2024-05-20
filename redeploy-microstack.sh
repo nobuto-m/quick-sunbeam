@@ -10,6 +10,11 @@ for i in {1..3}; do
     uvt-kvm destroy "sunbeam-${i}.localdomain" || true
 done
 
+function ssh_to() {
+    local ip="10.0.123.1${1}"
+    shift
+    ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null "ubuntu@${ip}" "$@"
+}
 
 for i in {1..3}; do
     cat <<EOF | uvt-kvm create \
@@ -55,43 +60,45 @@ done
 
 
 for i in {1..3}; do
-    uvt-kvm wait "sunbeam-${i}.localdomain"
+    until ssh_to "${i}" true; do
+        sleep 5
+    done
 
-    uvt-kvm ssh "sunbeam-${i}.localdomain" -- -t sudo snap install openstack --channel 2024.1/edge
-    uvt-kvm ssh "sunbeam-${i}.localdomain" -- 'sunbeam prepare-node-script | bash -x'
+    ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
+    ssh_to "${i}" -- 'sunbeam prepare-node-script | bash -x'
 
     # LP: #2065911
     # TODO: make it permanent across reboots
-    uvt-kvm ssh "sunbeam-${i}.localdomain" -- sudo ip link set enp9s0 up
+    ssh_to "${i}" -- sudo ip link set enp9s0 up
 done
 
-uvt-kvm ssh sunbeam-1.localdomain -- tee deployment_manifest.yaml < manifest.yaml
-uvt-kvm ssh sunbeam-1.localdomain -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
+ssh_to 1 -- 'tee deployment_manifest.yaml' < manifest.yaml
+ssh_to 1 -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
 
-uvt-kvm ssh sunbeam-1.localdomain -- -t \
+ssh_to 1 -t -- \
     time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
         --role control --role compute --role storage
 
 # LP: #2065490
-uvt-kvm ssh sunbeam-1.localdomain -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
-uvt-kvm ssh sunbeam-1.localdomain -- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
+ssh_to 1 -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
+ssh_to 1 -- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
 
-uvt-kvm ssh sunbeam-2.localdomain -- -t \
+ssh_to 2 -t -- \
     time sunbeam cluster join --role control --role compute --role storage \
-        --token "$(uvt-kvm ssh sunbeam-1.localdomain -- sunbeam cluster add --name sunbeam-2.localdomain -f value)"
+        --token "$(ssh_to 1 -- sunbeam cluster add --name sunbeam-2.localdomain -f value)"
 
-uvt-kvm ssh sunbeam-3.localdomain -- -t \
+ssh_to 3 -t -- \
     time sunbeam cluster join --role control --role compute --role storage \
-        --token "$(uvt-kvm ssh sunbeam-1.localdomain -- sunbeam cluster add --name sunbeam-3.localdomain -f value)"
+        --token "$(ssh_to 1 -- sunbeam cluster add --name sunbeam-3.localdomain -f value)"
 
-uvt-kvm ssh sunbeam-1.localdomain -- -t \
+ssh_to 1 -t -- \
     time sunbeam cluster resize
 
-uvt-kvm ssh sunbeam-1.localdomain -- -t \
+ssh_to 1 -t -- \
     time sunbeam configure --openrc demo-openrc --manifest deployment_manifest.yaml
 
-uvt-kvm ssh sunbeam-1.localdomain -- -t \
+ssh_to 1 -t -- \
     'time sunbeam openrc > admin-openrc'
 
-uvt-kvm ssh sunbeam-1.localdomain -- -t \
+ssh_to 1 -t -- \
     time sunbeam launch ubuntu --name test
