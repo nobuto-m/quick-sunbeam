@@ -28,7 +28,6 @@ for i in {1..3}; do
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
-        --password ubuntu \
         "sunbeam-${i}.localdomain" \
         release=jammy
 network:
@@ -60,7 +59,7 @@ done
 
 
 for i in {1..3}; do
-    until ssh_to "${i}" true; do
+    until ssh_to "${i}" -- cloud-init status --wait; do
         sleep 5
     done
 
