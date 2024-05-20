@@ -12,7 +12,7 @@ done
 
 
 for i in {1..3}; do
-    uvt-kvm create \
+    cat <<EOF | uvt-kvm create \
         --machine-type q35 \
         --cpu 16 \
         --host-passthrough \
@@ -21,9 +21,23 @@ for i in {1..3}; do
         --ephemeral-disk 16 \
         --ephemeral-disk 16 \
         --unsafe-caching \
+        --network-config /dev/stdin \
         --no-start \
         "sunbeam-${i}.localdomain" \
         release=jammy
+network:
+  version: 2
+  ethernets:
+    enp1s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
+      addresses:
+        - 10.0.123.1${i}/24
+      nameservers:
+        addresses:
+          - 10.0.123.1
+EOF
 done
 
 
