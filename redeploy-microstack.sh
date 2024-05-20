@@ -23,6 +23,7 @@ for i in {1..3}; do
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
+        --password ubuntu \
         "sunbeam-${i}.localdomain" \
         release=jammy
 network:
