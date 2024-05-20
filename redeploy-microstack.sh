@@ -13,7 +13,7 @@ done
 function ssh_to() {
     local ip="10.0.123.1${1}"
     shift
-    ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null "ubuntu@${ip}" "$@"
+    ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -t "ubuntu@${ip}" "$@"
 }
 
 for i in {1..3}; do
@@ -66,7 +66,7 @@ for i in {1..3}; do
         sleep 5
     done
 
-    ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
+    ssh_to "${i}" -- sudo snap install openstack --channel 2024.1/edge
     ssh_to "${i}" -- 'sunbeam prepare-node-script | bash -x'
 
     # LP: #2065911
@@ -77,7 +77,7 @@ done
 ssh_to 1 -- 'tee deployment_manifest.yaml' < manifest.yaml
 ssh_to 1 -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
 
-ssh_to 1 -t -- \
+ssh_to 1 -- \
     time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
         --role control --role compute --role storage
 
@@ -85,22 +85,22 @@ ssh_to 1 -t -- \
 ssh_to 1 -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
 ssh_to 1 -- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
 
-ssh_to 2 -t -- \
+ssh_to 2 -- \
     time sunbeam cluster join --role control --role compute --role storage \
         --token "$(ssh_to 1 -- sunbeam cluster add --name sunbeam-2.localdomain -f value)"
 
-ssh_to 3 -t -- \
+ssh_to 3 -- \
     time sunbeam cluster join --role control --role compute --role storage \
         --token "$(ssh_to 1 -- sunbeam cluster add --name sunbeam-3.localdomain -f value)"
 
-ssh_to 1 -t -- \
+ssh_to 1 -- \
     time sunbeam cluster resize
 
-ssh_to 1 -t -- \
+ssh_to 1 -- \
     time sunbeam configure --openrc demo-openrc --manifest deployment_manifest.yaml
 
-ssh_to 1 -t -- \
+ssh_to 1 -- \
     'time sunbeam openrc > admin-openrc'
 
-ssh_to 1 -t -- \
+ssh_to 1 -- \
     time sunbeam launch ubuntu --name test
