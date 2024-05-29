@@ -78,31 +78,17 @@ ssh_to 1 -- 'tee deployment_manifest.yaml' < manifest.yaml
 ssh_to 1 -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
 
 ssh_to 1 -t -- \
-    time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
-        --role control --role compute --role storage
+    time sunbeam cluster bootstrap --manifest deployment_manifest.yaml
 
 # LP: #2065490
 ssh_to 1 -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
 ssh_to 1 -- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
 
-ssh_to 2 -t -- \
-    time sunbeam cluster join --role control --role compute --role storage \
-        --token "$(ssh_to 1 -- sunbeam cluster add --name sunbeam-2.localdomain -f value)"
-
-ssh_to 3 -t -- \
-    time sunbeam cluster join --role control --role compute --role storage \
-        --token "$(ssh_to 1 -- sunbeam cluster add --name sunbeam-3.localdomain -f value)"
-
-ssh_to 1 -t -- \
-    time sunbeam cluster resize
-
 ssh_to 1 -t -- \
     time sunbeam configure --openrc demo-openrc --manifest deployment_manifest.yaml
 
-for i in {1..3}; do
-    ssh_to "${i}" -t -- \
-        'time sunbeam openrc > admin-openrc'
-done
+ssh_to 1 -t -- \
+    'time sunbeam openrc > admin-openrc'
 
 ssh_to 1 -t -- \
     time sunbeam launch ubuntu --name test
