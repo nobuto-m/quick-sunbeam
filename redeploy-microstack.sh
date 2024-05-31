@@ -103,3 +103,6 @@ ssh_to 1 -t -- '
     demo_floating_ip="$(openstack floating ip list -c Floating\ IP\ Address -f value | head -n1)"
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam "ubuntu@${demo_floating_ip}" true
 '
+
+# be nice to my SSD
+ssh_to 1 -t -- juju model-config -m openstack update-status-hook-interval=2h
