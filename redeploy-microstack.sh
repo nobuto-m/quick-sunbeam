@@ -92,3 +92,14 @@ ssh_to 1 -t -- \
 
 ssh_to 1 -t -- \
     time sunbeam launch ubuntu --name test
+
+# shellcheck disable=SC2016
+ssh_to 1 -t -- '
+    set -ex
+    # The cloud-init process inside the VM takes ~2 minutes to bring up the
+    # SSH service after the VM gets ACTIVE in OpenStack
+    sleep 300
+    source demo-openrc
+    demo_floating_ip="$(openstack floating ip list -c Floating\ IP\ Address -f value | head -n1)"
+    ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam "ubuntu@${demo_floating_ip}" true
+'
