@@ -16,13 +16,13 @@ function ssh_to() {
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
 
-for i in 1; do
+for i in {1..3}; do
     cat <<EOF | uvt-kvm create \
         --machine-type q35 \
         --cpu 16 \
         --host-passthrough \
-        --memory 49152 \
-        --disk 128 \
+        --memory 16384 \
+        --disk 64 \
         --ephemeral-disk 16 \
         --ephemeral-disk 16 \
         --unsafe-caching \
@@ -49,7 +49,7 @@ EOF
 done
 
 
-for i in 1; do
+for i in {1..3}; do
     virsh detach-interface "sunbeam-${i}.localdomain" network --config
 
     virsh attach-interface "sunbeam-${i}.localdomain" network virbr-sunbeam \
@@ -61,7 +61,7 @@ for i in 1; do
 done
 
 
-for i in 1; do
+for i in {1..3}; do
     until ssh_to "${i}" -t -- cloud-init status --wait; do
         sleep 5
     done
