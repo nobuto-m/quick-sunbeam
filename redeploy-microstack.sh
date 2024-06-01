@@ -66,7 +66,7 @@ for i in {1..3}; do
         sleep 5
     done
 
-    ssh_to "${i}" -t -- sudo snap install openstack --channel 2023.2/stable
+    ssh_to "${i}" -t -- sudo snap install openstack --channel 2023.2/edge
     ssh_to "${i}" -t -- 'sunbeam prepare-node-script | bash -x'
 
     # LP: #2065911
@@ -75,7 +75,7 @@ for i in {1..3}; do
 done
 
 ssh_to 1 -t -- \
-    time sunbeam cluster bootstrap --accept-defaults
+    time sunbeam cluster bootstrap --accept-defaults --manifest /snap/openstack/current/etc/manifests/edge.yml
 
 # LP: #2065490
 ssh_to 1 -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
