@@ -66,7 +66,7 @@ for i in {1..3}; do
         sleep 5
     done
 
-    ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
+    ssh_to "${i}" -t -- sudo snap install openstack --channel 2023.2/stable
     ssh_to "${i}" -t -- 'sunbeam prepare-node-script | bash -x'
 
     # LP: #2065911
