@@ -39,7 +39,8 @@ software:
     openstack-hypervisor:
       channel: 2023.2/edge
       config:
-        snap-channel: 2023.2/edge
+        #snap-channel: 2023.2/edge
+        snap-channel: 2024.1/edge
     ovn-central-k8s:
       channel: 23.09/edge
     ovn-relay-k8s:
