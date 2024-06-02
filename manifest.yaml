@@ -1,42 +1,58 @@
-deployment:
-  proxy:
-    proxy_required: false
-  bootstrap:
-    management_cidr: 10.0.123.0/24
-  addons:
-    metallb: 10.0.123.81-10.0.123.90
-  microceph_config:
-    sunbeam-1.localdomain:
-      # LP: #2065470, LP: #2065698
-      # FIXME: remove vdd to see if two issues above are actually fixed
-      osd_devices: /dev/vdc,/dev/vdd
-    sunbeam-2.localdomain:
-      osd_devices: /dev/vdc,/dev/vdd
-    sunbeam-3.localdomain:
-      osd_devices: /dev/vdc,/dev/vdd
-  external_network:
-    nic: enp9s0
-    cidr: 10.0.123.0/24
-    gateway: 10.0.123.1
-    start: 10.0.123.51
-    end: 10.0.123.80
-    network_type: flat  # or vlan
-    #segmentation_id:
-  user:
-    remote_access_location: remote
-    run_demo_setup: true
-    username: demo
-    password: demo
-    cidr: 192.168.1.0/24
-    nameservers: 10.0.123.1
-    security_group_rules: true
 software:
-  juju:
-    bootstrap_args:
-      - --debug
-      - --model-default=test-mode=true
-      - --model-default=disable-telemetry=true
-      # LP: #2065490
-      - --model-default=logging-config=<root>=INFO;unit=DEBUG
-      # LP: #2065700
-      - --model-default=ignore-machine-addresses=true
+  charms:
+    aodh-k8s:
+      channel: 2023.2/edge
+    barbican-k8s:
+      channel: 2023.2/edge
+    ceilometer-k8s:
+      channel: 2023.2/edge
+    cinder-ceph-k8s:
+      channel: 2023.2/edge
+    cinder-k8s:
+      channel: 2023.2/edge
+    designate-bind-k8s:
+      channel: 9/edge
+    designate-k8s:
+      channel: 2023.2/edge
+    glance-k8s:
+      channel: 2023.2/edge
+    gnocchi-k8s:
+      channel: 2023.2/edge
+    heat-k8s:
+      channel: 2023.2/edge
+    horizon-k8s:
+      channel: 2023.2/edge
+    keystone-k8s:
+      channel: 2023.2/edge
+    keystone-ldap-k8s:
+      channel: 2023.2/edge
+    magnum-k8s:
+      channel: 2023.2/edge
+    neutron-k8s:
+      channel: 2023.2/edge
+    nova-k8s:
+      channel: 2023.2/edge
+    octavia-k8s:
+      channel: 2023.2/edge
+    openstack-exporter-k8s:
+      channel: 2023.2/edge
+    openstack-hypervisor:
+      channel: 2023.2/edge
+      config:
+        snap-channel: 2023.2/edge
+    openstack-images-sync-k8s:
+      channel: 2023.2/edge
+    ovn-central-k8s:
+      channel: 24.03/edge
+    ovn-relay-k8s:
+      channel: 24.03/edge
+    placement-k8s:
+      channel: 2023.2/edge
+    sunbeam-clusterd:
+      channel: 2023.2/edge
+      config:
+        snap-channel: 2023.2/edge
+    sunbeam-machine:
+      channel: 2023.2/edge
+    tempest-k8s:
+      channel: 2023.2/edge
