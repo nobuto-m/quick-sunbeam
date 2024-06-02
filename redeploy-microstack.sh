@@ -74,8 +74,10 @@ for i in {1..3}; do
     ssh_to "${i}" -- sudo ip link set enp9s0 up
 done
 
+ssh_to 1 -- 'tee deployment_manifest.yaml' < manifest.yaml
+
 ssh_to 1 -t -- \
-    time sunbeam cluster bootstrap --accept-defaults --manifest /snap/openstack/current/etc/manifests/edge.yml
+    time sunbeam cluster bootstrap --accept-defaults --manifest deployment_manifest.yaml
 
 # LP: #2065490
 ssh_to 1 -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
