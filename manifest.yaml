@@ -37,7 +37,7 @@ software:
     openstack-exporter-k8s:
       channel: 2024.1/edge
     openstack-hypervisor:
-      channel: 2024.1/edge
+      channel: 2023.2/edge
       config:
         #snap-channel: 2024.1/edge
         snap-channel: 2023.2/edge
