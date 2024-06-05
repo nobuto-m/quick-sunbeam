@@ -71,7 +71,7 @@ for i in {1..3}; do
 
     # LP: #2065911
     # TODO: make it permanent across reboots
-    ssh_to "${i}" -- sudo ip link set enp9s0 up
+    #ssh_to "${i}" -- sudo ip link set enp9s0 up
 done
 
 ssh_to 1 -- 'tee deployment_manifest.yaml' < manifest.yaml
