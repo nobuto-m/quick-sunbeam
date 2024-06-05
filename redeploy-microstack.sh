@@ -11,7 +11,7 @@ for i in {1..3}; do
 done
 
 function ssh_to() {
-    local ip="10.0.123.1${1}"
+    local ip="192.168.123.1${1}"
     shift
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
@@ -38,13 +38,13 @@ network:
       dhcp6: false
       accept-ra: false
       addresses:
-        - 10.0.123.1${i}/24
+        - 192.168.123.1${i}/24
       routes:
         - to: default
-          via: 10.0.123.1
+          via: 192.168.123.1
       nameservers:
         addresses:
-          - 10.0.123.1
+          - 192.168.123.1
 EOF
 done
 
@@ -52,9 +52,9 @@ done
 for i in {1..3}; do
     virsh detach-interface "sunbeam-${i}.localdomain" network --config
 
-    virsh attach-interface "sunbeam-${i}.localdomain" network virbr-sunbeam \
+    virsh attach-interface "sunbeam-${i}.localdomain" network default \
         --model virtio --config
-    virsh attach-interface "sunbeam-${i}.localdomain" network virbr-sunbeam \
+    virsh attach-interface "sunbeam-${i}.localdomain" network default \
         --model virtio --config
 
     virsh start "sunbeam-${i}.localdomain"
