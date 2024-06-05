@@ -7,13 +7,11 @@ deployment:
     metallb: 192.168.123.81-192.168.123.90
   microceph_config:
     sunbeam-1.localdomain:
-      # LP: #2065470, LP: #2065698
-      # FIXME: remove vdd to see if two issues above are actually fixed
-      osd_devices: /dev/vdc,/dev/vdd
+      osd_devices: /dev/vdc
     sunbeam-2.localdomain:
-      osd_devices: /dev/vdc,/dev/vdd
+      osd_devices: /dev/vdc
     sunbeam-3.localdomain:
-      osd_devices: /dev/vdc,/dev/vdd
+      osd_devices: /dev/vdc
   region: RegionOne
   external_network:
     nic: enp9s0
@@ -39,5 +37,3 @@ software:
       - --model-default=disable-telemetry=true
       # LP: #2065490
       - --model-default=logging-config=<root>=INFO;unit=DEBUG
-      # LP: #2065700
-      - --model-default=ignore-machine-addresses=true
