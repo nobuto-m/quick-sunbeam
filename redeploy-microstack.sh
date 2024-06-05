@@ -97,7 +97,7 @@ ssh_to 1 -t -- \
     time sunbeam cluster resize
 
 ssh_to 1 -t -- \
-    time sunbeam configure --openrc demo-openrc --manifest deployment_manifest.yaml
+    time sunbeam configure --openrc demo-openrc
 
 for i in {1..3}; do
     ssh_to "${i}" -t -- \
