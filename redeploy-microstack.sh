@@ -29,7 +29,7 @@ for i in {1..3}; do
         --network-config /dev/stdin \
         --no-start \
         "sunbeam-${i}.localdomain" \
-        release=jammy
+        release=noble
 network:
   version: 2
   ethernets:
