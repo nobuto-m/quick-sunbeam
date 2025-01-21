@@ -62,13 +62,7 @@ done
 
 
 for i in {1..3}; do
-    while true; do
-        ssh_to "${i}" -t -- cloud-init status --wait
-        # LP: #2095395
-        cloud_init_code="$?"
-        if [ "$cloud_init_code" = 0 ] || [ "$cloud_init_code" = 2 ]; then
-            break
-        fi
+    until ssh_to "${i}" -t -- cloud-init status --wait; do
         sleep 5
     done
 
