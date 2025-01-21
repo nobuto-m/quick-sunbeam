@@ -77,7 +77,7 @@ ssh_to 1 -- 'tail -n+3 /snap/openstack/current/etc/manifests/edge.yml >> deploym
 
 ssh_to 1 -t -- \
     time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
-        --role control --role compute --role storage
+        --role control,compute,storage
 
 # LP: #2065490
 ssh_to 1 -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
