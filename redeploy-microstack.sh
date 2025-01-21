@@ -63,6 +63,8 @@ done
 
 for i in {1..3}; do
     until ssh_to "${i}" -t -- cloud-init status --wait; do
+        # LP: #2095395
+        [ "$?" = 2 ] && break
         sleep 5
     done
 
