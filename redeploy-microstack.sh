@@ -58,11 +58,11 @@ done
 
 
 for i in {1..3}; do
-    # LP: #2095395
-    if ! ssh_to "${i}" -t -- cloud-init status --wait --long && [ "$?" != 2 ]; then
-        echo 'Cloud-init failed'
-        exit 1
-    fi
+    until ssh_to "${i}" -t -- cloud-init status --wait --long; do
+        # LP: #2095395
+        [ "$?" = 2 ] && break
+        sleep 5
+    done
 
     ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
     ssh_to "${i}" -t -- 'sunbeam prepare-node-script --bootstrap | bash -x'
