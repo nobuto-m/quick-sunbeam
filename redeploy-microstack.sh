@@ -59,7 +59,7 @@ done
 
 for i in {1..3}; do
     # LP: #2095395
-    if ! ssh_to "${i}" -t -- cloud-init status --wait --long || [ "$?" = 2 ]; then
+    if ! ssh_to "${i}" -t -- cloud-init status --wait --long && [ "$?" != 2 ]; then
         echo 'Cloud-init failed'
         exit 1
     fi
