@@ -50,10 +50,6 @@ done
 
 
 for i in {1..3}; do
-    virsh detach-interface "sunbeam-${i}.localdomain" network --config
-
-    virsh attach-interface "sunbeam-${i}.localdomain" network default \
-        --model virtio --config
     virsh attach-interface "sunbeam-${i}.localdomain" network default \
         --model virtio --config
 
