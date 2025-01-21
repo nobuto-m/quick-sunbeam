@@ -65,7 +65,11 @@ for i in {1..3}; do
     done
 
     ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
-    ssh_to "${i}" -t -- 'sunbeam prepare-node-script --bootstrap | bash -x'
+    if [ "$i" = 1 ]; then
+        ssh_to "${i}" -t -- 'sunbeam prepare-node-script --bootstrap | bash -x'
+    else
+        ssh_to "${i}" -t -- 'sunbeam prepare-node-script | bash -x'
+    fi
 
     # LP: #2065911
     # TODO: make it permanent across reboots
