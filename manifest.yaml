@@ -1,4 +1,4 @@
-deployment:
+core:
   proxy:
     proxy_required: false
   bootstrap:
@@ -29,11 +29,11 @@ deployment:
     cidr: 192.168.1.0/24
     nameservers: 192.168.123.1
     security_group_rules: true
-software:
-  juju:
-    bootstrap_args:
-      - --debug
-      - --model-default=test-mode=true
-      - --model-default=disable-telemetry=true
-      # LP: #2065490
-      - --model-default=logging-config=<root>=INFO;unit=DEBUG
+  software:
+    juju:
+      bootstrap_args:
+        - --debug
+        - --model-default=test-mode=true
+        - --model-default=disable-telemetry=true
+        # LP: #2065490
+        - --model-default=logging-config=<root>=INFO;unit=DEBUG

@@ -73,7 +73,7 @@ for i in {1..3}; do
 done
 
 ssh_to 1 -- 'tee deployment_manifest.yaml' < manifest.yaml
-ssh_to 1 -- 'tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
+ssh_to 1 -- 'tail -n+3 /snap/openstack/current/etc/manifests/edge.yml >> deployment_manifest.yaml'
 
 ssh_to 1 -t -- \
     time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
