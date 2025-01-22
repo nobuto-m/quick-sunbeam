@@ -22,7 +22,7 @@ for i in {1..3}; do
         --cpu 16 \
         --host-passthrough \
         --memory 16384 \
-        --disk 64 \
+        --disk 128 \
         --ephemeral-disk 16 \
         --ephemeral-disk 16 \
         --unsafe-caching \
