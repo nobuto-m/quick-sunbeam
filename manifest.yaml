@@ -204,214 +204,214 @@ core:
   #       source: null
   #     demo-setup:
   #       source: null
-#features:
-#  caas:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms:
-#    #     magnum-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #   terraform:
-#    #     caas-setup:
-#    #       source: null
-#  dns:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms:
-#    #     designate-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #     designate-bind-k8s:
-#    #       channel: 9/edge
-#    #       revision: null
-#    #       config: null
-#    #   terraform: {}
-#  images-sync:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms:
-#    #     openstack-images-sync-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #   terraform: {}
-#  instance-recovery:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms:
-#    #     consul-k8s:
-#    #       channel: 1.19/edge
-#    #       revision: null
-#    #       config: null
-#    #     consul-client:
-#    #       channel: 1.19/edge
-#    #       revision: null
-#    #       config: null
-#    #     masakari-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #   terraform:
-#    #     consul-client-plan:
-#    #       source: null
-#  ldap:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms:
-#    #     keystone-ldap-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #   terraform: {}
-#  loadbalancer:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms:
-#    #     octavia-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #   terraform: {}
-#  resource-optimization:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms:
-#    #     watcher-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #   terraform: {}
-#  orchestration:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms:
-#    #     heat-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #   terraform: {}
-#  pro:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms: {}
-#    #   terraform:
-#    #     ubuntu-pro-plan:
-#    #       source: null
-#  secrets:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms:
-#    #     barbican-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #   terraform: {}
-#  telemetry:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms:
-#    #     aodh-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #     gnocchi-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #     ceilometer-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #     openstack-exporter-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #   terraform: {}
-#  validation:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms:
-#    #     tempest-k8s:
-#    #       channel: 2024.1/edge
-#    #       revision: null
-#    #       config: null
-#    #   terraform: {}
-#  vault:
-#    # config: null
-#    # software:
-#    #   juju:
-#    #     bootstrap_args: []
-#    #     scale_args: []
-#    #     destroy_args: []
-#    #   charms:
-#    #     vault-k8s:
-#    #       channel: 1.16/stable
-#    #       revision: null
-#    #       config: null
-#    #   terraform: {}
-#  observability:
-#    embedded:
-#      # config: null
-#
-#    external:
-#      # config: null
-#
-#  tls:
-#    ca:
-#      # config:
-#        # # TLS Certificates
-#        # certificates:
-#        #   <CSR x500UniqueIdentifier>:
-#        #     # Base64 encoded Certificate for unit CSR Unique ID: subject
-#        #     certificate: 
+features:
+  caas:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     magnum-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform:
+    #     caas-setup:
+    #       source: null
+  dns:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     designate-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #     designate-bind-k8s:
+    #       channel: 9/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  images-sync:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     openstack-images-sync-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  instance-recovery:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     consul-k8s:
+    #       channel: 1.19/edge
+    #       revision: null
+    #       config: null
+    #     consul-client:
+    #       channel: 1.19/edge
+    #       revision: null
+    #       config: null
+    #     masakari-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform:
+    #     consul-client-plan:
+    #       source: null
+  ldap:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     keystone-ldap-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  loadbalancer:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     octavia-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  resource-optimization:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     watcher-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  orchestration:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     heat-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  pro:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms: {}
+    #   terraform:
+    #     ubuntu-pro-plan:
+    #       source: null
+  secrets:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     barbican-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  telemetry:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     aodh-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #     gnocchi-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #     ceilometer-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #     openstack-exporter-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  validation:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     tempest-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  vault:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     vault-k8s:
+    #       channel: 1.16/stable
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  observability:
+    embedded:
+      # config: null
+
+    external:
+      # config: null
+
+  tls:
+    ca:
+      # config:
+        # # TLS Certificates
+        # certificates:
+        #   <CSR x500UniqueIdentifier>:
+        #     # Base64 encoded Certificate for unit CSR Unique ID: subject
+        #     certificate: 
