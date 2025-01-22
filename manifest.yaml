@@ -64,6 +64,8 @@ core:
     #   segmentation_id: 0
     # Remote Access
     external_network:
+      # LP: #2095484
+      nic: enp9s0
       # External network
       # Network from which the instances will be remotely accessed (outside OpenStack). Takes the form of a CIDR block.
       cidr: 192.168.123.0/24
