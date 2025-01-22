@@ -87,12 +87,12 @@ ssh_to 1 -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=
 ssh_to 1 -- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
 
 ssh_to 2 -t -- \
-    time sunbeam cluster join --role control --role compute --role storage \
-        --token "$(ssh_to 1 -- sunbeam cluster add --name sunbeam-2.localdomain -f value)"
+    time sunbeam cluster join --role control,compute,storage \
+        "$(ssh_to 1 -- sunbeam cluster add sunbeam-2.localdomain -f value)"
 
 ssh_to 3 -t -- \
-    time sunbeam cluster join --role control --role compute --role storage \
-        --token "$(ssh_to 1 -- sunbeam cluster add --name sunbeam-3.localdomain -f value)"
+    time sunbeam cluster join --role control,compute,storage \
+        "$(ssh_to 1 -- sunbeam cluster add sunbeam-3.localdomain -f value)"
 
 ssh_to 1 -t -- \
     time sunbeam cluster resize
