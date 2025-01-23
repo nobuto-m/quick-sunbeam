@@ -23,8 +23,8 @@ for i in {1..3}; do
         --host-passthrough \
         --memory 16384 \
         --disk 128 \
-        --ephemeral-disk 16 \
-        --ephemeral-disk 16 \
+        --ephemeral-disk 32 \
+        --ephemeral-disk 32 \
         --unsafe-caching \
         --network-config /dev/stdin \
         --no-start \
