@@ -94,6 +94,10 @@ ssh_to 3 -t -- \
     time sunbeam cluster join --role control,compute,storage \
         "$(ssh_to 1 -- sunbeam cluster add sunbeam-3.localdomain -f value)"
 
+# LP: #2095570
+ssh_to 1 -t -- time juju run microceph/1 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
+ssh_to 1 -t -- time juju run microceph/2 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
+
 ssh_to 1 -t -- \
     time sunbeam cluster resize
 
