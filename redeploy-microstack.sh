@@ -82,6 +82,10 @@ ssh_to 1 -t -- \
     time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
         --role control,compute,storage
 
+# LP: #2095487
+ssh_to 1 -t -- \
+    time juju destroy-controller localhost-localhost --no-prompt
+
 # LP: #2065490
 #ssh_to 1 -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
 #ssh_to 1 -- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
