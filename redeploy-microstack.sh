@@ -82,7 +82,7 @@ ssh_to 1 -- 'tee deployment_manifest.yaml' < manifest.yaml
 
 ssh_to 1 -t -- \
     time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
-        --role control,compute,storage | pv --timer
+        --role control,compute,storage | pv --timer --cursor
 
 # LP: #2095487
 ssh_to 1 -t -- \
@@ -94,18 +94,18 @@ ssh_to 1 -t -- \
 
 ssh_to 2 -t -- \
     time sunbeam cluster join --role control,compute,storage \
-        "$(ssh_to 1 -- sunbeam cluster add sunbeam-2.localdomain -f value)" | pv --timer
+        "$(ssh_to 1 -- sunbeam cluster add sunbeam-2.localdomain -f value)" | pv --timer --cursor
 
 ssh_to 3 -t -- \
     time sunbeam cluster join --role control,compute,storage \
-        "$(ssh_to 1 -- sunbeam cluster add sunbeam-3.localdomain -f value)" | pv --timer
+        "$(ssh_to 1 -- sunbeam cluster add sunbeam-3.localdomain -f value)" | pv --timer --cursor
 
 # LP: #2095570
 ssh_to 1 -t -- time juju run -m admin/openstack-machines microceph/1 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0,/dev/disk/by-path/pci-0000:07:00.0'
 ssh_to 1 -t -- time juju run -m admin/openstack-machines microceph/2 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0,/dev/disk/by-path/pci-0000:07:00.0'
 
 ssh_to 1 -t -- \
-    time sunbeam cluster resize | pv --timer
+    time sunbeam cluster resize | pv --timer --cursor
 
 ssh_to 1 -t -- \
     time sunbeam configure --openrc demo-openrc
