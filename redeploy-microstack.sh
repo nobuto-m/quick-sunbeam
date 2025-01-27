@@ -1,6 +1,8 @@
 #!/bin/bash
 
 set -eux
+# pv command doesn't pass through the exit code
+set -o pipefail
 
 cd "$(dirname "$0")"
 
