@@ -160,6 +160,7 @@ core:
         config: null
       rabbitmq-k8s:
         # LP: #2066188
+        # LP: #2096927
         channel: 3.12/candidate
         revision: null
         config: null
