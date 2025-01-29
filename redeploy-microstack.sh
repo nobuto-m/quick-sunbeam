@@ -92,6 +92,10 @@ ssh_to 1 -t -- \
 #ssh_to 1 -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
 #ssh_to 1 -- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
 
+# LP: #2095570
+ssh_to 1 -t -- \
+    sudo ceph osd pool autoscale-status
+
 ssh_to 2 -t -- \
     time sunbeam cluster join --role control,compute,storage \
         "$(ssh_to 1 -- sunbeam cluster add sunbeam-2.localdomain -f value)" | pv --timer -i 0.08
@@ -104,8 +108,17 @@ ssh_to 3 -t -- \
 ssh_to 1 -t -- time juju run -m admin/openstack-machines microceph/1 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
 ssh_to 1 -t -- time juju run -m admin/openstack-machines microceph/2 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
 
+# LP: #2095570
 ssh_to 1 -t -- \
-    time sunbeam cluster resize | pv --timer -i 0.08
+    sudo ceph osd pool autoscale-status
+
+ssh_to 1 -t -- \
+    time sunbeam cluster resize | pv --timer -i 0.08 || (
+        # LP: #2095570
+        ssh_to 1 -t -- \
+            sudo ceph osd pool autoscale-status
+        exit 1
+    )
 
 ssh_to 1 -t -- \
     time sunbeam configure --openrc demo-openrc
