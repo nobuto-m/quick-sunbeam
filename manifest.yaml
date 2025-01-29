@@ -159,7 +159,8 @@ core:
         revision: null
         config: null
       rabbitmq-k8s:
-        channel: 3.12/stable
+        # LP: #2066188
+        channel: 3.12/candidate
         revision: null
         config: null
       traefik-k8s:
