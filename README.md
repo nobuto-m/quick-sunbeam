@@ -1,3 +1,11 @@
+## Time
+
+- `prepare-node-script --bootstrap` + 2x `sunbeam prepare-node-script` 7m16.604s
+- `sunbeam cluster bootstrap` 25m49.372s
+- `sunbeam cluster join` 22m18.170s
+- `sunbeam cluster join` 22m10.131s
+- `sunbeam cluster resize` 60-min Timed out while waiting for model 'openstack' to be ready
+
 ## Prep
 
 Define a new bridge with a subnet in the 10.0.0.0/16 range to avoid
