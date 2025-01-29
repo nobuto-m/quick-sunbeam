@@ -89,8 +89,8 @@ ssh_to 1 -t -- \
     time juju destroy-controller localhost-localhost --no-prompt
 
 # LP: #2065490
-#ssh_to 1 -- 'juju model-default --cloud sunbeam-microk8s logging-config="<root>=INFO;unit=DEBUG"'
-#ssh_to 1 -- 'juju model-config -m openstack logging-config="<root>=INFO;unit=DEBUG"'
+#ssh_to 1 -- 'juju model-default --cloud "<petname>" logging-config="<root>=INFO;unit=DEBUG"'
+ssh_to 1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
 
 # LP: #2095570
 ssh_to 1 -t -- \
