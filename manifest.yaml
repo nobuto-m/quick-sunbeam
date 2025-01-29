@@ -86,18 +86,15 @@ core:
       sunbeam-1.localdomain:
         # Ceph devices
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
-        # LP: #2095570
-        osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0,/dev/disk/by-path/pci-0000:07:00.0'  # /dev/vdc,/dev/vdd
+        osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
       sunbeam-2.localdomain:
         # Ceph devices
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
-        # LP: #2095570
-        osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0,/dev/disk/by-path/pci-0000:07:00.0'  # /dev/vdc,/dev/vdd
+        osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
       sunbeam-3.localdomain:
         # Ceph devices
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
-        # LP: #2095570
-        osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0,/dev/disk/by-path/pci-0000:07:00.0'  # /dev/vdc,/dev/vdd
+        osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
   software:
     juju:
       bootstrap_args:
