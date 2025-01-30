@@ -82,14 +82,7 @@ ssh_to 1 -- 'tee deployment_manifest.yaml' < manifest.yaml
 
 ssh_to 1 -t -- \
     time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
-        --role control,compute,storage &
-
-# LP: #2096923
-until ssh_to 1 -t -- sudo ceph config set global osd_pool_default_pg_autoscale_mode warn; do
-    sleep 15
-done
-
-wait -n
+        --role control,compute,storage | pv --timer -i 0.08
 
 # LP: #2095487
 ssh_to 1 -t -- \
