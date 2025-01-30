@@ -123,6 +123,10 @@ ssh_to 1 -- time juju run -m admin/openstack-machines microceph/2 add-osd device
 ssh_to 1 -t -- \
     time sunbeam cluster resize | pv --timer -i 0.08
 
+# LP:#2065469
+ssh_to 1 -t -- \
+    time sunbeam cluster resize | pv --timer -i 0.08
+
 ssh_to 1 -t -- \
     time sunbeam configure --openrc demo-openrc
 
