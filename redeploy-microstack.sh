@@ -60,7 +60,7 @@ done
 
 
 time for i in {1..3}; do
-    until ssh_to "${i}" -t -- cloud-init status --wait --long; do
+    until ssh_to "${i}" -- cloud-init status --wait --long; do
         # LP: #2095395
         [ "$?" = 2 ] && break
         sleep 5
@@ -85,7 +85,7 @@ ssh_to 1 -t -- \
         --role control,compute,storage | pv --timer -i 0.08
 
 # LP: #2095487
-ssh_to 1 -t -- \
+ssh_to 1 -- \
     time juju destroy-controller localhost-localhost --no-prompt
 
 # LP: #2065490
@@ -93,7 +93,7 @@ ssh_to 1 -t -- \
 ssh_to 1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
 
 # LP: #2095570
-ssh_to 1 -t -- \
+ssh_to 1 -- \
     sudo ceph osd pool autoscale-status
 
 ssh_to 2 -t -- \
@@ -105,17 +105,17 @@ ssh_to 3 -t -- \
         "$(ssh_to 1 -- sunbeam cluster add sunbeam-3.localdomain -f value)" | pv --timer -i 0.08
 
 # LP: #2095570
-ssh_to 1 -t -- time juju run -m admin/openstack-machines microceph/1 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
-ssh_to 1 -t -- time juju run -m admin/openstack-machines microceph/2 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
+ssh_to 1 -- time juju run -m admin/openstack-machines microceph/1 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
+ssh_to 1 -- time juju run -m admin/openstack-machines microceph/2 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
 
 # LP: #2095570
-ssh_to 1 -t -- \
+ssh_to 1 -- \
     sudo ceph osd pool autoscale-status
 
 ssh_to 1 -t -- \
     time sunbeam cluster resize | pv --timer -i 0.08 || (
         # LP: #2095570
-        ssh_to 1 -t -- \
+        ssh_to 1 -- \
             sudo ceph osd pool autoscale-status
         exit 1
     )
@@ -132,7 +132,7 @@ ssh_to 1 -t -- \
     time sunbeam launch ubuntu --name test
 
 # shellcheck disable=SC2016
-ssh_to 1 -t -- '
+ssh_to 1 -- '
     set -ex
     # The cloud-init process inside the VM takes ~2 minutes to bring up the
     # SSH service after the VM gets ACTIVE in OpenStack
@@ -143,4 +143,4 @@ ssh_to 1 -t -- '
 '
 
 # be nice to my SSD
-ssh_to 1 -t -- juju model-config -m openstack update-status-hook-interval=2h
+ssh_to 1 -- juju model-config -m openstack update-status-hook-interval=2h
