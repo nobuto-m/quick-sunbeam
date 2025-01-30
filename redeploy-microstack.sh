@@ -15,7 +15,7 @@ done
 function ssh_to() {
     local ip="192.168.123.1${1}"
     shift
-    ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -t -l ubuntu "${ip}" "$@"
+    ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
 
 for i in {1..3}; do
@@ -60,17 +60,17 @@ done
 
 
 time for i in {1..3}; do
-    until ssh_to "${i}" -- cloud-init status --wait --long; do
+    until ssh_to "${i}" -t -- cloud-init status --wait --long; do
         # LP: #2095395
         [ "$?" = 2 ] && break
         sleep 5
     done
 
-    ssh_to "${i}" -- sudo snap install openstack --channel 2024.1/edge
+    ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
     if [ "$i" = 1 ]; then
-        ssh_to "${i}" -- 'sunbeam prepare-node-script --bootstrap | bash -x'
+        ssh_to "${i}" -t -- 'sunbeam prepare-node-script --bootstrap | bash -x'
     else
-        ssh_to "${i}" -- 'sunbeam prepare-node-script | bash -x'
+        ssh_to "${i}" -t -- 'sunbeam prepare-node-script | bash -x'
     fi
 
     # LP: #2065911
@@ -80,19 +80,19 @@ done
 
 ssh_to 1 -- 'tee deployment_manifest.yaml' < manifest.yaml
 
-ssh_to 1 -- \
+ssh_to 1 -t -- \
     time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
         --role control,compute,storage &
 
 # LP: #2096923
-until ssh_to 1 -- sudo ceph config set global osd_pool_default_pg_autoscale_mode warn; do
+until ssh_to 1 -t -- sudo ceph config set global osd_pool_default_pg_autoscale_mode warn; do
     sleep 15
 done
 
 wait -n
 
 # LP: #2095487
-ssh_to 1 -- \
+ssh_to 1 -t -- \
     time juju destroy-controller localhost-localhost --no-prompt
 
 # LP: #2065490
@@ -100,46 +100,46 @@ ssh_to 1 -- \
 ssh_to 1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
 
 # LP: #2095570
-ssh_to 1 -- \
+ssh_to 1 -t -- \
     sudo ceph osd pool autoscale-status
 
-ssh_to 2 -- \
+ssh_to 2 -t -- \
     time sunbeam cluster join --role control,compute,storage \
         "$(ssh_to 1 -- sunbeam cluster add sunbeam-2.localdomain -f value)" | pv --timer -i 0.08
 
-ssh_to 3 -- \
+ssh_to 3 -t -- \
     time sunbeam cluster join --role control,compute,storage \
         "$(ssh_to 1 -- sunbeam cluster add sunbeam-3.localdomain -f value)" | pv --timer -i 0.08
 
 # LP: #2095570
-ssh_to 1 -- time juju run -m admin/openstack-machines microceph/1 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
-ssh_to 1 -- time juju run -m admin/openstack-machines microceph/2 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
+ssh_to 1 -t -- time juju run -m admin/openstack-machines microceph/1 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
+ssh_to 1 -t -- time juju run -m admin/openstack-machines microceph/2 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
 
 # LP: #2095570
-ssh_to 1 -- \
+ssh_to 1 -t -- \
     sudo ceph osd pool autoscale-status
 
-ssh_to 1 -- \
+ssh_to 1 -t -- \
     time sunbeam cluster resize | pv --timer -i 0.08 || (
         # LP: #2095570
-        ssh_to 1 -- \
+        ssh_to 1 -t -- \
             sudo ceph osd pool autoscale-status
         exit 1
     )
 
-ssh_to 1 -- \
+ssh_to 1 -t -- \
     time sunbeam configure --openrc demo-openrc
 
 for i in {1..3}; do
-    ssh_to "${i}" -- \
+    ssh_to "${i}" -t -- \
         'time sunbeam openrc > admin-openrc'
 done
 
-ssh_to 1 -- \
+ssh_to 1 -t -- \
     time sunbeam launch ubuntu --name test
 
 # shellcheck disable=SC2016
-ssh_to 1 -- '
+ssh_to 1 -t -- '
     set -ex
     # The cloud-init process inside the VM takes ~2 minutes to bring up the
     # SSH service after the VM gets ACTIVE in OpenStack
@@ -150,4 +150,4 @@ ssh_to 1 -- '
 '
 
 # be nice to my SSD
-ssh_to 1 -- juju model-config -m openstack update-status-hook-interval=2h
+ssh_to 1 -t -- juju model-config -m openstack update-status-hook-interval=2h
