@@ -92,9 +92,16 @@ ssh_to 1 -- \
 #ssh_to 1 -- 'juju model-default --cloud "<petname>" logging-config="<root>=INFO;unit=DEBUG"'
 ssh_to 1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
 
-# LP: #2095570
-ssh_to 1 -- \
+# LP: #2096923
+ssh_to 1 -- '
+    set -ex
+    sudo ceph status
+    sudo ceph health detail
+    sudo ceph config set global osd_pool_default_pg_autoscale_mode warn
     sudo ceph osd pool autoscale-status
+    sudo ceph osd pool set glance pg_num 32
+    sudo ceph osd pool set cinder-ceph pg_num 32
+'
 
 ssh_to 2 -t -- \
     time sunbeam cluster join --role control,compute,storage \
@@ -108,17 +115,8 @@ ssh_to 3 -t -- \
 ssh_to 1 -- time juju run -m admin/openstack-machines microceph/1 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
 ssh_to 1 -- time juju run -m admin/openstack-machines microceph/2 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
 
-# LP: #2095570
-ssh_to 1 -- \
-    sudo ceph osd pool autoscale-status
-
 ssh_to 1 -t -- \
-    time sunbeam cluster resize | pv --timer -i 0.08 || (
-        # LP: #2095570
-        ssh_to 1 -- \
-            sudo ceph osd pool autoscale-status
-        exit 1
-    )
+    time sunbeam cluster resize | pv --timer -i 0.08
 
 ssh_to 1 -t -- \
     time sunbeam configure --openrc demo-openrc
