@@ -97,10 +97,12 @@ ssh_to 1 -- '
     set -ex
     sudo ceph status
     sudo ceph health detail
-    sudo ceph config set global osd_pool_default_pg_autoscale_mode warn
     sudo ceph osd pool autoscale-status
+    sudo ceph osd pool set noautoscale
     sudo ceph osd pool set glance pg_num 32
     sudo ceph osd pool set cinder-ceph pg_num 32
+    sudo ceph status
+    sudo ceph health detail
 '
 
 ssh_to 2 -t -- \
