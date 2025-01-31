@@ -121,11 +121,14 @@ ssh_to 3 -t -- \
 ssh_to 1 -- time juju run -m admin/openstack-machines microceph/1 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
 ssh_to 1 -- time juju run -m admin/openstack-machines microceph/2 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
 
-# LP:#2065469
-ssh_to 1 -t -- \
-    time sunbeam cluster resize | pv --timer -i 0.08 || true
-ssh_to 1 -t -- \
-    time sunbeam cluster resize | pv --timer -i 0.08
+# LP: #2065469
+time (
+    ssh_to 1 -t -- \
+        sunbeam cluster resize | pv --timer -i 0.08 \
+    || \
+    ssh_to 1 -t -- \
+        sunbeam cluster resize | pv --timer -i 0.08
+)
 
 ssh_to 1 -- '
     set -ex
