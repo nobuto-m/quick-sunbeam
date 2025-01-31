@@ -99,7 +99,8 @@ ssh_to 1 -- '
     sudo ceph health detail
     sudo ceph osd pool autoscale-status
 
-    sudo ceph osd pool set noautoscale
+    sudo ceph config set global osd_pool_default_pg_autoscale_mode warn
+    sudo ceph osd pool ls | xargs -t -I{} sudo ceph osd pool set {} pg_autoscale_mode warn
     sudo ceph osd pool set glance pg_num 32
     sudo ceph osd pool set cinder-ceph pg_num 32
 
@@ -125,6 +126,13 @@ ssh_to 1 -t -- \
     time sunbeam cluster resize | pv --timer -i 0.08 || true
 ssh_to 1 -t -- \
     time sunbeam cluster resize | pv --timer -i 0.08
+
+ssh_to 1 -- '
+    set -ex
+    sudo ceph status
+    sudo ceph health detail
+    sudo ceph osd pool autoscale-status
+'
 
 ssh_to 1 -t -- \
     time sunbeam configure --openrc demo-openrc
