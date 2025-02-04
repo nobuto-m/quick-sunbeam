@@ -132,9 +132,7 @@ core:
         config: null
       nova-k8s:
         channel: 2024.1/edge
-        # LP: 2097327
-        #revision: null
-        revision: 109
+        revision: null
         config: null
       placement-k8s:
         channel: 2024.1/edge
