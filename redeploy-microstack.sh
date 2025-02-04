@@ -19,7 +19,7 @@ function ssh_to() {
 }
 
 for i in {1..3}; do
-    cat <<EOF | uvt-kvm create \
+    uvt-kvm create \
         --machine-type q35 \
         --cpu 16 \
         --host-passthrough \
@@ -31,7 +31,7 @@ for i in {1..3}; do
         --network-config /dev/stdin \
         --no-start \
         "sunbeam-${i}.localdomain" \
-        release=noble
+        release=noble <<EOF
 network:
   version: 2
   ethernets:
