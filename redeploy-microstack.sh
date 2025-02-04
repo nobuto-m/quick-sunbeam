@@ -178,4 +178,4 @@ ssh_to 1 -- '
 '
 
 # be nice to my SSD
-ssh_to 1 -- juju model-config -m openstack update-status-hook-interval=2h
+ssh_to 1 -- 'juju models --format json | jq -r ".models[].name" | xargs -t -I{} juju model-config -m {} logging-config="<root>=INFO"'
