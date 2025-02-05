@@ -11,7 +11,23 @@
 
 ## Prep
 
-Define a new bridge.
+1. Prepare a jammy or noble host
+
+1. Install prerequisites
+
+    sudo apt-get update
+    sudo apt-get install -y uvtool
+
+1. Download a noble VM image
+
+    uvt-simplestreams-libvirt sync release=noble arch=amd64
+    uvt-simplestreams-libvirt query
+
+1. Generate a SSH key if not any
+
+    ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
+
+1. Define a new bridge.
 
 ```
 virsh net-define /dev/stdin <<EOF

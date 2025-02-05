@@ -52,6 +52,7 @@ for i in {1..3}; do
         --unsafe-caching \
         --bridge sunbeam-virbr0 \
         --network-config /dev/stdin \
+        --ssh-public-key-file ~/.ssh/id_ed25519.pub \
         --no-start \
         "sunbeam-machine-${i}.localdomain" \
         release=noble <<EOF
