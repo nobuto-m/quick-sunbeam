@@ -16,12 +16,12 @@ Define a new bridge.
 ```
 virsh net-define /dev/stdin <<EOF
 <network>
-  <name>sunbeam-br0</name>
-  <bridge name='sunbeam-br0' stp='off'/>
+  <name>sunbeam-virbr0</name>
+  <bridge name='sunbeam-virbr0' stp='off'/>
   <forward mode='nat'/>
   <ip address='192.168.124.1' netmask='255.255.255.0' />
 </network>
 EOF
-virsh net-autostart sunbeam-br0
-virsh net-start sunbeam-br0
+virsh net-autostart sunbeam-virbr0
+virsh net-start sunbeam-virbr0
 ```

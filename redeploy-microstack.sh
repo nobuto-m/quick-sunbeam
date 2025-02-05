@@ -50,7 +50,7 @@ for i in {1..3}; do
         --ephemeral-disk "$EXTRA_DISK" \
         --ephemeral-disk "$EXTRA_DISK" \
         --unsafe-caching \
-        --bridge sunbeam-br0 \
+        --bridge sunbeam-virbr0 \
         --network-config /dev/stdin \
         --no-start \
         "sunbeam-machine-${i}.localdomain" \
@@ -75,7 +75,7 @@ done
 
 
 for i in {1..3}; do
-    virsh attach-interface "sunbeam-machine-${i}.localdomain" network sunbeam-br0 \
+    virsh attach-interface "sunbeam-machine-${i}.localdomain" network sunbeam-virbr0 \
         --model virtio --config
 
     virsh start "sunbeam-machine-${i}.localdomain"
