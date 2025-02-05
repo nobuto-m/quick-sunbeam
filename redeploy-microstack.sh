@@ -79,10 +79,10 @@ time for i in {1..3}; do
     #ssh_to "${i}" -- sudo ip link set enp9s0 up
 done
 
-ssh_to 1 -- 'tee deployment_manifest.yaml' < manifest.yaml
+ssh_to 1 -- 'cat - > manifest.yaml' < manifest.yaml
 
 ssh_to 1 -t -- \
-    time sunbeam cluster bootstrap --manifest deployment_manifest.yaml \
+    time sunbeam cluster bootstrap --manifest manifest.yaml \
         --role control,compute,storage | pv --timer -i 0.08
 
 # LP: #2095487
