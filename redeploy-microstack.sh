@@ -18,15 +18,37 @@ function ssh_to() {
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
 
+USE_WORKAROUND=true
+SPECS_PROFILE_DEFAULT=minimal
+
+specs_profile="$SPECS_PROFILE_DEFAULT"
+if [ "$specs_profile" = minimal ]; then
+    CPU=4
+    MEMORY=16384
+    DISK=128
+    EXTRA_DISK=128
+elif [ "$specs_profile" = tutorial ]; then
+    # https://canonical.com/microstack/docs/multi-node
+    CPU=4
+    MEMORY=32768
+    DISK=200
+    EXTRA_DISK=200
+elif [ "$specs_profile" = allowance ]; then
+    CPU=16
+    MEMORY=65536
+    DISK=512
+    EXTRA_DISK=512
+fi
+
 for i in {1..3}; do
     uvt-kvm create \
         --machine-type q35 \
-        --cpu 16 \
+        --cpu "$CPU" \
         --host-passthrough \
-        --memory 16384 \
-        --disk 128 \
-        --ephemeral-disk 16 \
-        --ephemeral-disk 16 \
+        --memory "$MEMORY" \
+        --disk "$DISK" \
+        --ephemeral-disk "$EXTRA_DISK" \
+        --ephemeral-disk "$EXTRA_DISK" \
         --unsafe-caching \
         --bridge sunbeam-br0 \
         --network-config /dev/stdin \
@@ -86,32 +108,36 @@ ssh_to 1 -t -- \
         --role control,compute,storage | pv --timer -i 0.08
 
 # LP: #2095487
-ssh_to 1 -- \
-    time juju destroy-controller localhost-localhost --no-prompt
+if [ "$USE_WORKAROUND" = true ]; then
+    ssh_to 1 -- \
+        time juju destroy-controller localhost-localhost --no-prompt
+fi
 
 # LP: #2065490
 #ssh_to 1 -- 'juju model-default --cloud "<petname>" logging-config="<root>=INFO;unit=DEBUG"'
 ssh_to 1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
 
 # LP: #2096923, LP: #2095570
-ssh_to 1 -- '
-    set -ex
-    sunbeam cluster list
-    sudo microceph status
+if [ "$USE_WORKAROUND" = true ]; then
+    ssh_to 1 -- '
+        set -ex
+        sunbeam cluster list
+        sudo microceph status
 
-    sudo ceph status
-    sudo ceph health detail
-    sudo ceph osd pool autoscale-status
+        sudo ceph status
+        sudo ceph health detail
+        sudo ceph osd pool autoscale-status
 
-    sudo ceph config set global osd_pool_default_pg_autoscale_mode warn
-    sudo ceph osd pool ls | xargs -t -I{} sudo ceph osd pool set {} pg_autoscale_mode warn
-    sudo ceph osd pool set glance pg_num 32
-    sudo ceph osd pool set cinder-ceph pg_num 32
+        sudo ceph config set global osd_pool_default_pg_autoscale_mode warn
+        sudo ceph osd pool ls | xargs -t -I{} sudo ceph osd pool set {} pg_autoscale_mode warn
+        sudo ceph osd pool set glance pg_num 32
+        sudo ceph osd pool set cinder-ceph pg_num 32
 
-    sudo ceph status
-    sudo ceph health detail
-    sudo ceph osd pool autoscale-status
-'
+        sudo ceph status
+        sudo ceph health detail
+        sudo ceph osd pool autoscale-status
+    '
+fi
 
 ssh_to 2 -t -- \
     time sunbeam cluster join --role control,compute,storage \
@@ -133,17 +159,24 @@ ssh_to 1 -- '
 '
 
 # LP: #2095570
-ssh_to 1 -- time juju run -m admin/openstack-machines microceph/1 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
-ssh_to 1 -- time juju run -m admin/openstack-machines microceph/2 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
+if [ "$USE_WORKAROUND" = true ]; then
+    ssh_to 1 -- time juju run -m admin/openstack-machines microceph/1 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
+    ssh_to 1 -- time juju run -m admin/openstack-machines microceph/2 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
+fi
 
 # LP: #2065469
-time (
-    ssh_to 1 -t -- \
-        sunbeam cluster resize | pv --timer -i 0.08 \
-    || \
-    ssh_to 1 -t -- \
+if [ "$USE_WORKAROUND" = true ]; then
+    time (
+        ssh_to 1 -t -- \
+            sunbeam cluster resize | pv --timer -i 0.08 \
+        || \
+        ssh_to 1 -t -- \
+            sunbeam cluster resize | pv --timer -i 0.08
+    )
+else
+    time ssh_to 1 -t -- \
         sunbeam cluster resize | pv --timer -i 0.08
-)
+fi
 
 # LP: #2096923, LP: #2095570
 ssh_to 1 -- '
@@ -180,3 +213,7 @@ ssh_to 1 -- '
 
 # be nice to my SSD
 ssh_to 1 -- 'juju models --format json | jq -r ".models[].name" | xargs -t -I{} juju model-config -m {} logging-config="<root>=INFO"'
+
+if [ "$USE_WORKAROUND" = true ]; then
+    echo 'WARNING: Not a clean run. Some workarounds are used.'
+fi
