@@ -18,6 +18,8 @@
     sudo apt-get update
     sudo apt-get install -y uvtool
 
+1. Re-login or re-open an SSH session to be in the libvirt group
+
 1. Download a noble VM image
 
     uvt-simplestreams-libvirt sync release=noble arch=amd64
