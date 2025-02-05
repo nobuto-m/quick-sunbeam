@@ -55,7 +55,7 @@
 1. Clone
 
    ```bash
-   git clone https://github.com/nobuto-m/quick-microstack
+   git clone https://github.com/nobuto-m/quick-microstack -b spec-allowance
    cd quick-microstack/
    ```
 
