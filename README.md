@@ -17,7 +17,7 @@
 
    ```bash
    sudo apt-get update
-   sudo apt-get install -y uvtool
+   sudo apt-get install -y uvtool pv
    ```
 
 1. Re-login or re-open an SSH session to be in the libvirt group
