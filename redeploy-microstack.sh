@@ -9,11 +9,11 @@ cd "$(dirname "$0")"
 ## clean up
 for i in {1..3}; do
     # FIXME: the requirement of FQDN is not documented well in each tutorial
-    uvt-kvm destroy "sunbeam-${i}.localdomain" || true
+    uvt-kvm destroy "sunbeam-machine-${i}.localdomain" || true
 done
 
 function ssh_to() {
-    local ip="192.168.123.1${1}"
+    local ip="192.168.124.1${1}"
     shift
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
@@ -28,10 +28,10 @@ for i in {1..3}; do
         --ephemeral-disk 16 \
         --ephemeral-disk 16 \
         --unsafe-caching \
-        --bridge virbr0 \
+        --bridge sunbeam-br0 \
         --network-config /dev/stdin \
         --no-start \
-        "sunbeam-${i}.localdomain" \
+        "sunbeam-machine-${i}.localdomain" \
         release=noble <<EOF
 network:
   version: 2
@@ -41,22 +41,22 @@ network:
       dhcp6: false
       accept-ra: false
       addresses:
-        - 192.168.123.1${i}/24
+        - 192.168.124.1${i}/24
       routes:
         - to: default
-          via: 192.168.123.1
+          via: 192.168.124.1
       nameservers:
         addresses:
-          - 192.168.123.1
+          - 192.168.124.1
 EOF
 done
 
 
 for i in {1..3}; do
-    virsh attach-interface "sunbeam-${i}.localdomain" network default \
+    virsh attach-interface "sunbeam-machine-${i}.localdomain" network sunbeam-br0 \
         --model virtio --config
 
-    virsh start "sunbeam-${i}.localdomain"
+    virsh start "sunbeam-machine-${i}.localdomain"
 done
 
 
@@ -115,11 +115,11 @@ ssh_to 1 -- '
 
 ssh_to 2 -t -- \
     time sunbeam cluster join --role control,compute,storage \
-        "$(ssh_to 1 -- sunbeam cluster add sunbeam-2.localdomain -f value)" | pv --timer -i 0.08
+        "$(ssh_to 1 -- sunbeam cluster add sunbeam-machine-2.localdomain -f value)" | pv --timer -i 0.08
 
 ssh_to 3 -t -- \
     time sunbeam cluster join --role control,compute,storage \
-        "$(ssh_to 1 -- sunbeam cluster add sunbeam-3.localdomain -f value)" | pv --timer -i 0.08
+        "$(ssh_to 1 -- sunbeam cluster add sunbeam-machine-3.localdomain -f value)" | pv --timer -i 0.08
 
 # LP: #2096923, LP: #2095570
 ssh_to 1 -- '

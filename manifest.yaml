@@ -21,11 +21,11 @@ core:
     bootstrap:
       # Management network
       # Management network should be available on every node of the deployment. It is used for communication between the nodes of the deployment. Requires CIDR format, can be a comma-separated list.
-      management_cidr: 192.168.123.0/24
+      management_cidr: 192.168.124.0/24
     k8s-addons:
       # OpenStack APIs IP ranges
       # OpenStack services are exposed via virtual IP addresses. This range should contain at least ten addresses and must not overlap with external network CIDR. To access APIs from a remote host, the range must reside within the subnet that the primary network interface is on.
-      loadbalancer: 192.168.123.81-192.168.123.90
+      loadbalancer: 192.168.124.81-192.168.124.90
     user:
       # Populate OpenStack cloud with demo user, default images, flavors etc
       # If enabled, demonstration resources will be created on the cloud.
@@ -41,7 +41,7 @@ core:
       cidr: 192.168.0.0/24
       # Project network's nameservers
       # A list of DNS server IP addresses (comma separated) that should be used for external DNS resolution from cloud instances. If not specified, the system's default nameservers will be used.
-      nameservers: 192.168.123.1
+      nameservers: 192.168.124.1
       # Enable ping and SSH access to instances?
       # If enabled, security groups will be created with rules to allow ICMP and SSH access to instances.
       security_group_rules: True
@@ -68,13 +68,13 @@ core:
       nic: enp9s0
       # External network
       # Network from which the instances will be remotely accessed (outside OpenStack). Takes the form of a CIDR block.
-      cidr: 192.168.123.0/24
+      cidr: 192.168.124.0/24
       # External network's gateway
       # Router IP address connecting the network for outside use.
-      gateway: 192.168.123.1
+      gateway: 192.168.124.1
       # External network's allocation range
       # VMs intended to be accessed from remote hosts will be assigned dedicated addresses from a portion of the physical network (outside OpenStack). Takes the form of an IP range.
-      range: 192.168.123.51-192.168.123.80
+      range: 192.168.124.51-192.168.124.80
       # External network's type [flat/vlan]
       # Type of network to use for external access.
       network_type: flat
