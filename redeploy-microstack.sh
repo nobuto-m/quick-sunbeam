@@ -6,6 +6,9 @@ set -o pipefail
 
 cd "$(dirname "$0")"
 
+# check pv at the earliest
+hash pv
+
 ## clean up
 for i in {1..3}; do
     # FIXME: the requirement of FQDN is not documented well in each tutorial
