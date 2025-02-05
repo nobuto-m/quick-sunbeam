@@ -15,31 +15,52 @@
 
 1. Install prerequisites
 
-    sudo apt-get update
-    sudo apt-get install -y uvtool
+   ```bash
+   sudo apt-get update
+   sudo apt-get install -y uvtool
+   ```
 
 1. Re-login or re-open an SSH session to be in the libvirt group
 
 1. Download a noble VM image
 
-    uvt-simplestreams-libvirt sync release=noble arch=amd64
-    uvt-simplestreams-libvirt query
+   ```bash
+   uvt-simplestreams-libvirt sync release=noble arch=amd64
+   uvt-simplestreams-libvirt query
+   ```
 
 1. Generate a SSH key if not any
 
-    ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
+   ```bash
+   ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
+   ```
 
 1. Define a new bridge.
 
-```
-virsh net-define /dev/stdin <<EOF
-<network>
-  <name>sunbeam-virbr0</name>
-  <bridge name='sunbeam-virbr0' stp='off'/>
-  <forward mode='nat'/>
-  <ip address='192.168.124.1' netmask='255.255.255.0' />
-</network>
-EOF
-virsh net-autostart sunbeam-virbr0
-virsh net-start sunbeam-virbr0
-```
+   ```bash
+   virsh net-define /dev/stdin <<EOF
+   <network>
+     <name>sunbeam-virbr0</name>
+     <bridge name='sunbeam-virbr0' stp='off'/>
+     <forward mode='nat'/>
+     <ip address='192.168.124.1' netmask='255.255.255.0' />
+   </network>
+   EOF
+   virsh net-autostart sunbeam-virbr0
+   virsh net-start sunbeam-virbr0
+   ```
+
+## Run
+
+1. Clone
+
+   ```bash
+   git clone https://github.com/nobuto-m/quick-microstack
+   cd quick-microstack/
+   ```
+
+2. Run
+
+   ```bash
+   time ./redeploy-microstack.sh
+   ```
