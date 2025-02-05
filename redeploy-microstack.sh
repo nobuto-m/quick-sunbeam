@@ -83,9 +83,8 @@ done
 
 
 time for i in {1..3}; do
-    until ssh_to "${i}" -- cloud-init status --wait --long; do
-        # LP: #2095395
-        [ "$?" = 2 ] && break
+    # LP: #2095395
+    until ssh_to "${i}" -- 'cloud-init status --wait --long || true'; do
         sleep 5
     done
 
