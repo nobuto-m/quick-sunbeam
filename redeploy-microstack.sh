@@ -19,11 +19,16 @@ function ssh_to() {
 }
 
 USE_WORKAROUND=true
-SPECS_PROFILE_DEFAULT=minimal
+SPECS_PROFILE_DEFAULT=minimal-overcommit
 
 specs_profile="$SPECS_PROFILE_DEFAULT"
 if [ "$specs_profile" = minimal ]; then
     CPU=4
+    MEMORY=16384
+    DISK=128
+    EXTRA_DISK=128
+elif [ "$specs_profile" = minimal-overcommit ]; then
+    CPU=16
     MEMORY=16384
     DISK=128
     EXTRA_DISK=128
