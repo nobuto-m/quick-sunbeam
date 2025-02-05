@@ -19,7 +19,7 @@ function ssh_to() {
 }
 
 USE_WORKAROUND=true
-SPECS_PROFILE_DEFAULT=minimal-overcommit
+SPECS_PROFILE_DEFAULT=allowance
 
 specs_profile="$SPECS_PROFILE_DEFAULT"
 if [ "$specs_profile" = minimal ]; then
