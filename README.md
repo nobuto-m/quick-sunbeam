@@ -9,6 +9,11 @@
 - `sunbeam cluster resize` 74m53.682s
 - `sunbeam configure` 3m2.064s
 
+## Install Act
+
+https://nektosact.com/installation/index.html#pre-built-artifacts
+
+
 ## Prep
 
 1. Prepare a jammy or noble host
