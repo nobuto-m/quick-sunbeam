@@ -87,6 +87,15 @@ for i in {1..3}; do
     virsh attach-interface "sunbeam-machine-${i}.localdomain" network sunbeam-virbr0 \
         --model virtio --config
 
+    # LP: #2095570
+    if [ "$USE_WORKAROUND" = true ]; then
+        virsh vol-create-as uvtool --format qcow2 \
+            "sunbeam-machine-${i}-sata1.qcow" "$((EXTRA_DISK * 1024**3))"
+        virsh attach-disk "sunbeam-machine-${i}.localdomain" \
+            "/var/lib/uvtool/libvirt/images/sunbeam-machine-${i}-sata1.qcow" \
+            sda --subdriver qcow2 --targetbus sata --config
+    fi
+
     virsh start "sunbeam-machine-${i}.localdomain"
 done
 
@@ -125,13 +134,10 @@ fi
 #ssh_to 1 -- 'juju model-default --cloud "<petname>" logging-config="<root>=INFO;unit=DEBUG"'
 ssh_to 1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
 
-# LP: #2096923, LP: #2095570
+# LP: #2096923
 if [ "$USE_WORKAROUND" = true ]; then
     ssh_to 1 -- '
         set -ex
-        sunbeam cluster list
-        sudo microceph status
-
         sudo ceph status
         sudo ceph health detail
         sudo ceph osd pool autoscale-status
@@ -155,23 +161,6 @@ ssh_to 3 -t -- \
     time sunbeam cluster join --role control,compute,storage \
         "$(ssh_to 1 -- sunbeam cluster add sunbeam-machine-3.localdomain -f value)" | pv --timer -i 0.08
 
-# LP: #2096923, LP: #2095570
-ssh_to 1 -- '
-    set -ex
-    sunbeam cluster list
-    sudo microceph status
-
-    sudo ceph status
-    sudo ceph health detail
-    sudo ceph osd pool autoscale-status
-'
-
-# LP: #2095570
-if [ "$USE_WORKAROUND" = true ]; then
-    ssh_to 1 -- time juju run -m admin/openstack-machines microceph/1 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
-    ssh_to 1 -- time juju run -m admin/openstack-machines microceph/2 add-osd device-id='/dev/disk/by-path/virtio-pci-0000:06:00.0'
-fi
-
 # LP: #2065469
 if [ "$USE_WORKAROUND" = true ]; then
     time (
@@ -189,9 +178,6 @@ fi
 # LP: #2096923, LP: #2095570
 ssh_to 1 -- '
     set -ex
-    sunbeam cluster list
-    sudo microceph status
-
     sudo ceph status
     sudo ceph health detail
     sudo ceph osd pool autoscale-status
