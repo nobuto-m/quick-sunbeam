@@ -52,6 +52,8 @@ jobs:
           ip -br a
           ip r
           resolvectl --no-pager
+          whoami
+          groups
       # TODO: check if greenfield or brownfield first
       - name: Install prerequisites
         if: ${{ !env.ACT }}
