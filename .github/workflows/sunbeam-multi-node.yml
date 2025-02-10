@@ -1,4 +1,4 @@
-name: Sunbeam Multi-node tutorial
+name: Sunbeam Multi-node
 
 on:
   # Runs on pushes targeting the default branch
@@ -36,7 +36,8 @@ defaults:
     shell: bash -ex {0}
 
 jobs:
-  sunbeam-multi-node:
+  sunbeam-multi-node-tutorial:
+    name: Sunbeam Multi-node Tutorial
     runs-on: [ubuntu-24.04]
     steps:
       - uses: actions/checkout@v4
