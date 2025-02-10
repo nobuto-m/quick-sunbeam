@@ -67,7 +67,9 @@ jobs:
           # use `sudo` instead of `sg libvirt` for simplicity in testing
 
           # SSH
-          ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
+          if [ ! -f ~/.ssh/id_ed25519 ]; then
+            ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
+          fi
           cat <<EOF | tee -a ~/.ssh/config
           Host sunbeam-machine-1
               User ubuntu
