@@ -52,14 +52,15 @@ jobs:
           ip -br a
           ip r
           resolvectl --no-pager
-          whoami
-          groups
+          sudo grep -r . /etc/sudoers*
       # TODO: check if greenfield or brownfield first
       - name: Install prerequisites
         if: ${{ !env.ACT }}
         run: |
           sudo apt-get update
           sudo apt-get install -y uvtool j2cli
+          # make sure the default user is in the libvirt group
+          sudo adduser "$USER" libvirt
       - name: Download a VM image
         if: ${{ !env.ACT }}
         run: |
