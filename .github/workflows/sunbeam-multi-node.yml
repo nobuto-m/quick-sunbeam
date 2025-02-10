@@ -51,13 +51,13 @@ jobs:
           cat /etc/os-release
           ip -br a
           ip r
-          resolvectl
+          resolvectl --no-pager
           env
       - name: Install prerequisites
         run: |
           sudo apt-get update
           sudo apt-get install -y uvtool j2cli
-      - name: Download a noble VM image
+      - name: Download a VM image
         run: |
           # use `sudo` instead of `sg libvirt` for simplicity in testing
           sudo uvt-simplestreams-libvirt sync release=noble arch=amd64
