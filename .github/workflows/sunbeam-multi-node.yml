@@ -61,8 +61,8 @@ jobs:
       - name: Download a VM image
         if: ${{ !env.ACT }}
         run: |
-          sg libvirt 'uvt-simplestreams-libvirt sync release=noble arch=amd64'
-          sg libvirt 'uvt-simplestreams-libvirt query'
+          sudo -g libvirt uvt-simplestreams-libvirt sync release=noble arch=amd64
+          sudo -g libvirt uvt-simplestreams-libvirt query
       - name: Prepare SSH, virtual network bridge, and virtual machines
         if: ${{ !env.ACT }}
         run: |
@@ -81,35 +81,34 @@ jobs:
           EOF
 
           # bridge
-          sg libvirt 'virsh -c qemu:///system net-define /dev/stdin <<EOF
+          sudo -g libvirt virsh -c qemu:///system net-define /dev/stdin <<EOF
           <network>
             <name>sunbeam-virbr0</name>
-            <bridge name="sunbeam-virbr0" stp="off"/>
-            <forward mode="nat"/>
-            <ip address="192.168.124.1" netmask="255.255.255.0" />
+            <bridge name='sunbeam-virbr0' stp='off'/>
+            <forward mode='nat'/>
+            <ip address='192.168.124.1' netmask='255.255.255.0' />
           </network>
           EOF
-          '
-          sg libvirt 'virsh -c qemu:///system net-autostart sunbeam-virbr0'
-          sg libvirt 'virsh -c qemu:///system net-start sunbeam-virbr0'
+          sudo -g libvirt virsh -c qemu:///system net-autostart sunbeam-virbr0
+          sudo -g libvirt virsh -c qemu:///system net-start sunbeam-virbr0
       - name: Clean up previous virtual machines
         if: ${{ env.ACT }}
         run: |
           for i in {1..3}; do
               # FIXME: the requirement of FQDN is not documented well in each tutorial
-              sg libvirt "uvt-kvm destroy 'sunbeam-machine-${i}.localdomain'" || true
+              sudo -g libvirt uvt-kvm destroy "sunbeam-machine-${i}.localdomain" || true
           done
       - name: Prepare virtual machines
         run: |
           for i in {1..3}; do
-              sg libvirt "uvt-kvm create \
+              sudo -g libvirt uvt-kvm create \
                   --machine-type q35 \
-                  --cpu '4' \
+                  --cpu "4" \
                   --host-passthrough \
-                  --memory '$((16 * 1024))' \
-                  --disk '128' \
-                  --ephemeral-disk '128' \
-                  --ephemeral-disk '128' \
+                  --memory "$((16 * 1024))" \
+                  --disk "128" \
+                  --ephemeral-disk "128" \
+                  --ephemeral-disk "128" \
                   --unsafe-caching \
                   --bridge sunbeam-virbr0 \
                   --network-config /dev/stdin \
@@ -133,19 +132,17 @@ jobs:
                   addresses:
                     - 192.168.124.1
           EOF
-          "
           done
 
           # secondary NIC
           for i in {1..3}; do
-              sg libvirt "virsh -c qemu:///system attach-interface 'sunbeam-machine-${i}.localdomain' \
+              sudo -g libvirt virsh -c qemu:///system attach-interface "sunbeam-machine-${i}.localdomain" \
                   network sunbeam-virbr0 \
                   --model virtio --config
-              "
           done
 
           for i in {1..3}; do
-              sg libvirt "virsh -c qemu:///system start 'sunbeam-machine-${i}.localdomain'"
+              sudo -g libvirt virsh -c qemu:///system start "sunbeam-machine-${i}.localdomain"
           done
 
           for i in {1..3}; do
