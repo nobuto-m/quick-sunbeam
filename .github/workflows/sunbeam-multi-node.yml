@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check machine specs
         run: |
-          systemd-detect-virt
+          systemd-detect-virt || true
           lscpu
           free -h
           lsblk
