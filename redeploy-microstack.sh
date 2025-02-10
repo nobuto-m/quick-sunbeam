@@ -49,44 +49,6 @@ elif [ "$specs_profile" = allowance ]; then
 fi
 
 for i in {1..3}; do
-    uvt-kvm create \
-        --machine-type q35 \
-        --cpu "$CPU" \
-        --host-passthrough \
-        --memory "$MEMORY" \
-        --disk "$DISK" \
-        --ephemeral-disk "$EXTRA_DISK" \
-        --ephemeral-disk "$EXTRA_DISK" \
-        --unsafe-caching \
-        --bridge sunbeam-virbr0 \
-        --network-config /dev/stdin \
-        --ssh-public-key-file ~/.ssh/id_ed25519.pub \
-        --no-start \
-        "sunbeam-machine-${i}.localdomain" \
-        release=noble <<EOF
-network:
-  version: 2
-  ethernets:
-    enp1s0:
-      dhcp4: false
-      dhcp6: false
-      accept-ra: false
-      addresses:
-        - 192.168.124.1${i}/24
-      routes:
-        - to: default
-          via: 192.168.124.1
-      nameservers:
-        addresses:
-          - 192.168.124.1
-EOF
-done
-
-
-for i in {1..3}; do
-    virsh attach-interface "sunbeam-machine-${i}.localdomain" network sunbeam-virbr0 \
-        --model virtio --config
-
     # LP: #2095570
     if [ "$USE_WORKAROUND" = true ]; then
         virsh vol-create-as uvtool --format qcow2 \
@@ -96,16 +58,10 @@ for i in {1..3}; do
             sda --subdriver qcow2 --targetbus sata --config
     fi
 
-    virsh start "sunbeam-machine-${i}.localdomain"
 done
 
 
 time for i in {1..3}; do
-    # LP: #2095395
-    until ssh_to "${i}" -- 'cloud-init status --wait --long || true'; do
-        sleep 5
-    done
-
     ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
     if [ "$i" = 1 ]; then
         ssh_to "${i}" -t -- 'sunbeam prepare-node-script --bootstrap | bash -x'

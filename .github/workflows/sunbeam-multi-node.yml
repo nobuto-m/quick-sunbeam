@@ -1,0 +1,144 @@
+name: Sunbeam Multi-node tutorial
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["act"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      workaround:
+        description: 'Apply a workaround'
+        required: true
+        default: true
+        type: boolean
+      hardware_profile:
+        description: 'Specs for each machine'
+        required: true
+        default: minimal
+        type: choice
+        options:
+          - minimal
+          - minimal-with-cpu-overcommit
+          - tutorial
+          - allowance
+
+permissions:
+  contents: read
+
+env:
+  COLUMNS: 160  # default: 80
+  DEBIAN_FRONTEND: noninteractive
+
+defaults:
+  run:
+    shell: bash -ex {0}
+
+jobs:
+  sunbeam-multi-node:
+    runs-on: [ubuntu-24.04]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check machine specs
+        run: |
+          systemd-detect-virt
+          lscpu
+          free -h
+          lsblk
+          lsblk -f
+          cat /etc/os-release
+          ip -br a
+          ip r
+          resolvectl
+          env
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y uvtool j2cli
+      - name: Download a noble VM image
+        run: |
+          # use `sudo` instead of `sg libvirt` for simplicity in testing
+          sudo uvt-simplestreams-libvirt sync release=noble arch=amd64
+          sudo uvt-simplestreams-libvirt query
+      - name: Prepare SSH, virtual network bridge, and virtual machines
+        run: |
+          # use `sudo` instead of `sg libvirt` for simplicity in testing
+
+          # SSH
+          ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
+          cat <<EOF | tee -a ~/.ssh/config
+          Host sunbeam-machine-1
+              User ubuntu
+              Hostname 192.168.124.11
+          Host sunbeam-machine-2
+              User ubuntu
+              Hostname 192.168.124.12
+          Host sunbeam-machine-3
+              User ubuntu
+              Hostname 192.168.124.13
+          EOF
+
+          # bridge
+          sudo virsh net-define /dev/stdin <<EOF
+          <network>
+            <name>sunbeam-virbr0</name>
+            <bridge name='sunbeam-virbr0' stp='off'/>
+            <forward mode='nat'/>
+            <ip address='192.168.124.1' netmask='255.255.255.0' />
+          </network>
+          EOF
+          sudo virsh net-autostart sunbeam-virbr0
+          sudo virsh net-start sunbeam-virbr0
+
+          # VM
+          for i in {1..3}; do
+              sudo uvt-kvm create \
+                  --machine-type q35 \
+                  --cpu "4" \
+                  --host-passthrough \
+                  --memory "$((16 * 1024))" \
+                  --disk "128" \
+                  --ephemeral-disk "128" \
+                  --ephemeral-disk "128" \
+                  --unsafe-caching \
+                  --bridge sunbeam-virbr0 \
+                  --network-config /dev/stdin \
+                  --ssh-public-key-file ~/.ssh/id_ed25519.pub \
+                  --no-start \
+                  sunbeam-machine-${i}.localdomain \
+                  release=noble <<EOF
+          network:
+            version: 2
+            ethernets:
+              enp1s0:
+                dhcp4: false
+                dhcp6: false
+                accept-ra: false
+                addresses:
+                  - 192.168.124.1${i}/24
+                routes:
+                  - to: default
+                    via: 192.168.124.1
+                nameservers:
+                  addresses:
+                    - 192.168.124.1
+          EOF
+          done
+
+          # secondary NIC
+          for i in {1..3}; do
+              sudo virsh attach-interface "sunbeam-machine-${i}.localdomain" \
+                  network sunbeam-virbr0 \
+                  --model virtio --config
+          done
+
+          for i in {1..3}; do
+              sudo virsh start "sunbeam-machine-${i}.localdomain"
+          done
+
+          for i in {1..3}; do
+              until ssh -oStrictHostKeyChecking=no "sunbeam-machine-${i}" -- 'cloud-init status --wait; ip -br a; lsblk'; do
+                  sleep 5
+              done
+          done
