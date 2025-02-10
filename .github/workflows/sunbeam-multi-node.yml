@@ -91,7 +91,13 @@ jobs:
           EOF
           sudo virsh net-autostart sunbeam-virbr0
           sudo virsh net-start sunbeam-virbr0
-
+      - name: Clean up previous virtual machines
+        if: ${{ env.ACT }}
+        run: |
+          for i in {1..3}; do
+              # FIXME: the requirement of FQDN is not documented well in each tutorial
+              uvt-kvm destroy "sunbeam-machine-${i}.localdomain" || true
+          done
       - name: Prepare virtual machines
         run: |
           # use `sudo` instead of `sg libvirt` for simplicity in testing
