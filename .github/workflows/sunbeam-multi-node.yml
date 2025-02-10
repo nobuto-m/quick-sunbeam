@@ -52,7 +52,6 @@ jobs:
           ip -br a
           ip r
           resolvectl --no-pager
-          sudo grep -r . /etc/sudoers*
       # TODO: check if greenfield or brownfield first
       - name: Install prerequisites
         if: ${{ !env.ACT }}
