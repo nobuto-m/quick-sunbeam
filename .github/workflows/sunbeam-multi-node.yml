@@ -1,14 +1,12 @@
 name: Sunbeam Multi-node
 
 on:
-  # Runs on pushes targeting the default branch
   #push:
   #  branches: ["act"]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
-      workaround:
+      use_workaround:
         description: 'Apply a workaround'
         required: true
         default: true
@@ -16,7 +14,7 @@ on:
       hardware_profile:
         description: 'Specs for each machine'
         required: true
-        default: minimal
+        default: tutorial
         type: choice
         options:
           - minimal
@@ -30,13 +28,15 @@ permissions:
 env:
   COLUMNS: 160  # default: 80
   DEBIAN_FRONTEND: noninteractive
-  USE_WORKAROUND: true
+  USE_WORKAROUND: ${{ inputs.use_workaround || true }}
+  HARDWARE_PROFILE: ${{ inputs.hardware_profile || 'tutorial' }}
 
 defaults:
   run:
     shell: bash -ex {0}
 
 jobs:
+  # TODO: add a lint job
   sunbeam-multi-node-tutorial:
     name: Sunbeam Multi-node Tutorial
     runs-on: [ubuntu-24.04]
@@ -53,13 +53,55 @@ jobs:
           ip -br a
           ip r
           resolvectl --no-pager
+      - name: Set env
+        run: |
+          if [ "$USE_WORKAROUND" = true ]; then
+              echo '::warning::Not a clean run. Some workarounds are used.'
+          fi
+          case "$HARDWARE_PROFILE" in
+              minimal)
+                  echo CPU=4             >> "$GITHUB_ENV"
+                  echo MEMORY=20         >> "$GITHUB_ENV"
+                  echo DISK=128          >> "$GITHUB_ENV"
+                  echo EXTRA_DISK=128    >> "$GITHUB_ENV"
+              ;;
+              minimal-with-cpu-overcommit)
+                  echo CPU=16            >> "$GITHUB_ENV"
+                  echo MEMORY=20         >> "$GITHUB_ENV"
+                  echo DISK=128          >> "$GITHUB_ENV"
+                  echo EXTRA_DISK=128    >> "$GITHUB_ENV"
+              ;;
+              tutorial)
+                  # https://canonical.com/microstack/docs/multi-node
+                  echo CPU=4             >> "$GITHUB_ENV"
+                  echo MEMORY=32         >> "$GITHUB_ENV"
+                  echo DISK=200          >> "$GITHUB_ENV"
+                  echo EXTRA_DISK=200    >> "$GITHUB_ENV"
+              ;;
+              allowance)
+                  echo CPU=16            >> "$GITHUB_ENV"
+                  echo MEMORY=64         >> "$GITHUB_ENV"
+                  echo DISK=512          >> "$GITHUB_ENV"
+                  echo EXTRA_DISK=512    >> "$GITHUB_ENV"
+              ;;
+              *)
+                  echo '::error:: Invalid hardware profile'
+                  exit 1
+              ;;
+          esac
+          # FIXME: use $GITHUB_STEP_SUMMARY
+          source "$GITHUB_ENV"
+          echo "::notice::Selected hardware profile: ${HARDWARE_PROFILE}.%0ACPU: ${CPU}%0AMEMORY: ${MEMORY}%0ADISK: ${DISK}%0AEXTRA_DISK: ${EXTRA_DISK}"
       # TODO: check if greenfield or brownfield first
       - name: Install prerequisites
         if: ${{ !env.ACT }}
         run: |
           sudo apt-get update
           sudo apt-get install -y uvtool j2cli
-          # make sure the default user is in the libvirt group
+          # make sure the default user is in the libvirt group.
+          # the default "runner" user in Github workflow is not in the
+          # sudo group so it's not automatically added into the libvirt
+          # group.
           sudo adduser "$USER" libvirt
       - name: Download a VM image
         if: ${{ !env.ACT }}
