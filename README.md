@@ -13,6 +13,23 @@
 
 https://nektosact.com/installation/index.html#pre-built-artifacts
 
+and Node.js, e.g.
+
+```
+sudo snap install --classic node
+```
+
+## Run
+
+```
+act -P ubuntu-24.04=-self-hosted --artifact-server-path .artifacts
+```
+
+Or
+```
+act -P ubuntu-24.04=-self-hosted --artifact-server-path .artifacts \
+    --input hardware_profile=minimal-with-cpu-overcommit
+```
 
 ## Prep
 
