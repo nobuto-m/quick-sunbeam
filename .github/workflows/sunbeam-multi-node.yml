@@ -28,7 +28,11 @@ permissions:
 env:
   COLUMNS: 160  # default: 80
   DEBIAN_FRONTEND: noninteractive
-  USE_WORKAROUND: ${{ inputs.use_workaround || true }}
+  # github.event.inputs.use_workaround returns a string
+  # - non-empty 'true' or 'false' from the workflow_dispatch
+  # - '' from the on-push event
+  # set the default value as true only when there is no input
+  USE_WORKAROUND: ${{ github.event.inputs.use_workaround || true }}
   HARDWARE_PROFILE: ${{ inputs.hardware_profile || 'tutorial' }}
 
 defaults:
