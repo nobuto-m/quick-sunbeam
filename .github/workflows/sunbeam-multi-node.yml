@@ -203,6 +203,15 @@ jobs:
                   --model virtio --config
           done
 
+          # LP: #2095570
+          if [ "$USE_WORKAROUND" = true ]; then
+              virsh vol-create-as uvtool --format qcow2 \
+                  "sunbeam-machine-${i}-sata1.qcow" "$((EXTRA_DISK * 1024**3))"
+              virsh attach-disk "sunbeam-machine-${i}.localdomain" \
+                  "/var/lib/uvtool/libvirt/images/sunbeam-machine-${i}-sata1.qcow" \
+                  sda --subdriver qcow2 --targetbus sata --config
+          fi
+
           for i in {1..3}; do
               sudo -g libvirt virsh -c qemu:///system start "sunbeam-machine-${i}.localdomain"
           done
