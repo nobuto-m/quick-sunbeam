@@ -88,7 +88,7 @@ core:
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
         {% if not use_workaround %}
         osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
-        {% elif %}
+        {% else %}
         # LP: #2095570
         osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
         {% endif %}
@@ -97,7 +97,7 @@ core:
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
         {% if not use_workaround %}
         osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
-        {% elif %}
+        {% else %}
         # LP: #2095570
         osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
         {% endif %}
@@ -106,7 +106,7 @@ core:
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
         {% if not use_workaround %}
         osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
-        {% elif %}
+        {% else %}
         # LP: #2095570
         osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
         {% endif %}
