@@ -42,17 +42,6 @@ jobs:
     runs-on: [ubuntu-24.04]
     steps:
       - uses: actions/checkout@v4
-      - name: Check machine specs
-        run: |
-          systemd-detect-virt || true
-          lscpu
-          free -h
-          lsblk
-          lsblk -f
-          cat /etc/os-release
-          ip -br a
-          ip r
-          resolvectl --no-pager
       - name: Set env
         run: |
           if [ "$USE_WORKAROUND" = true ]; then
@@ -92,6 +81,17 @@ jobs:
           # FIXME: use $GITHUB_STEP_SUMMARY
           source "$GITHUB_ENV"
           echo "::notice::Selected hardware profile: ${HARDWARE_PROFILE}.%0ACPU: ${CPU}%0AMEMORY: ${MEMORY}%0ADISK: ${DISK}%0AEXTRA_DISK: ${EXTRA_DISK}"
+      - name: Check machine specs
+        run: |
+          systemd-detect-virt || true
+          cat /etc/os-release
+          lscpu
+          free -h
+          lsblk
+          lsblk -f
+          ip -br a
+          ip r
+          resolvectl --no-pager
       # TODO: check if greenfield or brownfield first
       - name: Install prerequisites
         if: ${{ !env.ACT }}
