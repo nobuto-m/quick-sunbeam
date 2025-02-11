@@ -55,6 +55,7 @@ jobs:
   sunbeam-multi-node-tutorial:
     name: Sunbeam Multi-node Tutorial
     runs-on: ubuntu-24.04
+    needs: actionlint
     steps:
       - uses: actions/checkout@v4
       - name: Set env
