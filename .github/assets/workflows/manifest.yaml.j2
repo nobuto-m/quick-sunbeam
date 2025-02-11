@@ -189,7 +189,8 @@ core:
         config:
           snap-channel: squid/edge
       k8s:
-        channel: 1.32/beta
+        # LP: #2097888
+        channel: 1.32/stable
         revision: null
         config:
           {% if dockerhub_mirror_host %}
