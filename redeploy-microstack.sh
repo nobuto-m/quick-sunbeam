@@ -15,46 +15,6 @@ function ssh_to() {
     ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -l ubuntu "${ip}" "$@"
 }
 
-USE_WORKAROUND=true
-SPECS_PROFILE_DEFAULT=minimal-overcommit
-
-specs_profile="$SPECS_PROFILE_DEFAULT"
-if [ "$specs_profile" = minimal ]; then
-    CPU=4
-    MEMORY=16384
-    DISK=128
-    EXTRA_DISK=128
-elif [ "$specs_profile" = minimal-overcommit ]; then
-    CPU=16
-    MEMORY=16384
-    DISK=128
-    EXTRA_DISK=128
-elif [ "$specs_profile" = tutorial ]; then
-    # https://canonical.com/microstack/docs/multi-node
-    CPU=4
-    MEMORY=32768
-    DISK=200
-    EXTRA_DISK=200
-elif [ "$specs_profile" = allowance ]; then
-    CPU=16
-    MEMORY=65536
-    DISK=512
-    EXTRA_DISK=512
-fi
-
-for i in {1..3}; do
-    # LP: #2095570
-    if [ "$USE_WORKAROUND" = true ]; then
-        virsh vol-create-as uvtool --format qcow2 \
-            "sunbeam-machine-${i}-sata1.qcow" "$((EXTRA_DISK * 1024**3))"
-        virsh attach-disk "sunbeam-machine-${i}.localdomain" \
-            "/var/lib/uvtool/libvirt/images/sunbeam-machine-${i}-sata1.qcow" \
-            sda --subdriver qcow2 --targetbus sata --config
-    fi
-
-done
-
-
 time for i in {1..3}; do
     ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
     if [ "$i" = 1 ]; then
