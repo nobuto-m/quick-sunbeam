@@ -106,7 +106,7 @@ jobs:
           for i in {1..3}; do
               sudo -g libvirt uvt-kvm create \
                   --machine-type q35 \
-                  --cpu "4" \
+                  --cpu "16" \
                   --host-passthrough \
                   --memory "$((16 * 1024))" \
                   --disk "128" \
@@ -165,7 +165,10 @@ jobs:
           ssh sunbeam-machine-1 -- 'sunbeam prepare-node-script --bootstrap | bash -x'
       - name: Sunbeam - cluster bootstrap
         run: |
-          ssh sunbeam-machine-1 -- sunbeam cluster bootstrap --manifest manifest.yaml \
+          # -t is necessary to see some progress, LP:#2097451
+          # Also, without -t, somehow add-k8s command gets stuck in act env
+          # although it doesn't happen in GitHub runner.
+          ssh sunbeam-machine-1 -t -- sunbeam cluster bootstrap --manifest manifest.yaml \
               --role control,compute,storage
       - name: Workaround - destroy localhost controller
         if: ${{ env.USE_WORKAROUND }}
