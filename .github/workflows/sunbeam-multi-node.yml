@@ -95,6 +95,7 @@ jobs:
               ;;
           esac
           # FIXME: use $GITHUB_STEP_SUMMARY
+          # shellcheck source=/dev/null
           source "$GITHUB_ENV"
           echo "::notice::Selected hardware profile: ${HARDWARE_PROFILE}.%0ACPU: ${CPU}%0AMEMORY: ${MEMORY}%0ADISK: ${DISK}%0AEXTRA_DISK: ${EXTRA_DISK}"
       - name: Check machine specs
