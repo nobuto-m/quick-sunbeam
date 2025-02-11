@@ -45,13 +45,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download actionlint
+        if: ${{ !env.ACT }}
         id: get_actionlint
         run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
         shell: bash
       - name: Check workflow files
-        run: ${{ steps.get_actionlint.outputs.executable }} -color
+        run: ${{ steps.get_actionlint.outputs.executable || 'actionlint' }} -color
         shell: bash
-  # TODO: add a lint job
   sunbeam-multi-node-tutorial:
     name: Sunbeam Multi-node Tutorial
     runs-on: ubuntu-24.04

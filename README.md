@@ -19,6 +19,11 @@ and Node.js, e.g.
 sudo snap install --classic node
 ```
 
+Install actionlint too.
+
+https://github.com/rhysd/actionlint/blob/main/docs/install.md#download-script
+
+
 ## Run
 
 ```
