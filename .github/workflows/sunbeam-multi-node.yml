@@ -2,8 +2,8 @@ name: Sunbeam Multi-node
 
 on:
   # Runs on pushes targeting the default branch
-  push:
-    branches: ["act"]
+  #push:
+  #  branches: ["act"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -30,6 +30,7 @@ permissions:
 env:
   COLUMNS: 160  # default: 80
   DEBIAN_FRONTEND: noninteractive
+  USE_WORKAROUND: true
 
 defaults:
   run:
@@ -152,3 +153,27 @@ jobs:
                   sleep 5
               done
           done
+      - name: Sunbeam - Prepare manifest file
+        run: |
+          j2 -f yaml -o ./manifest.yaml .github/assets/workflows/manifest.yaml.j2 - <<EOF
+          dockerhub_mirror_host: "${DOCKERHUB_MIRROR#https://}"
+          EOF
+          scp ./manifest.yaml sunbeam-machine-1:
+      - name: Sunbeam - prepare-node-script --bootstrap
+        run: |
+          ssh sunbeam-machine-1 -- sudo snap install openstack --channel 2024.1/edge
+          ssh sunbeam-machine-1 -- 'sunbeam prepare-node-script --bootstrap | bash -x'
+      - name: Sunbeam - cluster bootstrap
+        run: |
+          ssh sunbeam-machine-1 -- sunbeam cluster bootstrap --manifest manifest.yaml \
+              --role control,compute,storage
+      - name: Workaround - destroy localhost controller
+        if: ${{ env.USE_WORKAROUND }}
+        run: |
+          # LP: #2095487
+          ssh sunbeam-machine-1 -- juju destroy-controller localhost-localhost --no-prompt
+      - name: Workaround - enable debug logging
+        if: ${{ env.USE_WORKAROUND }}
+        run: |
+          # LP: #2065490
+          ssh sunbeam-machine-1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'

@@ -58,7 +58,7 @@ done
 time for i in {1..3}; do
     ssh_to "${i}" -t -- sudo snap install openstack --channel 2024.1/edge
     if [ "$i" = 1 ]; then
-        ssh_to "${i}" -t -- 'sunbeam prepare-node-script --bootstrap | bash -x'
+
     else
         ssh_to "${i}" -t -- 'sunbeam prepare-node-script | bash -x'
     fi
@@ -67,22 +67,6 @@ time for i in {1..3}; do
     # TODO: make it permanent across reboots
     #ssh_to "${i}" -- sudo ip link set enp9s0 up
 done
-
-ssh_to 1 -- 'cat - > manifest.yaml' < manifest.yaml
-
-ssh_to 1 -t -- \
-    time sunbeam cluster bootstrap --manifest manifest.yaml \
-        --role control,compute,storage | pv --timer -i 0.08
-
-# LP: #2095487
-if [ "$USE_WORKAROUND" = true ]; then
-    ssh_to 1 -- \
-        time juju destroy-controller localhost-localhost --no-prompt
-fi
-
-# LP: #2065490
-#ssh_to 1 -- 'juju model-default --cloud "<petname>" logging-config="<root>=INFO;unit=DEBUG"'
-ssh_to 1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
 
 # LP: #2096923
 if [ "$USE_WORKAROUND" = true ]; then
