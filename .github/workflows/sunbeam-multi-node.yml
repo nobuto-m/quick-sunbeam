@@ -165,12 +165,12 @@ jobs:
           for i in {1..3}; do
               sudo -g libvirt uvt-kvm create \
                   --machine-type q35 \
-                  --cpu "16" \
+                  --cpu "$CPU" \
                   --host-passthrough \
-                  --memory "$((16 * 1024))" \
-                  --disk "128" \
-                  --ephemeral-disk "128" \
-                  --ephemeral-disk "128" \
+                  --memory "$((MEMORY * 1024))" \
+                  --disk "$DISK" \
+                  --ephemeral-disk "$EXTRA_DISK" \
+                  --ephemeral-disk "$EXTRA_DISK" \
                   --unsafe-caching \
                   --bridge sunbeam-virbr0 \
                   --network-config /dev/stdin \
