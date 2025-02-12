@@ -22,6 +22,14 @@ multi-node:
 		--artifact-server-path .artifacts \
 		-W .github/workflows/multi-node.yml
 
+.PHONY: multi-node
+multi-node:
+	/usr/bin/time -f 'real\t%E' act \
+		-P ubuntu-latest=-self-hosted \
+		-P ubuntu-24.04=-self-hosted \
+		--artifact-server-path .artifacts \
+		-W .github/workflows/multi-node-ha.yml
+
 .PHONY: destroy-all-sunbeam-machines
 destroy-all-sunbeam-machines:
 	@echo 'Review the list of machines and pass it to bash. e.g.' >&2
