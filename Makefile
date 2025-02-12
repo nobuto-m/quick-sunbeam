@@ -2,6 +2,10 @@
 default:
 	@echo 'No default target'
 
+.PHONY: prerequisites
+prerequisites:
+	@echo prerequisites
+
 .PHONY: single-node-guided
 single-node-guided:
 	/usr/bin/time -f 'real\t%E' act \
