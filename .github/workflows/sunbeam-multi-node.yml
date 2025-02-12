@@ -252,7 +252,7 @@ jobs:
         run: |
           # LP: #2065490
           ssh sunbeam-machine-1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
-      - mame: Sunbeam - Create registration tokens for the second and the third machines
+      - name: Sunbeam - Create registration tokens for the second and the third machines
         run: |
           for i in {2..3}; do
               ssh sunbeam-machine-1 -t -- sunbeam cluster add "sunbeam-machine-${i}.localdomain" --output "sunbeam-machine-${i}.asc"
