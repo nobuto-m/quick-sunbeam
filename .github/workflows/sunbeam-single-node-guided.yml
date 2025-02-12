@@ -148,7 +148,6 @@ jobs:
                   addresses:
                     - 192.168.124.1
           EOF
-          done
 
           # secondary NIC
           sudo -g libvirt virsh -c qemu:///system attach-interface sunbeam-machine-single-guided.localdomain \
