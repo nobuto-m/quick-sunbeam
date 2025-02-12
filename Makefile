@@ -16,6 +16,7 @@ multi-node:
 
 .PHONY: destroy-all-sunbeam-machines
 destroy-all-sunbeam-machines:
-	@echo 'Review the list of machines and pass it to bash' >&2
-	@echo 'e.g. make destroy-all-sunbeam-machines | bash' >&2
+	@echo 'Review the list of machines and pass it to bash. e.g.' >&2
+	@echo 'make destroy-all-sunbeam-machines | bash -x' >&2
+	@echo >&2
 	@uvt-kvm list | grep ^sunbeam- | xargs --no-run-if-empty -L1 echo uvt-kvm destroy
