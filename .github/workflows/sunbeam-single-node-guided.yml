@@ -96,7 +96,7 @@ jobs:
           # SSH
           ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
           cat <<EOF | tee -a ~/.ssh/config
-          Host sunbeam-machine-single-node-guided
+          Host sunbeam-single-node-guided
               User ubuntu
               Hostname 192.168.124.6
           EOF
@@ -116,7 +116,7 @@ jobs:
         if: ${{ env.ACT }}
         run: |
           # FIXME: the requirement of FQDN is not documented well in each tutorial
-          sudo -g libvirt uvt-kvm destroy sunbeam-machine-single-node-guided.localdomain || true
+          sudo -g libvirt uvt-kvm destroy sunbeam-single-node-guided.localdomain || true
       - name: Prepare a virtual machine
         run: |
           sudo -g libvirt uvt-kvm create \
@@ -130,7 +130,7 @@ jobs:
               --network-config /dev/stdin \
               --ssh-public-key-file ~/.ssh/id_ed25519.pub \
               --no-start \
-              sunbeam-machine-single-node-guided.localdomain \
+              sunbeam-single-node-guided.localdomain \
               release=noble <<EOF
           network:
             version: 2
@@ -150,13 +150,13 @@ jobs:
           EOF
 
           # secondary NIC
-          sudo -g libvirt virsh -c qemu:///system attach-interface sunbeam-machine-single-node-guided.localdomain \
+          sudo -g libvirt virsh -c qemu:///system attach-interface sunbeam-single-node-guided.localdomain \
               network sunbeam-virbr0 \
               --model virtio --config
 
-          sudo -g libvirt virsh -c qemu:///system start sunbeam-machine-single-node-guided.localdomain
+          sudo -g libvirt virsh -c qemu:///system start sunbeam-single-node-guided.localdomain
 
-          until ssh -oStrictHostKeyChecking=no sunbeam-machine-single-node-guided -- 'cloud-init status --wait; ip -br a; lsblk'; do
+          until ssh -oStrictHostKeyChecking=no sunbeam-single-node-guided -- 'cloud-init status --wait; ip -br a; lsblk'; do
               sleep 5
           done
       - name: Sunbeam - Prepare manifest file
@@ -165,38 +165,38 @@ jobs:
           use_workaround: $USE_WORKAROUND
           dockerhub_mirror_host: "${DOCKERHUB_MIRROR#http*://}"
           EOF
-          scp ./manifest.yaml sunbeam-machine-single-node-guided:
+          scp ./manifest.yaml sunbeam-single-node-guided:
       - name: Sunbeam - Prepare the machine
         run: |
-          ssh sunbeam-machine-single-node-guided -- sudo snap install openstack --channel 2024.1/edge
-          ssh sunbeam-machine-single-node-guided -- 'sunbeam prepare-node-script --bootstrap | bash -x'
+          ssh sunbeam-single-node-guided -- sudo snap install openstack --channel 2024.1/edge
+          ssh sunbeam-single-node-guided -- 'sunbeam prepare-node-script --bootstrap | bash -x'
       - name: Sunbeam - Bootstrap the cloud
         run: |
           # -t is necessary to see some progress in act env, LP:#2097451
           # Also, without -t, somehow add-k8s command gets stuck in act env
           # although it doesn't happen in GitHub runner.
           # without -tt, GitHub runner's log should be quiet.
-          ssh sunbeam-machine-single-node-guided -t -- sunbeam cluster bootstrap --manifest manifest.yaml
+          ssh sunbeam-single-node-guided -t -- sunbeam cluster bootstrap --manifest manifest.yaml
       - name: Workaround - destroy localhost controller
         run: |
           # LP: #2095487
-          ssh sunbeam-machine-single-node-guided -- juju destroy-controller localhost-localhost --no-prompt
+          ssh sunbeam-single-node-guided -- juju destroy-controller localhost-localhost --no-prompt
       - name: Workaround - enable debug logging
         run: |
           # LP: #2065490
-          ssh sunbeam-machine-single-node-guided -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
+          ssh sunbeam-single-node-guided -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
       - name: Sunbeam - Configure the cloud
         run: |
-          ssh sunbeam-machine-single-node-guided -t -- sunbeam configure --openrc demo-openrc
+          ssh sunbeam-single-node-guided -t -- sunbeam configure --openrc demo-openrc
       - name: Sunbeam - Launch a VM
         run: |
-          ssh sunbeam-machine-single-node-guided -t -- sunbeam launch ubuntu --name test
+          ssh sunbeam-single-node-guided -t -- sunbeam launch ubuntu --name test
       - name: Sunbeam - Connect to the VM
         run: |
           # The cloud-init process inside the VM takes ~2 minutes to bring up the
           # SSH service after the VM gets ACTIVE in OpenStack
           sleep 300
-          ssh sunbeam-machine-single-node-guided -- '
+          ssh sunbeam-single-node-guided -- '
               set -ex
               source demo-openrc
               demo_floating_ip="$(openstack floating ip list -c Floating\ IP\ Address -f value | head -n1)"
