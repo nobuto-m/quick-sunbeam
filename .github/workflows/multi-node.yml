@@ -51,8 +51,8 @@ jobs:
         run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
       - name: Check workflow files
         run: ${{ steps.get_actionlint.outputs.executable || 'actionlint' }} -color
-  sunbeam-multi-node-tutorial:
-    name: Sunbeam Multi-node Tutorial
+  multi-node-tutorial:
+    name: Multi-node Tutorial
     runs-on: ubuntu-24.04
     needs: actionlint
     steps:

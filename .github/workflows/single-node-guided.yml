@@ -38,8 +38,8 @@ jobs:
         run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
       - name: Check workflow files
         run: ${{ steps.get_actionlint.outputs.executable || 'actionlint' }} -color
-  sunbeam-single-node-guided-tutorial:
-    name: Sunbeam Single-node Guided Tutorial
+  single-node-guided-tutorial:
+    name: Single-node Guided Tutorial
     runs-on: ubuntu-24.04
     needs: actionlint
     steps:
