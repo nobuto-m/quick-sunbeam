@@ -140,10 +140,10 @@ jobs:
                 dhcp6: false
                 accept-ra: false
                 addresses:
-                  - 192.168.124.1${i}/24
+                  - 192.168.124.6/24
                 routes:
                   - to: default
-                    via: 192.168.124.6
+                    via: 192.168.124.1
                 nameservers:
                   addresses:
                     - 192.168.124.1
