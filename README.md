@@ -5,6 +5,12 @@ system like a ephemeral test env provisioned by MAAS.
 
 ## Time
 
+### Single-node Guided
+
+~39 min total
+
+### Multi-node
+
 ~173 min total
 
 - `prepare-node-script --bootstrap` + 2x `sunbeam prepare-node-script` 7m16.604s
