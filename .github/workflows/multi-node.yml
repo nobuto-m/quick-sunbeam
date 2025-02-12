@@ -79,7 +79,7 @@ jobs:
                   # https://canonical.com/microstack/docs/multi-node
                   echo CPU=4             >> "$GITHUB_ENV"
                   echo MEMORY=32         >> "$GITHUB_ENV"
-                  echo DISK=200          >> "$GITHUB_ENV"
+                  echo DISK=250          >> "$GITHUB_ENV"
                   echo EXTRA_DISK=200    >> "$GITHUB_ENV"
               ;;
               allowance)

@@ -51,7 +51,6 @@ jobs:
                   # https://canonical.com/microstack/docs/single-node-guided
                   echo CPU=4             >> "$GITHUB_ENV"
                   echo MEMORY=16         >> "$GITHUB_ENV"
-                  # LP: #2098076
                   echo DISK=100          >> "$GITHUB_ENV"
               ;;
               *)
