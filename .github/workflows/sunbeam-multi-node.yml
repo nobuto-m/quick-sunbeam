@@ -49,10 +49,8 @@ jobs:
         if: ${{ !env.ACT }}
         id: get_actionlint
         run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
-        shell: bash
       - name: Check workflow files
         run: ${{ steps.get_actionlint.outputs.executable || 'actionlint' }} -color
-        shell: bash
   sunbeam-multi-node-tutorial:
     name: Sunbeam Multi-node Tutorial
     runs-on: ubuntu-24.04
