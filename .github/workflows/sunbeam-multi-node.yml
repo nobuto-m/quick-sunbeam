@@ -230,15 +230,16 @@ jobs:
           dockerhub_mirror_host: "${DOCKERHUB_MIRROR#http*://}"
           EOF
           scp ./manifest.yaml sunbeam-machine-1:
-      - name: Sunbeam - prepare-node-script --bootstrap
+      - name: Sunbeam - Prepare the first machine
         run: |
           ssh sunbeam-machine-1 -- sudo snap install openstack --channel 2024.1/edge
           ssh sunbeam-machine-1 -- 'sunbeam prepare-node-script --bootstrap | bash -x'
-      - name: Sunbeam - cluster bootstrap
+      - name: Sunbeam - Bootstrap the cloud
         run: |
-          # -t is necessary to see some progress, LP:#2097451
+          # -t is necessary to see some progress in act env, LP:#2097451
           # Also, without -t, somehow add-k8s command gets stuck in act env
           # although it doesn't happen in GitHub runner.
+          # without -tt, GitHub runner's log should be quiet.
           ssh sunbeam-machine-1 -t -- sunbeam cluster bootstrap --manifest manifest.yaml \
               --role control,compute,storage
       - name: Workaround - destroy localhost controller
@@ -251,6 +252,42 @@ jobs:
         run: |
           # LP: #2065490
           ssh sunbeam-machine-1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
+      - mame: Sunbeam - Create registration tokens for the second and the third machines
+        run: |
+          for i in {2..3}; do
+              ssh sunbeam-machine-1 -t -- sunbeam cluster add "sunbeam-machine-${i}.localdomain" --output "sunbeam-machine-${i}.asc"
+          done
+      - name: Sunbeam - Prepare the second and the third machines
+        run: |
+          for i in {2..3}; do
+              ssh "sunbeam-machine-${i}" -- sudo snap install openstack --channel 2024.1/edge
+              ssh "sunbeam-machine-${i}" -- 'sunbeam prepare-node-script | bash -x'
+          done
+      - name: Sunbeam - Add the second and the third machines
+        run: |
+          for i in {2..3}; do
+              cat "sunbeam-machine-${i}.asc" | ssh "sunbeam-machine-${i}" -t -- sunbeam cluster join --role control,compute,storage -
+          done
+      - name: Sunbeam - Resize the control plane
+        run: |
+          ssh sunbeam-machine-1 -t -- sunbeam cluster resize
+      - name: Sunbeam - Configure the cloud
+        run: |
+          ssh sunbeam-machine-1 -t -- sunbeam configure --openrc demo-openrc
+      - name: Sunbeam - Launch a VM
+        run: |
+          ssh sunbeam-machine-1 -t -- sunbeam launch ubuntu --name test
+      - name: Sunbeam - Connect to the VM
+        run: |
+          # The cloud-init process inside the VM takes ~2 minutes to bring up the
+          # SSH service after the VM gets ACTIVE in OpenStack
+          sleep 300
+          ssh sunbeam-machine-1 -- '
+              set -ex
+              source demo-openrc
+              demo_floating_ip="$(openstack floating ip list -c Floating\ IP\ Address -f value | head -n1)"
+              ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam "ubuntu@${demo_floating_ip}" true
+          '
       - uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
