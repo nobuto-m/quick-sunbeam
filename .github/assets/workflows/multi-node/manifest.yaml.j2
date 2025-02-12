@@ -25,6 +25,8 @@ core:
     k8s-addons:
       # OpenStack APIs IP ranges
       # OpenStack services are exposed via virtual IP addresses. This range should contain at least ten addresses and must not overlap with external network CIDR. To access APIs from a remote host, the range must reside within the subnet that the primary network interface is on.
+      # On multi-node deployments, the range must be addressable from all nodes in the deployment.
+      # LP: #2098077
       loadbalancer: 192.168.124.81-192.168.124.90
     user:
       # Populate OpenStack cloud with demo user, default images, flavors etc
@@ -48,7 +50,7 @@ core:
       # Local or remote access to VMs
       # VMs will be accessible only from the local host or only from remote hosts. For remote, you must specify the network interface dedicated to VM access traffic. The intended remote hosts must have connectivity to this interface.
       remote_access_location: remote
-    # # Local Access
+    # Local Access
     # external_network:
     #   # External network - arbitrary but must not be in use
     #   # Network from which the instances will be remotely accessed (outside OpenStack). Takes the form of a CIDR block.
@@ -80,7 +82,7 @@ core:
       network_type: flat
       # External network's segmentation id
       # Vlan ID the external network is on.
-      #segmentation_id: 0
+      # segmentation_id: 0
     # MicroCeph config
     microceph_config:
       sunbeam-machine-1.localdomain:
@@ -189,11 +191,11 @@ core:
         config:
           snap-channel: squid/edge
       k8s:
-        # LP: #2097888
         channel: 1.32/stable
         revision: null
         config:
           {% if dockerhub_mirror_host %}
+          # https://github.com/canonical/k8s-operator/issues/312
           containerd-custom-registries: |
             [{"url": "https://docker.io", "host": "{{ dockerhub_mirror_host }}"}]
           {% endif %}
