@@ -119,19 +119,19 @@ jobs:
           sudo -g libvirt uvt-kvm destroy sunbeam-machine-single-guided.localdomain || true
       - name: Prepare a virtual machine
         run: |
-              sudo -g libvirt uvt-kvm create \
-                  --machine-type q35 \
-                  --cpu "$CPU" \
-                  --host-passthrough \
-                  --memory "$((MEMORY * 1024))" \
-                  --disk "$DISK" \
-                  --unsafe-caching \
-                  --bridge sunbeam-virbr0 \
-                  --network-config /dev/stdin \
-                  --ssh-public-key-file ~/.ssh/id_ed25519.pub \
-                  --no-start \
-                  single-node-guided.localdomain \
-                  release=noble <<EOF
+          sudo -g libvirt uvt-kvm create \
+              --machine-type q35 \
+              --cpu "$CPU" \
+              --host-passthrough \
+              --memory "$((MEMORY * 1024))" \
+              --disk "$DISK" \
+              --unsafe-caching \
+              --bridge sunbeam-virbr0 \
+              --network-config /dev/stdin \
+              --ssh-public-key-file ~/.ssh/id_ed25519.pub \
+              --no-start \
+              single-node-guided.localdomain \
+              release=noble <<EOF
           network:
             version: 2
             ethernets:
