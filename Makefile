@@ -22,8 +22,8 @@ multi-node:
 		--artifact-server-path .artifacts \
 		-W .github/workflows/multi-node.yml
 
-.PHONY: multi-node
-multi-node:
+.PHONY: multi-node-ha
+multi-node-ha:
 	/usr/bin/time -f 'real\t%E' act \
 		-P ubuntu-latest=-self-hosted \
 		-P ubuntu-24.04=-self-hosted \
