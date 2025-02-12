@@ -1,0 +1,210 @@
+name: Sunbeam Single-node guided
+
+on:
+  #push:
+  #  branches: ["act"]
+
+  workflow_dispatch:
+    inputs:
+      hardware_profile:
+        description: 'Specs for each machine'
+        required: true
+        default: tutorial
+        type: choice
+        options:
+          - tutorial
+
+permissions:
+  contents: read
+
+env:
+  COLUMNS: 160  # default: 80
+  DEBIAN_FRONTEND: noninteractive
+  HARDWARE_PROFILE: ${{ inputs.hardware_profile || 'tutorial' }}
+
+defaults:
+  run:
+    # act doesn't show a good summary of elapsed time of each step
+    shell: /usr/bin/time -f 'real\t%E' /bin/bash -ex {0}
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download actionlint
+        if: ${{ !env.ACT }}
+        id: get_actionlint
+        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+      - name: Check workflow files
+        run: ${{ steps.get_actionlint.outputs.executable || 'actionlint' }} -color
+  sunbeam-single-node-guided-tutorial:
+    name: Sunbeam Single-node Guided Tutorial
+    runs-on: ubuntu-24.04
+    needs: actionlint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set env
+        run: |
+          case "$HARDWARE_PROFILE" in
+              tutorial)
+                  # https://canonical.com/microstack/docs/single-node-guided
+                  echo CPU=4             >> "$GITHUB_ENV"
+                  echo MEMORY=16         >> "$GITHUB_ENV"
+                  echo DISK=50           >> "$GITHUB_ENV"
+              ;;
+              *)
+                  echo '::error:: Invalid hardware profile'
+                  exit 1
+              ;;
+          esac
+          # FIXME: use $GITHUB_STEP_SUMMARY
+          # shellcheck source=/dev/null
+          source "$GITHUB_ENV"
+          echo "::notice::Selected hardware profile: ${HARDWARE_PROFILE}.%0ACPU: ${CPU}%0AMEMORY: ${MEMORY}%0ADISK: ${DISK}"
+      - name: Check machine specs
+        run: |
+          # bare metal returns "none" with exit 1
+          systemd-detect-virt || true
+          cat /etc/os-release
+          lscpu
+          free -h
+          lsblk
+          lsblk -f
+          ip -br a
+          ip r
+          # resolvectl --no-pager
+      # TODO: check if greenfield or brownfield first
+      - name: Install prerequisites
+        if: ${{ !env.ACT }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y uvtool j2cli
+          # make sure the default user is in the libvirt group.
+          # the "runner" user in Github workflow is not in the sudo
+          # group so it's not automatically added into the libvirt
+          # group.
+          sudo adduser "$USER" libvirt
+      - name: Download a VM image
+        if: ${{ !env.ACT }}
+        run: |
+          sudo -g libvirt uvt-simplestreams-libvirt sync release=noble arch=amd64
+          sudo -g libvirt uvt-simplestreams-libvirt query
+      - name: Prepare SSH, virtual network bridge, and virtual machines
+        if: ${{ !env.ACT }}
+        run: |
+          # SSH
+          ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
+          cat <<EOF | tee -a ~/.ssh/config
+          Host sunbeam-machine-single-guided
+              User ubuntu
+              Hostname 192.168.124.6
+          EOF
+
+          # bridge
+          sudo -g libvirt virsh -c qemu:///system net-define /dev/stdin <<EOF
+          <network>
+            <name>sunbeam-virbr0</name>
+            <bridge name='sunbeam-virbr0' stp='off'/>
+            <forward mode='nat'/>
+            <ip address='192.168.124.1' netmask='255.255.255.0' />
+          </network>
+          EOF
+          sudo -g libvirt virsh -c qemu:///system net-autostart sunbeam-virbr0
+          sudo -g libvirt virsh -c qemu:///system net-start sunbeam-virbr0
+      - name: Clean up previous virtual machines
+        if: ${{ env.ACT }}
+        run: |
+          # FIXME: the requirement of FQDN is not documented well in each tutorial
+          sudo -g libvirt uvt-kvm destroy sunbeam-machine-single-guided.localdomain || true
+      - name: Prepare a virtual machine
+        run: |
+              sudo -g libvirt uvt-kvm create \
+                  --machine-type q35 \
+                  --cpu "$CPU" \
+                  --host-passthrough \
+                  --memory "$((MEMORY * 1024))" \
+                  --disk "$DISK" \
+                  --unsafe-caching \
+                  --bridge sunbeam-virbr0 \
+                  --network-config /dev/stdin \
+                  --ssh-public-key-file ~/.ssh/id_ed25519.pub \
+                  --no-start \
+                  single-node-guided.localdomain \
+                  release=noble <<EOF
+          network:
+            version: 2
+            ethernets:
+              enp1s0:
+                dhcp4: false
+                dhcp6: false
+                accept-ra: false
+                addresses:
+                  - 192.168.124.1${i}/24
+                routes:
+                  - to: default
+                    via: 192.168.124.6
+                nameservers:
+                  addresses:
+                    - 192.168.124.1
+          EOF
+          done
+
+          # secondary NIC
+          sudo -g libvirt virsh -c qemu:///system attach-interface sunbeam-machine-single-guided.localdomain \
+              network sunbeam-virbr0 \
+              --model virtio --config
+
+          sudo -g libvirt virsh -c qemu:///system start sunbeam-machine-single-guided.localdomain
+
+          until ssh -oStrictHostKeyChecking=no sunbeam-machine-single-guided -- 'cloud-init status --wait; ip -br a; lsblk'; do
+              sleep 5
+          done
+      - name: Sunbeam - Prepare manifest file
+        run: |
+          j2 -f yaml -o ./manifest.yaml .github/assets/workflows/manifest.yaml.j2 - <<EOF
+          use_workaround: $USE_WORKAROUND
+          dockerhub_mirror_host: "${DOCKERHUB_MIRROR#http*://}"
+          EOF
+          scp ./manifest.yaml sunbeam-machine-single-guided:
+      - name: Sunbeam - Prepare the machine
+        run: |
+          ssh sunbeam-machine-single-guided -- sudo snap install openstack --channel 2024.1/edge
+          ssh sunbeam-machine-single-guided -- 'sunbeam prepare-node-script --bootstrap | bash -x'
+      - name: Sunbeam - Bootstrap the cloud
+        run: |
+          # -t is necessary to see some progress in act env, LP:#2097451
+          # Also, without -t, somehow add-k8s command gets stuck in act env
+          # although it doesn't happen in GitHub runner.
+          # without -tt, GitHub runner's log should be quiet.
+          ssh sunbeam-machine-single-guided -t -- sunbeam cluster bootstrap --manifest manifest.yaml
+      - name: Workaround - destroy localhost controller
+        run: |
+          # LP: #2095487
+          ssh sunbeam-machine-single-guided -- juju destroy-controller localhost-localhost --no-prompt
+      - name: Workaround - enable debug logging
+        run: |
+          # LP: #2065490
+          ssh sunbeam-machine-single-guided -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
+      - name: Sunbeam - Configure the cloud
+        run: |
+          ssh sunbeam-machine-single-guided -t -- sunbeam configure --openrc demo-openrc
+      - name: Sunbeam - Launch a VM
+        run: |
+          ssh sunbeam-machine-single-guided -t -- sunbeam launch ubuntu --name test
+      - name: Sunbeam - Connect to the VM
+        run: |
+          # The cloud-init process inside the VM takes ~2 minutes to bring up the
+          # SSH service after the VM gets ACTIVE in OpenStack
+          sleep 300
+          ssh sunbeam-machine-single-guided -- '
+              set -ex
+              source demo-openrc
+              demo_floating_ip="$(openstack floating ip list -c Floating\ IP\ Address -f value | head -n1)"
+              ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam "ubuntu@${demo_floating_ip}" true
+          '
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: manifest.yaml
+          path: ./manifest.yaml
