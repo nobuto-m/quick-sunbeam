@@ -1,3 +1,8 @@
+## Disclaimer
+
+Don't run this on a production system. It assumes a freshly installed
+system like a ephemeral test env provisioned by MAAS.
+
 ## Time
 
 ~173 min total
