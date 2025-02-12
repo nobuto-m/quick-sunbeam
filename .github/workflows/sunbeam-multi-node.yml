@@ -99,6 +99,7 @@ jobs:
           echo "::notice::Selected hardware profile: ${HARDWARE_PROFILE}.%0ACPU: ${CPU}%0AMEMORY: ${MEMORY}%0ADISK: ${DISK}%0AEXTRA_DISK: ${EXTRA_DISK}"
       - name: Check machine specs
         run: |
+          # bare metal returns "none" with exit 1
           systemd-detect-virt || true
           cat /etc/os-release
           lscpu
@@ -107,7 +108,7 @@ jobs:
           lsblk -f
           ip -br a
           ip r
-          resolvectl --no-pager
+          # resolvectl --no-pager
       # TODO: check if greenfield or brownfield first
       - name: Install prerequisites
         if: ${{ !env.ACT }}
@@ -115,8 +116,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y uvtool j2cli
           # make sure the default user is in the libvirt group.
-          # the default "runner" user in Github workflow is not in the
-          # sudo group so it's not automatically added into the libvirt
+          # the "runner" user in Github workflow is not in the sudo
+          # group so it's not automatically added into the libvirt
           # group.
           sudo adduser "$USER" libvirt
       - name: Download a VM image
