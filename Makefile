@@ -17,4 +17,4 @@ multi-node:
 .PHONY: destroy-all-sunbeam-machines
 destroy-all-sunbeam-machines:
 	@echo Run the following commands: >&2
-	@uvt-kvm list | grep ^sunbeam- | xargs -t --no-run-if-empty -L1 echo uvt-kvm destroy
+	@uvt-kvm list | grep ^sunbeam- | xargs --no-run-if-empty -L1 echo uvt-kvm destroy
