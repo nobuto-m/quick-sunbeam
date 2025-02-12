@@ -225,7 +225,7 @@ jobs:
           done
       - name: Sunbeam - Prepare manifest file
         run: |
-          j2 -f yaml -o ./manifest.yaml .github/assets/workflows/manifest.yaml.j2 - <<EOF
+          j2 -f yaml -o ./manifest.yaml .github/assets/workflows/multi-node/manifest.yaml.j2 - <<EOF
           use_workaround: $USE_WORKAROUND
           dockerhub_mirror_host: "${DOCKERHUB_MIRROR#http*://}"
           EOF
