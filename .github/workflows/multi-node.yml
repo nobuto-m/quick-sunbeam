@@ -292,7 +292,7 @@ jobs:
               ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam "ubuntu@${demo_floating_ip}" true
           '
       # TODO:
-      #- name: Smoke HA testing
+      #- name: Smoke reboot testing
       - uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
