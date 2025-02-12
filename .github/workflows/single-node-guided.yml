@@ -1,8 +1,8 @@
 name: Sunbeam Single-node guided
 
 on:
-  push:
-    branches: ["act"]
+  #push:
+  #branches: ["act"]
 
   workflow_dispatch:
     inputs:
