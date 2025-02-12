@@ -4,13 +4,17 @@ default:
 
 .PHONY: single-node-guided
 single-node-guided:
-	/usr/bin/time -f 'real\t%E' act -P ubuntu-24.04=-self-hosted \
+	/usr/bin/time -f 'real\t%E' act \
+		-P ubuntu-latest=-self-hosted \
+		-P ubuntu-24.04=-self-hosted \
 		--artifact-server-path .artifacts \
 		-W .github/workflows/single-node-guided.yml
 
 .PHONY: multi-node
 multi-node:
-	/usr/bin/time -f 'real\t%E' act -P ubuntu-24.04=-self-hosted \
+	/usr/bin/time -f 'real\t%E' act \
+		-P ubuntu-latest=-self-hosted \
+		-P ubuntu-24.04=-self-hosted \
 		--artifact-server-path .artifacts \
 		-W .github/workflows/multi-node.yml
 
