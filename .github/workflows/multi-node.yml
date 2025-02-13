@@ -38,7 +38,7 @@ env:
 defaults:
   run:
     # act doesn't show a good summary of elapsed time of each step
-    shell: /usr/bin/time -f 'real\t%E' /bin/bash -ex {0}
+    shell: /usr/bin/time -f 'step: real\t%E' /bin/bash -ex {0}
 
 jobs:
   actionlint:

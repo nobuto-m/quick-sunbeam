@@ -8,7 +8,7 @@ prerequisites:
 
 .PHONY: single-node-guided
 single-node-guided:
-	/usr/bin/time -f 'real\t%E' act \
+	/usr/bin/time -f 'workflow: real\t%E' act \
 		-P ubuntu-latest=-self-hosted \
 		-P ubuntu-24.04=-self-hosted \
 		--artifact-server-path .artifacts \
@@ -16,7 +16,7 @@ single-node-guided:
 
 .PHONY: multi-node
 multi-node:
-	/usr/bin/time -f 'real\t%E' act \
+	/usr/bin/time -f 'workflow: real\t%E' act \
 		-P ubuntu-latest=-self-hosted \
 		-P ubuntu-24.04=-self-hosted \
 		--artifact-server-path .artifacts \
@@ -24,7 +24,7 @@ multi-node:
 
 .PHONY: multi-node-ha
 multi-node-ha:
-	/usr/bin/time -f 'real\t%E' act \
+	/usr/bin/time -f 'workflow: real\t%E' act \
 		-P ubuntu-latest=-self-hosted \
 		-P ubuntu-24.04=-self-hosted \
 		--artifact-server-path .artifacts \
