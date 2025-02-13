@@ -3,6 +3,33 @@
 Don't run this on a production system. It assumes a freshly installed
 system like a ephemeral test env provisioned by MAAS.
 
+## IP address allocation
+
+Subnet: 192.168.124.0/24 (SNAT, no DHCP)
+
+.1 - gateway (the host)
+
+.6 - HTTP Proxy (the host)
+
+.21 - sunbeam-single-node-guided
+
+.31 - sunbeam-multi-node-1
+.32 - sunbeam-multi-node-2
+.33 - sunbeam-multi-node-3
+
+.41 - sunbeam-multi-node-ha-1
+.42 - sunbeam-multi-node-ha-2
+.43 - sunbeam-multi-node-ha-3
+
+.121-.130 - k8s lb range: single-node-guided
+.131-.140 - k8s lb range: multi-node
+.141-.150 - k8s lb range: multi-node-ha
+
+.221-.230 - flat network range: single-node-guided
+.231-.240 - flat network range: multi-node
+.241-.250 - flat network range: multi-node-ha
+
+
 ## Time
 
 ### Single-node Guided

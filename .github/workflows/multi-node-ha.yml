@@ -134,15 +134,15 @@ jobs:
           # SSH
           ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
           cat <<EOF | tee -a ~/.ssh/config
-          Host sunbeam-multi-node-1
+          Host sunbeam-multi-node-ha-1
               User ubuntu
-              Hostname 192.168.124.11
-          Host sunbeam-multi-node-2
+              Hostname 192.168.124.41
+          Host sunbeam-multi-node-ha-2
               User ubuntu
-              Hostname 192.168.124.12
-          Host sunbeam-multi-node-3
+              Hostname 192.168.124.42
+          Host sunbeam-multi-node-ha-3
               User ubuntu
-              Hostname 192.168.124.13
+              Hostname 192.168.124.43
           EOF
 
           # bridge
@@ -189,7 +189,7 @@ jobs:
                 dhcp6: false
                 accept-ra: false
                 addresses:
-                  - 192.168.124.1${i}/24
+                  - 192.168.124.4${i}/24
                 routes:
                   - to: default
                     via: 192.168.124.1

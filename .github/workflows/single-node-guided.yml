@@ -101,7 +101,7 @@ jobs:
           cat <<EOF | tee -a ~/.ssh/config
           Host sunbeam-single-node-guided
               User ubuntu
-              Hostname 192.168.124.6
+              Hostname 192.168.124.21
           EOF
 
           # bridge
@@ -143,7 +143,7 @@ jobs:
                 dhcp6: false
                 accept-ra: false
                 addresses:
-                  - 192.168.124.6/24
+                  - 192.168.124.21/24
                 routes:
                   - to: default
                     via: 192.168.124.1

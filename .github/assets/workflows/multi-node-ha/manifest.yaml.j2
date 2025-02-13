@@ -27,7 +27,7 @@ core:
       # OpenStack services are exposed via virtual IP addresses. This range should contain at least ten addresses and must not overlap with external network CIDR. To access APIs from a remote host, the range must reside within the subnet that the primary network interface is on.
       # On multi-node deployments, the range must be addressable from all nodes in the deployment.
       # LP: #2098077
-      loadbalancer: 192.168.124.81-192.168.124.90
+      loadbalancer: 192.168.124.141-192.168.124.150
     user:
       # Populate OpenStack cloud with demo user, default images, flavors etc
       # If enabled, demonstration resources will be created on the cloud.
@@ -76,7 +76,7 @@ core:
       gateway: 192.168.124.1
       # External network's allocation range
       # VMs intended to be accessed from remote hosts will be assigned dedicated addresses from a portion of the physical network (outside OpenStack). Takes the form of an IP range.
-      range: 192.168.124.51-192.168.124.80
+      range: 192.168.124.241-192.168.124.250
       # External network's type [flat/vlan]
       # Type of network to use for external access.
       network_type: flat
