@@ -7,7 +7,7 @@ system like a ephemeral test env provisioned by MAAS.
 
 ### Single-node Guided
 
-~39 min total
+~56 min total including the smoke reboot testing.
 
 ### Multi-node
 
