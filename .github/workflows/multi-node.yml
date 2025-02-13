@@ -278,7 +278,8 @@ jobs:
       - name: Sunbeam - Add the second and the third machines
         run: |
           for i in {2..3}; do
-              cat "sunbeam-multi-node-${i}.asc" | ssh "sunbeam-multi-node-${i}" -t -- sunbeam cluster join --role control,compute,storage -
+              scp sunbeam-multi-node-1:"sunbeam-multi-node-${i}.asc" "sunbeam-multi-node-${i}:"
+              ssh "sunbeam-multi-node-${i}" -t -- "cat "sunbeam-multi-node-${i}.asc" | sunbeam cluster join --role control,compute,storage -"
           done
       - name: Sunbeam - Resize the control plane
         run: |
