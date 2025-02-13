@@ -204,8 +204,11 @@ core:
         revision: null
         config:
           # LP: #2098163
-          #snap-channel: 2024.1/edge
+          {% if not use_workaround %}
+          snap-channel: 2024.1/edge
+          {% else %}
           snap-channel: 2024.1/beta
+          {% endif %}
       sunbeam-machine:
         channel: 2024.1/edge
         revision: null
