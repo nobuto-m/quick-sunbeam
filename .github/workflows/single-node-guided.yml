@@ -206,7 +206,7 @@ jobs:
         run: |
           ssh sunbeam-single-node-guided -- sudo reboot
           # wait some time to settle
-          sleep 10m
+          sleep 15m
           ssh sunbeam-single-node-guided -t -- '
               set -ex
               uptime -p
