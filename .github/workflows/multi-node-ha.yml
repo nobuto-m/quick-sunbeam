@@ -42,7 +42,7 @@ defaults:
 
 jobs:
   actionlint:
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, linux, AMD64, X64, noble, baremetal]
     steps:
       - uses: actions/checkout@v4
       - name: Download actionlint
@@ -56,7 +56,7 @@ jobs:
               .github/workflows/multi-node-ha.yml
   multi-node-ha:
     name: Multi-node HA
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, linux, AMD64, X64, noble, baremetal]
     needs: actionlint
     steps:
       - uses: actions/checkout@v4

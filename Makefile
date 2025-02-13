@@ -9,24 +9,18 @@ prerequisites:
 .PHONY: single-node-guided
 single-node-guided:
 	/usr/bin/time -f 'workflow: real\t%E' act \
-		-P ubuntu-latest=-self-hosted \
-		-P ubuntu-24.04=-self-hosted \
 		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
 		-W .github/workflows/$(@).yml
 
 .PHONY: multi-node
 multi-node:
 	/usr/bin/time -f 'workflow: real\t%E' act \
-		-P ubuntu-latest=-self-hosted \
-		-P ubuntu-24.04=-self-hosted \
 		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
 		-W .github/workflows/$(@).yml
 
 .PHONY: multi-node-ha
 multi-node-ha:
 	/usr/bin/time -f 'workflow: real\t%E' act \
-		-P ubuntu-latest=-self-hosted \
-		-P ubuntu-24.04=-self-hosted \
 		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
 		-W .github/workflows/$(@).yml
 
