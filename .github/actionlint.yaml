@@ -1,0 +1,7 @@
+self-hosted-runner:
+  labels:
+    - AMD64
+    - noble
+    - medieum
+    - large
+    - xlarge
