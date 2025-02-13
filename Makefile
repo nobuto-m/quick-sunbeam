@@ -4,31 +4,31 @@ default:
 
 .PHONY: prerequisites
 prerequisites:
-	@echo prerequisites
+	@echo prerequisites # TODO
 
 .PHONY: single-node-guided
 single-node-guided:
 	/usr/bin/time -f 'workflow: real\t%E' act \
 		-P ubuntu-latest=-self-hosted \
 		-P ubuntu-24.04=-self-hosted \
-		--artifact-server-path .artifacts \
-		-W .github/workflows/single-node-guided.yml
+		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
+		-W .github/workflows/$(@).yml
 
 .PHONY: multi-node
 multi-node:
 	/usr/bin/time -f 'workflow: real\t%E' act \
 		-P ubuntu-latest=-self-hosted \
 		-P ubuntu-24.04=-self-hosted \
-		--artifact-server-path .artifacts \
-		-W .github/workflows/multi-node.yml
+		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
+		-W .github/workflows/$(@).yml
 
 .PHONY: multi-node-ha
 multi-node-ha:
 	/usr/bin/time -f 'workflow: real\t%E' act \
 		-P ubuntu-latest=-self-hosted \
 		-P ubuntu-24.04=-self-hosted \
-		--artifact-server-path .artifacts \
-		-W .github/workflows/multi-node-ha.yml
+		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
+		-W .github/workflows/$(@).yml
 
 .PHONY: destroy-all-sunbeam-machines
 destroy-all-sunbeam-machines:
