@@ -175,19 +175,11 @@ jobs:
           ssh sunbeam-single-node-guided -- 'sunbeam prepare-node-script --bootstrap | bash -x'
       - name: Sunbeam - Bootstrap the cloud
         run: |
-          # -t is necessary to see some progress in act env, LP:#2097451
+          # -t is necessary to see some progress in act env, LP: #2097451
           # Also, without -t, somehow add-k8s command gets stuck in act env
           # although it doesn't happen in GitHub runner.
           # without -tt, GitHub runner's log should be quiet.
           ssh sunbeam-single-node-guided -t -- sunbeam cluster bootstrap --manifest manifest.yaml
-      - name: Workaround - destroy localhost controller
-        run: |
-          # LP: #2095487
-          ssh sunbeam-single-node-guided -- juju destroy-controller localhost-localhost --no-prompt
-      - name: Workaround - enable debug logging
-        run: |
-          # LP: #2065490
-          ssh sunbeam-single-node-guided -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
       - name: Sunbeam - Configure the cloud
         run: |
           ssh sunbeam-single-node-guided -t -- sunbeam configure --openrc demo-openrc
@@ -205,7 +197,7 @@ jobs:
               demo_floating_ip="$(openstack floating ip list -c Floating\ IP\ Address -f value | head -n1)"
               ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam "ubuntu@${demo_floating_ip}" -- cloud-init status --wait
           '
-      - name: Smoke reboot testing
+      - name: Smoke testing - Host reboot
         run: |
           ssh sunbeam-single-node-guided -- sudo reboot
           # wait some time to settle
