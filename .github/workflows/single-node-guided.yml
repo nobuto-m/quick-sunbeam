@@ -25,7 +25,7 @@ env:
 defaults:
   run:
     # act doesn't show a good summary of elapsed time of each step
-    shell: '/usr/bin/time -f "step: real\t%E" /bin/bash -ex {0}'
+    shell: '/usr/bin/time -f "Step total time:\t%E" /bin/bash -ex {0}'
 
 jobs:
   actionlint:
@@ -204,6 +204,7 @@ jobs:
           sleep 10m
           ssh sunbeam-single-node-guided -t -- '
               set -ex
+              uptime -p
               sunbeam launch ubuntu --name test-after-reboot
               sleep 5m
               source demo-openrc
