@@ -34,7 +34,7 @@ Subnet: 192.168.124.0/24 (SNAT, no DHCP)
 
 ### Single-node Guided
 
-~56 min total including the smoke reboot testing.
+~59 min total including the smoke reboot testing.
 
 ### Multi-node
 
