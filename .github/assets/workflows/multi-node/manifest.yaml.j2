@@ -85,7 +85,7 @@ core:
       # segmentation_id: 0
     # MicroCeph config
     microceph_config:
-      sunbeam-machine-1.localdomain:
+      sunbeam-multi-node-1.localdomain:
         # Ceph devices
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
         {% if not use_workaround %}
@@ -94,7 +94,7 @@ core:
         # LP: #2095570
         osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
         {% endif %}
-      sunbeam-machine-2.localdomain:
+      sunbeam-multi-node-2.localdomain:
         # Ceph devices
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
         {% if not use_workaround %}
@@ -103,7 +103,7 @@ core:
         # LP: #2095570
         osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
         {% endif %}
-      sunbeam-machine-3.localdomain:
+      sunbeam-multi-node-3.localdomain:
         # Ceph devices
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
         {% if not use_workaround %}
