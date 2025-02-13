@@ -109,9 +109,12 @@ jobs:
           free -h
           lsblk
           lsblk -f
-          ip -br a
-          ip r
-          # resolvectl --no-pager
+          if [ "$ACTIONS_STEP_DEBUG" = true ]; then
+              # IPv6 address can be sensitive
+              ip -br a
+              ip r
+              resolvectl --no-pager
+          fi
       # TODO: check if greenfield or brownfield first
       - name: Install prerequisites
         if: ${{ !env.ACT }}

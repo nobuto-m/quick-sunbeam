@@ -26,7 +26,6 @@ core:
       # OpenStack APIs IP ranges
       # OpenStack services are exposed via virtual IP addresses. This range should contain at least ten addresses and must not overlap with external network CIDR. To access APIs from a remote host, the range must reside within the subnet that the primary network interface is on.
       # On multi-node deployments, the range must be addressable from all nodes in the deployment.
-      # LP: #2098077
       loadbalancer: 192.168.124.131-192.168.124.140
     user:
       # Populate OpenStack cloud with demo user, default images, flavors etc
@@ -164,25 +163,23 @@ core:
         revision: null
         config: null
       mysql-k8s:
-        channel: 8.0/stable
+        channel: 8.0/edge
         revision: null
         config: null
       mysql-router-k8s:
-        channel: 8.0/stable
+        channel: 8.0/edge
         revision: null
         config: null
       self-signed-certificates:
-        channel: latest/beta
+        channel: latest/edge
         revision: null
         config: null
       rabbitmq-k8s:
-        # LP: #2066188
-        # LP: #2096927
-        channel: 3.12/candidate
+        channel: 3.12/edge
         revision: null
         config: null
       traefik-k8s:
-        channel: latest/beta
+        channel: latest/edge
         revision: null
         config: null
       microceph:
@@ -191,7 +188,11 @@ core:
         config:
           snap-channel: squid/edge
       k8s:
-        channel: 1.32/stable
+        # LP: #2097888
+        #channel: 1.32/edge
+        # LP: #2097547
+        #channel: 1.32/stable
+        channel: latest/edge
         revision: null
         config:
           {% if dockerhub_mirror_host %}
@@ -203,7 +204,9 @@ core:
         channel: 2024.1/edge
         revision: null
         config:
-          snap-channel: 2024.1/edge
+          # LP: #2098163
+          #snap-channel: 2024.1/edge
+          snap-channel: 2024.1/beta
       sunbeam-machine:
         channel: 2024.1/edge
         revision: null
@@ -214,7 +217,7 @@ core:
         config:
           snap-channel: 2024.1/edge
       sunbeam-ssc:
-        channel: latest/beta
+        channel: latest/edge
         revision: null
         config: null
   #   terraform:
