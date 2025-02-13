@@ -196,6 +196,11 @@ jobs:
                 nameservers:
                   addresses:
                     - 192.168.124.1
+              # LP: #2065911
+              enp9s0:
+                dhcp4: false
+                dhcp6: false
+                accept-ra: false
           EOF
           done
 
