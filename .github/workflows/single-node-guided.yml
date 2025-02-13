@@ -29,7 +29,7 @@ defaults:
 
 jobs:
   actionlint:
-    runs-on: [self-hosted, linux, X64, noble]
+    runs-on: [self-hosted, linux, X64, ubuntu-24.04]
     steps:
       - uses: actions/checkout@v4
       - name: Download actionlint
@@ -43,7 +43,7 @@ jobs:
               .github/workflows/single-node-guided.yml
   single-node-guided-tutorial:
     name: Single-node Guided Tutorial
-    runs-on: [self-hosted, linux, X64, noble]
+    runs-on: [self-hosted, linux, X64, ubuntu-24.04]
     needs: actionlint
     steps:
       - uses: actions/checkout@v4
