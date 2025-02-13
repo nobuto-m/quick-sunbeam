@@ -175,7 +175,7 @@ jobs:
         run: |
           j2 -f yaml -o ./manifest.yaml .github/assets/workflows/single-node-guided/manifest.yaml.j2 - <<EOF
           use_workaround: $USE_WORKAROUND
-          dockerhub_mirror_host: "${DOCKERHUB_MIRROR#http*://}"
+          dockerhub_mirror: $DOCKERHUB_MIRROR
           EOF
           scp ./manifest.yaml sunbeam-single-node-guided:
       - name: Sunbeam - Prepare the machine

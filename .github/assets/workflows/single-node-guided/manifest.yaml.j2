@@ -172,10 +172,9 @@ core:
         channel: latest/edge
         revision: null
         config:
-          {% if dockerhub_mirror_host %}
-          # https://github.com/canonical/k8s-operator/issues/312
+          {% if dockerhub_mirror %}
           containerd-custom-registries: |
-            [{"url": "https://docker.io", "host": "{{ dockerhub_mirror_host }}"}]
+            [{"host": "docker.io", "url": "{{ dockerhub_mirror }}"}]
           {% endif %}
       openstack-hypervisor:
         channel: 2024.1/edge
