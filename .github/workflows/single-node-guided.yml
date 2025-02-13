@@ -136,7 +136,7 @@ jobs:
         run: |
           # FIXME: the requirement of FQDN is not documented well in each tutorial
           sudo -g libvirt uvt-kvm destroy sunbeam-single-node-guided.localdomain || true
-          ssh-keygen -R sunbeam-single-node-guided
+          ssh-keygen -R 192.168.124.21
       - name: Prepare a virtual machine
         run: |
           sudo -g libvirt uvt-kvm create \
