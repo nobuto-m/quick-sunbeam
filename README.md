@@ -64,14 +64,9 @@ https://github.com/rhysd/actionlint/blob/main/docs/install.md#download-script
 
 ## Run
 
+e.g.
 ```
-act -P ubuntu-24.04=-self-hosted --artifact-server-path .artifacts
-```
-
-Or
-```
-act -P ubuntu-24.04=-self-hosted --artifact-server-path .artifacts \
-    --input hardware_profile=minimal-with-cpu-overcommit
+make single-node-guided
 ```
 
 ## Prep
