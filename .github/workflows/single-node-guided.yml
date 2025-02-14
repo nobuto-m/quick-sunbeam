@@ -46,6 +46,11 @@ jobs:
         if: ${{ !env.ACT }}
         id: get_actionlint
         run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+      - name: Install prerequisites for actionlint
+        if: ${{ !env.ACT }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
       - name: Check workflow files
         run: |
           # use a local binary if env.ACT
