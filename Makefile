@@ -5,6 +5,10 @@ default:
 .PHONY: prerequisites
 prerequisites:
 	@echo prerequisites # TODO
+	# install act
+	# install actionlint
+	# run some steps including package installation, image sync,
+	# ssh_config, bridge settings.
 
 .PHONY: single-node-guided
 single-node-guided:
