@@ -23,7 +23,7 @@ multi-node:
 	/usr/bin/time -f 'Workflow total time:\t%E' act \
 		-P self-hosted=-self-hosted \
 		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
-		-W .github/workflows/$(@).yml \
+		-W .github/workflows/$(@).yml
 
 .PHONY: multi-node-minimal-with-cpu-overcommit
 multi-node-minimal-with-cpu-overcommit:
@@ -32,6 +32,14 @@ multi-node-minimal-with-cpu-overcommit:
 		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
 		-W .github/workflows/multi-node.yml \
 		--input hardware_profile=minimal-with-cpu-overcommit # FIXME
+
+.PHONY: multi-node-allowance
+multi-node-minimal-with-cpu-overcommit:
+	/usr/bin/time -f 'Workflow total time:\t%E' act \
+		-P self-hosted=-self-hosted \
+		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
+		-W .github/workflows/multi-node.yml \
+		--input hardware_profile=allowance # FIXME
 
 .PHONY: multi-node-ha
 multi-node-ha:
