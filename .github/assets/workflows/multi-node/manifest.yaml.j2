@@ -199,6 +199,10 @@ core:
           containerd-custom-registries: |
             [{"host": "docker.io", "url": "{{ dockerhub_mirror }}"}]
           {% endif %}
+          {% if use_workaround %}
+          # LP: #2098438
+          load-balancer-l2-interfaces: enp1s0
+          {% else %}
       openstack-hypervisor:
         channel: 2024.1/edge
         revision: null
