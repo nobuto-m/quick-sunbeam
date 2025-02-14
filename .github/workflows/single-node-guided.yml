@@ -46,10 +46,14 @@ jobs:
         if: ${{ !env.ACT }}
         id: get_actionlint
         run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+      - name: Download actionlint
+        if: ${{ !env.ACT }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
       - name: Check workflow files
         run: |
-          # use a local binary if env.ACT
-          ${{ steps.get_actionlint.outputs.executable || 'actionlint' }} -color \
+          ./actionlint -color \
               .github/workflows/single-node-guided.yml
   single-node-guided-tutorial:
     name: Single-node Guided Tutorial
