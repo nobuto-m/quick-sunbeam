@@ -5,6 +5,7 @@ default:
 .PHONY: prerequisites
 prerequisites:
 	@echo prerequisites # TODO
+	# install make before make(?)
 	# install act
 	# install actionlint
 	# run some steps including package installation, image sync,
