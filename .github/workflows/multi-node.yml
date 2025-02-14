@@ -218,9 +218,9 @@ jobs:
           # LP: #2095570
           if [ "$USE_WORKAROUND" = true ]; then
               for i in {1..3}; do
-                  virsh vol-create-as uvtool --format qcow2 \
+                  sudo -g libvirt virsh -c qemu:///system vol-create-as uvtool --format qcow2 \
                       "sunbeam-multi-node-${i}-sata1.qcow" "$((EXTRA_DISK * 1024**3))"
-                  virsh attach-disk "sunbeam-multi-node-${i}.localdomain" \
+                  sudo -g libvirt virsh -c qemu:///system attach-disk "sunbeam-multi-node-${i}.localdomain" \
                       "/var/lib/uvtool/libvirt/images/sunbeam-multi-node-${i}-sata1.qcow" \
                       sda --subdriver qcow2 --targetbus sata --config
               done
