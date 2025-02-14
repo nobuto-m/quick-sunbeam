@@ -1,8 +1,11 @@
 #!/bin/bash
 
-set -eux
+set -e
 # pv command doesn't pass through the exit code
 set -o pipefail
+
+echo 'Not used and to be migrated to GitHub workflow.'
+exit 1
 
 cd "$(dirname "$0")"
 
