@@ -187,8 +187,7 @@ jobs:
 
           # LP: #2065911
           if [ "$USE_WORKAROUND" = true ]; then
-              for i in {2..3}; do
-                  ssh "sunbeam-multi-node-${i}" -- 'sudo install -m 0600 /dev/stdin /etc/netplan/90-local-ovs-ext-port.yaml <<EOF
+              ssh sunbeam-single-node-guided -- 'sudo install -m 0600 /dev/stdin /etc/netplan/90-local-ovs-ext-port.yaml <<EOF
           network:
             version: 2
             ethernets:
@@ -198,9 +197,8 @@ jobs:
                 dhcp6: false
                 accept-ra: false
           EOF
-                      sudo netplan apply
-                  '
-              done
+                  sudo netplan apply
+              '
           fi
       - name: Sunbeam - Prepare manifest file
         run: |
