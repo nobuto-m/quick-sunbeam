@@ -9,7 +9,7 @@ prerequisites:
 	# install act
 	# install actionlint
 	# run some steps including package installation, image sync,
-	# ssh_config, bridge settings.
+	# ssh-keygen, ssh_config, bridge settings.
 
 .PHONY: single-node-guided
 single-node-guided:
