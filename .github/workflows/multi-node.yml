@@ -238,7 +238,7 @@ jobs:
 
           # LP: #2065911
           if [ "$USE_WORKAROUND" = true ]; then
-              for i in {2..3}; do
+              for i in {1..3}; do
                   ssh "sunbeam-multi-node-${i}" -- 'cat <<EOF | sudo tee /etc/netplan/90-local-ovs-ext-port.yaml
           network:
             version: 2
