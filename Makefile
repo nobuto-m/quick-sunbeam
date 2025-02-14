@@ -18,7 +18,8 @@ multi-node:
 	/usr/bin/time -f 'Workflow total time:\t%E' act \
 		-P self-hosted=-self-hosted \
 		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
-		-W .github/workflows/$(@).yml
+		-W .github/workflows/$(@).yml \
+		--input hardware_profile=minimal-with-cpu-overcommit # FIXME
 
 .PHONY: multi-node-ha
 multi-node-ha:
