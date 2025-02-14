@@ -167,11 +167,6 @@ jobs:
                 nameservers:
                   addresses:
                     - 192.168.124.1
-              # LP: #2065911
-              enp7s0:
-                dhcp4: false
-                dhcp6: false
-                accept-ra: false
           EOF
 
           # secondary NIC
@@ -184,6 +179,24 @@ jobs:
           until ssh -oStrictHostKeyChecking=no sunbeam-single-node-guided -- 'cloud-init status --wait; ip -br a; lsblk'; do
               sleep 5
           done
+
+          # LP: #2065911
+          if [ "$USE_WORKAROUND" = true ]; then
+              for i in {2..3}; do
+                  ssh "sunbeam-multi-node-${i}" -- 'cat <<EOF | sudo tee /etc/netplan/90-local-ovs-ext-port.yaml
+          network:
+            version: 2
+            ethernets:
+              # LP: #2065911
+              enp7s0:
+                dhcp4: false
+                dhcp6: false
+                accept-ra: false
+          EOF
+                      sudo netplan apply
+                  '
+              done
+          fi
       - name: Sunbeam - Prepare manifest file
         run: |
           j2 -f yaml -o ./manifest.yaml .github/assets/workflows/single-node-guided/manifest.yaml.j2 - <<EOF
