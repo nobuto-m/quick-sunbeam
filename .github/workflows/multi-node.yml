@@ -170,7 +170,7 @@ jobs:
           for i in {1..3}; do
               # FIXME: the requirement of FQDN is not documented well in each tutorial
               sudo -g libvirt uvt-kvm destroy "sunbeam-multi-node-${i}.localdomain" || true
-              ssh-keygen -R "192.168.124.3${i}"
+              ssh-keygen -R "192.168.124.3${i}" || true
           done
       - name: Prepare virtual machines
         run: |
