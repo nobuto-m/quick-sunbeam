@@ -301,7 +301,13 @@ jobs:
           done
       - name: Sunbeam - Resize the control plane
         run: |
-          ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize
+          # LP: #2065469
+          if [ "$USE_WORKAROUND"]; then
+              ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize || \
+              ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize
+          else
+              ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize
+          fi
       - name: Sunbeam - Configure the cloud
         run: |
           ssh sunbeam-multi-node-1 -t -- sunbeam configure --openrc demo-openrc
