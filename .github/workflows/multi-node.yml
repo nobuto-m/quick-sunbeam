@@ -141,7 +141,7 @@ jobs:
         run: |
           # SSH
           ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
-          cat .github/assets/workflows/ssh_config | tee -a ~/.ssh/config
+          tee -a ~/.ssh/config < .github/assets/workflows/ssh_config
 
           # bridge
           sudo -g libvirt virsh -c qemu:///system net-define .github/assets/workflows/sunbeam-virbr0.xml
@@ -312,7 +312,7 @@ jobs:
         run: |
           for i in {2..3}; do
               scp sunbeam-multi-node-1:"sunbeam-multi-node-${i}.asc" "sunbeam-multi-node-${i}:"
-              ssh "sunbeam-multi-node-${i}" -t -- "cat "sunbeam-multi-node-${i}.asc" | sunbeam cluster join --role control,compute,storage -"
+              ssh "sunbeam-multi-node-${i}" -t -- "cat 'sunbeam-multi-node-${i}.asc' | sunbeam cluster join --role control,compute,storage -"
           done
       - name: Sunbeam - Resize the control plane
         run: |
