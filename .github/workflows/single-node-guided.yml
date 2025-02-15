@@ -121,7 +121,7 @@ jobs:
         run: |
           # SSH
           ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
-          cat .github/assets/workflows/ssh_config | tee -a ~/.ssh/config
+          tee -a ~/.ssh/config < .github/assets/workflows/ssh_config
 
           # bridge
           sudo -g libvirt virsh -c qemu:///system net-define .github/assets/workflows/sunbeam-virbr0.xml
@@ -214,6 +214,17 @@ jobs:
           # although it doesn't happen in GitHub runner.
           # without -tt, GitHub runner's log should be quiet.
           ssh sunbeam-single-node-guided -t -- sunbeam cluster bootstrap --manifest manifest.yaml
+      - name: Workaround - destroy localhost controller
+        if: ${{ env.USE_WORKAROUND }}
+        run: |
+          # LP: #2095487, without doing it, a random /24 range will be
+          # dead from a user perspective and the OpenStack API cannot
+          # return a response to the range since it will go to the
+          # unused network bridge.
+          echo '::warning::Workaround for https://launchpad.net/bugs/2095487'
+          ssh sunbeam-multi-node-1 -- juju destroy-controller localhost-localhost --no-prompt
+          ssh sunbeam-multi-node-1 -- lxc profile device remove default eth0
+          ssh sunbeam-multi-node-1 -- lxc network delete sunbeambr0
       - name: Sunbeam - Configure the cloud
         run: |
           ssh sunbeam-single-node-guided -t -- sunbeam configure --openrc demo-openrc
