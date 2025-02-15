@@ -5,9 +5,9 @@ default:
 .PHONY: prerequisites
 prerequisites:
 	# install make before make(?)
-	if ip link show sunbeam-virbr0; then
-		@echo 'Looks like the prerequisites are satisfied.'
-		@exit 0
+	if ip link show sunbeam-virbr0; then \
+		@echo 'Looks like the prerequisites are satisfied.'; \
+		@exit 0; \
 	fi
 
 	mkdir -p ~/.local/bin/
