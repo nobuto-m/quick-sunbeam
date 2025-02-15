@@ -11,8 +11,8 @@ prerequisites:
 	fi
 
 	mkdir -p ~/.local/bin/
-	bash <(curl https://raw.githubusercontent.com/nektos/act/master/install.sh) -b ~/.local/bin
-	bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash) latest ~/.local/bin
+	curl https://raw.githubusercontent.com/nektos/act/master/install.sh) | bash -s -- -b ~/.local/bin
+	curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash) | bash -s -- latest ~/.local/bin
 
 	sudo apt-get update
 	sudo apt-get install -y uvtool j2cli shellcheck
