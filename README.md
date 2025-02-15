@@ -74,5 +74,7 @@ Subnet: 192.168.124.0/24 (SNAT, no DHCP)
 Use `act` command direcly or use an example in the Makefile, e.g.
 
 ```bash
+cd quick-sunbeam/
+
 make single-node-guided
 ```
