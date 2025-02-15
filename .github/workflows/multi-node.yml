@@ -277,6 +277,26 @@ jobs:
         run: |
           # LP: #2065490
           ssh sunbeam-multi-node-1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
+      - name: Workaround - reset PG num
+        if: ${{ env.USE_WORKAROUND }}
+        run: |
+          # LP: 2096923
+          echo '::warning::Workaround for https://launchpad.net/bugs/2096923'
+          ssh sunbeam-multi-node-1 -- '
+              set -ex
+              sudo ceph status
+              sudo ceph health detail
+              sudo ceph osd pool autoscale-status
+
+              sudo ceph config set global osd_pool_default_pg_autoscale_mode warn
+              sudo ceph osd pool ls | xargs -t -I{} sudo ceph osd pool set {} pg_autoscale_mode warn
+              sudo ceph osd pool set glance pg_num 32
+              sudo ceph osd pool set cinder-ceph pg_num 32
+
+              sudo ceph status
+              sudo ceph health detail
+              sudo ceph osd pool autoscale-status
+          '
       - name: Sunbeam - Create registration tokens for the second and the third machines
         run: |
           for i in {2..3}; do
