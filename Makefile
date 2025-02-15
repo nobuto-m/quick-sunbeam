@@ -13,6 +13,7 @@ prerequisites:
 	curl https://raw.githubusercontent.com/nektos/act/master/install.sh | bash -s -- -b ~/.local/bin
 	curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash | bash -s -- latest ~/.local/bin
 
+	sudo snap install node --classic
 	sudo apt-get update
 	sudo apt-get install -y uvtool j2cli shellcheck
 	sudo -g libvirt uvt-simplestreams-libvirt sync release=noble arch=amd64
