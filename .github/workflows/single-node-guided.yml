@@ -65,7 +65,7 @@ jobs:
       - name: Set env
         run: |
           if [ "$USE_WORKAROUND" = true ]; then
-              echo '::warning::Not a clean run. Some workarounds are used.'
+              echo '::warning::Not a clean run. Some workarounds are going to be used.'
           fi
           case "$HARDWARE_PROFILE" in
               tutorial)
@@ -176,6 +176,7 @@ jobs:
 
           # LP: #2065911
           if [ "$USE_WORKAROUND" = true ]; then
+              echo '::warning::Workaround for https://launchpad.net/bugs/2065911'
               ssh sunbeam-single-node-guided -- 'sudo install -m 0600 /dev/stdin /etc/netplan/90-local-ovs-ext-port.yaml <<EOF
           network:
             version: 2
@@ -191,6 +192,10 @@ jobs:
           fi
       - name: Sunbeam - Prepare manifest file
         run: |
+          if [ "$USE_WORKAROUND" = true ]; then
+              echo '::warning::Workaround for https://launchpad.net/bugs/2098163'
+              echo '::warning::Workaround for https://launchpad.net/bugs/2098438'
+          fi
           j2 -f yaml -o ./manifest.yaml .github/assets/workflows/single-node-guided/manifest.yaml.j2 - <<EOF
           use_workaround: $USE_WORKAROUND
           dockerhub_mirror: $DOCKERHUB_MIRROR
