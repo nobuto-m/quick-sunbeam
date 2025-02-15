@@ -48,6 +48,15 @@ Subnet: 192.168.124.0/24 (SNAT, no DHCP)
 - `sunbeam configure` 3m2.064s
 
 
+[resize]
+Selected hardware profile: allowance.
+| Step total time:      16:21.31
+| ++ CPU=16
+| ++ MEMORY=64
+| ++ DISK=512
+| ++ EXTRA_DISK=512
+
+
 ## Prep
 
 1. Prepare a jammy or noble host
