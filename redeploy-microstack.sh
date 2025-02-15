@@ -43,17 +43,6 @@ if [ "$USE_WORKAROUND" = true ]; then
     '
 fi
 
-# LP: #2065469
-if [ "$USE_WORKAROUND" = true ]; then
-    time (
-        ssh_to 1 -t -- \
-            sunbeam cluster resize | pv --timer -i 0.08 \
-        || \
-        ssh_to 1 -t -- \
-            sunbeam cluster resize | pv --timer -i 0.08
-    )
-fi
-
 # LP: #2096923, LP: #2095570
 ssh_to 1 -- '
     set -ex
