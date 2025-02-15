@@ -114,26 +114,15 @@ jobs:
         run: |
           sudo -g libvirt uvt-simplestreams-libvirt sync release=noble arch=amd64
           sudo -g libvirt uvt-simplestreams-libvirt query
-      - name: Prepare SSH, virtual network bridge, and virtual machines
+      - name: Prepare SSH, virtual network bridge
         if: ${{ !env.ACT }}
         run: |
           # SSH
           ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
-          cat <<EOF | tee -a ~/.ssh/config
-          Host sunbeam-single-node-guided
-              User ubuntu
-              Hostname 192.168.124.21
-          EOF
+          cat .github/assets/workflows/ssh_config | tee -a ~/.ssh/config
 
           # bridge
-          sudo -g libvirt virsh -c qemu:///system net-define /dev/stdin <<EOF
-          <network>
-            <name>sunbeam-virbr0</name>
-            <bridge name='sunbeam-virbr0' stp='off'/>
-            <forward mode='nat'/>
-            <ip address='192.168.124.1' netmask='255.255.255.0' />
-          </network>
-          EOF
+          sudo -g libvirt virsh -c qemu:///system net-define .github/assets/workflows/sunbeam-virbr0.xml
           sudo -g libvirt virsh -c qemu:///system net-autostart sunbeam-virbr0
           sudo -g libvirt virsh -c qemu:///system net-start sunbeam-virbr0
       - name: Clean up previous virtual machines

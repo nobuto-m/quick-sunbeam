@@ -4,12 +4,29 @@ default:
 
 .PHONY: prerequisites
 prerequisites:
-	@echo prerequisites # TODO
 	# install make before make(?)
-	# install act
-	# install actionlint
-	# run some steps including package installation, image sync,
-	# ssh-keygen, ssh_config, bridge settings.
+	if ip link show sunbeam-virbr0; then
+		@echo 'Looks like the prerequisites are satisfied.'
+		@exit 0
+	fi
+
+	mkdir -p ~/.local/bin/
+	bash <(curl https://raw.githubusercontent.com/nektos/act/master/install.sh) -b ~/.local/bin
+	bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash) latest ~/.local/bin
+
+	sudo apt-get update
+	sudo apt-get install -y uvtool j2cli shellcheck
+	sudo -g libvirt uvt-simplestreams-libvirt sync release=noble arch=amd64
+	sudo -g libvirt uvt-simplestreams-libvirt query
+
+	echo n | ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N '' || true
+	cat .github/assets/workflows/ssh_config | tee -a ~/.ssh/config
+
+	sudo -g libvirt virsh -c qemu:///system net-define .github/assets/workflows/sunbeam-virbr0.xml
+	sudo -g libvirt virsh -c qemu:///system net-autostart sunbeam-virbr0
+	sudo -g libvirt virsh -c qemu:///system net-start sunbeam-virbr0
+
+	@echo 'Please logout from the shell / SSH session and login again.'
 
 .PHONY: single-node-guided
 single-node-guided:
