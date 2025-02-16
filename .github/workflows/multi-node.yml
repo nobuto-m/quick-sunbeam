@@ -331,8 +331,9 @@ jobs:
               sudo ceph health detail
               sudo ceph osd pool autoscale-status
 
-              sudo ceph osd ls
-              sudo ceph osd ls | grep -x 3
+              sudo ceph osd tree
+              # bail out when OSD hosts are not added
+              [ "$(sudo ceph osd tree | grep -w host -c)" -ge 3 ]
           '
       - name: Sunbeam - Resize the control plane
         run: |
