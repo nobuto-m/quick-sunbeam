@@ -253,9 +253,7 @@ jobs:
           scp ./manifest.yaml sunbeam-multi-node-1:
       - name: Sunbeam - Prepare the first machine
         run: |
-          #ssh sunbeam-multi-node-1 -- sudo snap install openstack --channel 2024.1/edge
-          # FIXME: rev 662 might have broken clustering
-          ssh sunbeam-multi-node-1 -- sudo snap install openstack --channel 2024.1/beta
+          ssh sunbeam-multi-node-1 -- sudo snap install openstack --channel 2024.1/edge
           ssh sunbeam-multi-node-1 -- 'sunbeam prepare-node-script --bootstrap | bash -x'
       - name: Sunbeam - Bootstrap the cloud
         run: |
@@ -308,9 +306,7 @@ jobs:
       - name: Sunbeam - Prepare the second and the third machines
         run: |
           for i in {2..3}; do
-              #ssh "sunbeam-multi-node-${i}" -- sudo snap install openstack --channel 2024.1/edge
-              # FIXME: rev 662 might have broken clustering
-              ssh "sunbeam-multi-node-${i}" -- sudo snap install openstack --channel 2024.1/beta
+              ssh "sunbeam-multi-node-${i}" -- sudo snap install openstack --channel 2024.1/edge
               ssh "sunbeam-multi-node-${i}" -- 'sunbeam prepare-node-script | bash -x'
           done
       - name: Sunbeam - Add the second and the third machines
