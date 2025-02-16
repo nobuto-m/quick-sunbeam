@@ -299,12 +299,6 @@ jobs:
               sudo ceph osd pool ls | xargs -t -I{} sudo ceph osd pool set {} pg_autoscale_mode warn
               sudo ceph osd pool set glance pg_num 32
               sudo ceph osd pool set cinder-ceph pg_num 32
-
-              sleep 3m
-              
-              sudo ceph status
-              sudo ceph health detail
-              sudo ceph osd pool autoscale-status
           '
       - name: Sunbeam - Create registration tokens for the second and the third machines
         run: |
@@ -338,6 +332,9 @@ jobs:
               sudo ceph status
               sudo ceph health detail
               sudo ceph osd pool autoscale-status
+
+              sudo ceph osd ls
+              sudo ceph osd ls | grep -x 3
           '
       - name: Sunbeam - Resize the control plane
         run: |
