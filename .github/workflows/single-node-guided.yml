@@ -222,9 +222,9 @@ jobs:
           # return a response to the range since it will go to the
           # unused network bridge.
           echo '::warning::Workaround for https://launchpad.net/bugs/2095487'
-          ssh sunbeam-multi-node-1 -- juju destroy-controller localhost-localhost --no-prompt
-          ssh sunbeam-multi-node-1 -- lxc profile device remove default eth0
-          ssh sunbeam-multi-node-1 -- lxc network delete sunbeambr0
+          ssh sunbeam-single-node-guided -- juju destroy-controller localhost-localhost --no-prompt
+          ssh sunbeam-single-node-guided -- lxc profile device remove default eth0
+          ssh sunbeam-single-node-guided -- lxc network delete sunbeambr0
       - name: Sunbeam - Configure the cloud
         run: |
           ssh sunbeam-single-node-guided -t -- sunbeam configure --openrc demo-openrc
