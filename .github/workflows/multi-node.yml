@@ -284,10 +284,13 @@ jobs:
       - name: Workaround - reset PG num
         if: ${{ env.USE_WORKAROUND }}
         run: |
-          # LP: 2096923
+          # LP: #2096923
           echo '::warning::Workaround for https://launchpad.net/bugs/2096923'
           ssh sunbeam-multi-node-1 -- '
               set -ex
+              sudo microceph status
+              sunbeam cluster list
+
               sudo ceph status
               sudo ceph health detail
               sudo ceph osd pool autoscale-status
@@ -320,6 +323,20 @@ jobs:
               scp sunbeam-multi-node-1:"sunbeam-multi-node-${i}.asc" "sunbeam-multi-node-${i}:"
               ssh "sunbeam-multi-node-${i}" -t -- "cat 'sunbeam-multi-node-${i}.asc' | sunbeam cluster join --role control,compute,storage -"
           done
+      - name: Workaround - check Ceph status before moving on
+        if: ${{ env.USE_WORKAROUND }}
+        run: |
+          # LP: #2095570
+          echo '::warning::Workaround for https://launchpad.net/bugs/2095570'
+          ssh sunbeam-multi-node-1 -- '
+              set -ex
+              sudo microceph status
+              sunbeam cluster list
+
+              sudo ceph status
+              sudo ceph health detail
+              sudo ceph osd pool autoscale-status
+          '
       - name: Sunbeam - Resize the control plane
         run: |
           # LP: #2065469
