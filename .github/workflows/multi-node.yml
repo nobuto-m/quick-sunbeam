@@ -300,6 +300,8 @@ jobs:
               sudo ceph osd pool set glance pg_num 32
               sudo ceph osd pool set cinder-ceph pg_num 32
 
+              sleep 3m
+              
               sudo ceph status
               sudo ceph health detail
               sudo ceph osd pool autoscale-status
