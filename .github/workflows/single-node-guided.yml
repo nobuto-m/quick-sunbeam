@@ -92,9 +92,11 @@ jobs:
           cat /etc/os-release
           lscpu
           free -h
-          lsblk
-          lsblk -f
+          lsblk -e7
+          lsblk -e7 -f
           if [ "$ACTIONS_STEP_DEBUG" = true ]; then
+              lsblk
+              lsblk -f
               # IPv6 address can be sensitive
               ip -br a
               ip r
