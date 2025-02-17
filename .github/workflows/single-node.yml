@@ -181,7 +181,7 @@ jobs:
 
           # LP: #2065911
           if [ "$USE_WORKAROUND" = true ]; then
-              echo '::warning::Workaround for https://launchpad.net/bugs/2065911'
+              echo '::warning::Workaround for LP: #2065911'
               ssh sunbeam-single-node -- 'sudo install -m 0600 /dev/stdin /etc/netplan/90-local-ovs-ext-port.yaml <<EOF
           network:
             version: 2
@@ -198,8 +198,8 @@ jobs:
       - name: Sunbeam - Prepare manifest file
         run: |
           if [ "$USE_WORKAROUND" = true ]; then
-              echo '::warning::Workaround for https://launchpad.net/bugs/2098163'
-              echo '::warning::Workaround for https://launchpad.net/bugs/2098438'
+              echo '::warning::Workaround for LP: #2098163'
+              echo '::warning::Workaround for LP: #2098438'
           fi
           j2 -f yaml -o ./manifest.yaml .github/assets/workflows/single-node/manifest.yaml.j2 - <<EOF
           use_workaround: $USE_WORKAROUND
@@ -225,7 +225,7 @@ jobs:
           # dead from a user perspective and the OpenStack API cannot
           # return a response to the range since it will go to the
           # unused network bridge.
-          echo '::warning::Workaround for https://launchpad.net/bugs/2095487'
+          echo '::warning::Workaround for LP: #2095487'
           ssh sunbeam-single-node -- juju destroy-controller localhost-localhost --no-prompt
           ssh sunbeam-single-node -- lxc profile device remove default eth0
           ssh sunbeam-single-node -- lxc network delete sunbeambr0
