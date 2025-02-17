@@ -26,7 +26,6 @@ core:
       # OpenStack APIs IP ranges
       # OpenStack services are exposed via virtual IP addresses. This range should contain at least ten addresses and must not overlap with external network CIDR. To access APIs from a remote host, the range must reside within the subnet that the primary network interface is on.
       # On multi-node deployments, the range must be addressable from all nodes in the deployment.
-      # LP: #2098077
       loadbalancer: 192.168.124.141-192.168.124.150
     user:
       # Populate OpenStack cloud with demo user, default images, flavors etc
@@ -67,6 +66,7 @@ core:
     # Remote Access
     external_network:
       # LP: #2095484
+      # LP: #2065920
       nic: enp9s0
       # External network
       # Network from which the instances will be remotely accessed (outside OpenStack). Takes the form of a CIDR block.
@@ -85,7 +85,7 @@ core:
       # segmentation_id: 0
     # MicroCeph config
     microceph_config:
-      sunbeam-machine-1.localdomain:
+      sunbeam-multi-node-ha-1.localdomain:
         # Ceph devices
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
         {% if not use_workaround %}
@@ -94,7 +94,7 @@ core:
         # LP: #2095570
         osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
         {% endif %}
-      sunbeam-machine-2.localdomain:
+      sunbeam-multi-node-ha-2.localdomain:
         # Ceph devices
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
         {% if not use_workaround %}
@@ -103,7 +103,7 @@ core:
         # LP: #2095570
         osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
         {% endif %}
-      sunbeam-machine-3.localdomain:
+      sunbeam-multi-node-ha-3.localdomain:
         # Ceph devices
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
         {% if not use_workaround %}
@@ -164,25 +164,23 @@ core:
         revision: null
         config: null
       mysql-k8s:
-        channel: 8.0/stable
+        channel: 8.0/edge
         revision: null
         config: null
       mysql-router-k8s:
-        channel: 8.0/stable
+        channel: 8.0/edge
         revision: null
         config: null
       self-signed-certificates:
-        channel: latest/beta
+        channel: latest/edge
         revision: null
         config: null
       rabbitmq-k8s:
-        # LP: #2066188
-        # LP: #2096927
-        channel: 3.12/candidate
+        channel: 3.12/edge
         revision: null
         config: null
       traefik-k8s:
-        channel: latest/beta
+        channel: latest/edge
         revision: null
         config: null
       microceph:
@@ -191,19 +189,31 @@ core:
         config:
           snap-channel: squid/edge
       k8s:
-        channel: 1.32/stable
+        # LP: #2097888
+        #channel: 1.32/edge
+        # LP: #2097547
+        #channel: 1.32/stable
+        channel: latest/edge
         revision: null
         config:
-          {% if dockerhub_mirror_host %}
-          # https://github.com/canonical/k8s-operator/issues/312
+          {% if dockerhub_mirror %}
           containerd-custom-registries: |
-            [{"url": "https://docker.io", "host": "{{ dockerhub_mirror_host }}"}]
+            [{"host": "docker.io", "url": "{{ dockerhub_mirror }}"}]
+          {% endif %}
+          {% if use_workaround %}
+          # LP: #2098438
+          load-balancer-l2-interfaces: enp1s0
           {% endif %}
       openstack-hypervisor:
         channel: 2024.1/edge
         revision: null
         config:
+          # LP: #2098163
+          {% if not use_workaround %}
           snap-channel: 2024.1/edge
+          {% else %}
+          snap-channel: 2024.1/beta
+          {% endif %}
       sunbeam-machine:
         channel: 2024.1/edge
         revision: null
@@ -214,7 +224,7 @@ core:
         config:
           snap-channel: 2024.1/edge
       sunbeam-ssc:
-        channel: latest/beta
+        channel: latest/edge
         revision: null
         config: null
   #   terraform:
