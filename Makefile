@@ -71,3 +71,17 @@ destroy-all-sunbeam-machines:
 	@echo 'make destroy-all-sunbeam-machines | bash -x' >&2
 	@echo >&2
 	@uvt-kvm list | grep ^sunbeam- | xargs --no-run-if-empty -L1 echo uvt-kvm destroy
+
+.PHONY: review-diff-scenario-single-multi
+review-diff-scenario-single-multi:
+	# there should be no "multi" keyword in the single node scenario
+	! grep -iw multi .github/workflows/single-node-guided.yml
+	# likewise
+	! grep -iw single .github/workflows/multi-node.yml
+	diff -u .github/workflows/single-node-guided.yml .github/workflows/multi-node.yml | dwdiff --diff-input --color -P | less -RS
+
+.PHONY: review-diff-scenario-multi-multi-ha
+review-diff-scenario-multi-multi-ha:
+	# there should be no "single" keyword in the multi node scenario
+	! grep -iw single .github/workflows/multi-node*.yml
+	diff -u .github/workflows/multi-node.yml .github/workflows/multi-node-ha.yml | dwdiff --diff-input --color -P | less -RS
