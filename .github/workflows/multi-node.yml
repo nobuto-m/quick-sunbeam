@@ -204,7 +204,9 @@ jobs:
                       "sunbeam-multi-node-${i}-sata1.qcow" "$((EXTRA_DISK * 1024**3))"
                   sudo -g libvirt virsh -c qemu:///system attach-disk "sunbeam-multi-node-${i}.localdomain" \
                       "/var/lib/uvtool/libvirt/images/sunbeam-multi-node-${i}-sata1.qcow" \
-                      sda --subdriver qcow2 --targetbus sata --config
+                      sda --subdriver qcow2 --targetbus sata \
+                      --serial "node-${i}-sata1" \
+                      --config
               done
           fi
 
