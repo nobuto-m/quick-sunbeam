@@ -43,6 +43,8 @@ jobs:
   actionlint:
     runs-on: [self-hosted, linux, AMD64, X64, large, noble]
     steps:
+      - run: true
+        shell: bash -e -c "echo {0}"
       - uses: actions/checkout@v4
       - name: Download actionlint
         if: ${{ !env.ACT }}
