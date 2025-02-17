@@ -44,11 +44,6 @@ The CIDR is hardcoded on purpose for simplicity.
 
 1. Clone the repository
 
-   ```bash
-   git clone https://github.com/nobuto-m/quick-sunbeam -b act
-   cd quick-sunbeam/
-   ```
-
 1. Install prerequisites
 
    ```bash
@@ -64,8 +59,6 @@ The CIDR is hardcoded on purpose for simplicity.
 Use `act` command direcly or use an example in the Makefile, e.g.
 
 ```bash
-cd quick-sunbeam/
-
 make single-node
 ```
 
@@ -79,10 +72,3 @@ make single-node
 ### Multi-node
 
 ~173 min total
-
-- `prepare-node-script` + 2x `sunbeam prepare-node-script` 7m16.604s
-- `sunbeam cluster bootstrap` 25m49.372s
-- `sunbeam cluster join` 22m18.170s
-- `sunbeam cluster join` 22m10.131s
-- `sunbeam cluster resize` 74m53.682s
-- `sunbeam configure` 3m2.064s
