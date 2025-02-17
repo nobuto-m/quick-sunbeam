@@ -1,26 +1,26 @@
 name: Sunbeam Multi-node HA
 
-#on:
+on:
   #push:
   #  branches: ["act"]
 
-#  workflow_dispatch:
-#    inputs:
-#      use_workaround:
-#        description: 'Apply a workaround'
-#        required: true
-#        default: true
-#        type: boolean
-#      hardware_profile:
-#        description: 'Specs for each machine'
-#        required: true
-#        default: tutorial
-#        type: choice
-#        options:
-#          - minimal
-#          - minimal-with-cpu-overcommit
-#          - tutorial
-#          - allowance
+  workflow_dispatch:
+    inputs:
+      use_workaround:
+        description: 'Apply a workaround'
+        required: true
+        default: true
+        type: boolean
+      hardware_profile:
+        description: 'Specs for each machine'
+        required: true
+        default: tutorial
+        type: choice
+        options:
+          - minimal
+          - minimal-with-cpu-overcommit
+          - tutorial
+          - allowance
 
 permissions:
   contents: read
