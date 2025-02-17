@@ -1,5 +1,5 @@
 
-Host sunbeam-single-node-guided
+Host sunbeam-single-node
     User ubuntu
     Hostname 192.168.124.21
 
@@ -12,13 +12,3 @@ Host sunbeam-multi-node-2
 Host sunbeam-multi-node-3
     User ubuntu
     Hostname 192.168.124.33
-
-Host sunbeam-multi-node-ha-1
-    User ubuntu
-    Hostname 192.168.124.41
-Host sunbeam-multi-node-ha-2
-    User ubuntu
-    Hostname 192.168.124.42
-Host sunbeam-multi-node-ha-3
-    User ubuntu
-    Hostname 192.168.124.43
