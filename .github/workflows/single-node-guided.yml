@@ -104,7 +104,6 @@ jobs:
           fi
           # bail out when no enough memory
           [ "$(( $(grep MemTotal: /proc/meminfo | awk '{print $2}') / 1024**2 ))" -ge "$MEMORY" ]
-      # TODO: check if greenfield or brownfield first
       - name: Install prerequisites
         if: ${{ !env.ACT }}
         run: |

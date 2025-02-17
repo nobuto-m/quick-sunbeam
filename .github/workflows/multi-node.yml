@@ -124,7 +124,8 @@ jobs:
               ip r
               resolvectl --no-pager
           fi
-      # TODO: check if greenfield or brownfield first
+          # bail out when no enough memory
+          [ "$(( $(grep MemTotal: /proc/meminfo | awk '{print $2}') / 1024**2 ))" -ge "$MEMORY" ]
       - name: Install prerequisites
         if: ${{ !env.ACT }}
         run: |
