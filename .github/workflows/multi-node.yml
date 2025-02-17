@@ -1,8 +1,8 @@
-name: Sunbeam Multi-node
+name: Sunbeam Multi-node How-to Guide
 
 on:
   #push:
-  #  branches: ["act"]
+  #  branches: ["main"]
 
   workflow_dispatch:
     inputs:
@@ -60,8 +60,8 @@ jobs:
           # use a local binary if env.ACT
           ${{ steps.get_actionlint.outputs.executable || 'actionlint' }} -color \
               .github/workflows/multi-node.yml
-  multi-node-tutorial:
-    name: Multi-node Tutorial
+  multi-node-how-to:
+    name: Multi-node How-to Guide
     runs-on: [self-hosted, linux, AMD64, X64, large, noble]
     needs: actionlint
     steps:
@@ -260,8 +260,9 @@ jobs:
           # Also, without -t, somehow add-k8s command gets stuck in act env
           # although it doesn't happen in GitHub runner.
           # without -tt, GitHub runner's log should be quiet.
-          ssh sunbeam-multi-node-1 -t -- sunbeam cluster bootstrap --manifest manifest.yaml \
-              --role control,compute,storage
+          ssh sunbeam-multi-node-1 -t -- sunbeam cluster bootstrap \
+              --role control,compute,storage \
+              --manifest manifest.yaml
       - name: Workaround - destroy localhost controller
         if: ${{ env.USE_WORKAROUND }}
         run: |

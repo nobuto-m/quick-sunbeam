@@ -58,7 +58,7 @@ jobs:
           # use a local binary if env.ACT
           ${{ steps.get_actionlint.outputs.executable || 'actionlint' }} -color \
               .github/workflows/single-node.yml
-  single-node-tutorial:
+  single-node-how-to:
     name: Single-node How-to Guide
     runs-on: [self-hosted, linux, AMD64, X64, large, noble]
     needs: actionlint
