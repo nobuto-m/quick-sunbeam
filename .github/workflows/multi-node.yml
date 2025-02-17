@@ -20,7 +20,6 @@ on:
           - minimal
           - minimal-with-cpu-overcommit
           - tutorial
-          - allowance
 
 permissions:
   contents: read
@@ -91,12 +90,6 @@ jobs:
                   echo MEMORY=32         >> "$GITHUB_ENV"
                   echo DISK=500          >> "$GITHUB_ENV"
                   echo EXTRA_DISK=500    >> "$GITHUB_ENV"
-              ;;
-              allowance)
-                  echo CPU=16            >> "$GITHUB_ENV"
-                  echo MEMORY=64         >> "$GITHUB_ENV"
-                  echo DISK=512          >> "$GITHUB_ENV"
-                  echo EXTRA_DISK=512    >> "$GITHUB_ENV"
               ;;
               *)
                   echo '::error:: Invalid hardware profile'
