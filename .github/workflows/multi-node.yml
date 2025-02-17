@@ -333,7 +333,7 @@ jobs:
 
               sudo ceph osd tree
               # bail out when OSD hosts are not added
-              [ "$(sudo ceph osd tree --format json | jq '.nodes[] | select(.type=="host")' | jq -s length)" -ge 3 ]
+              [ "$(sudo ceph osd tree --format json | jq '\''.nodes[]|select(.type=="host")'\'' | jq -s length)" -ge 3 ]
           '
       - name: Sunbeam - Resize the control plane
         run: |

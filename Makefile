@@ -86,6 +86,7 @@ review-diff-scenario-single-multi:
 review-diff-scenario-multi-multi-ha:
 	# there should be no "single" keyword in the multi node scenario
 	! grep -iw single .github/workflows/multi-node*.yml
+	! grep -iw -E 'sunbeam-multi-node-([0-9]|\$$)' .github/workflows/multi-node-ha.yml
 	(diff -u .github/workflows/multi-node.yml .github/workflows/multi-node-ha.yml; \
 		diff -u .github/assets/workflows/multi-node/manifest.yaml.j2 .github/assets/workflows/multi-node-ha/manifest.yaml.j2 ) \
 		| dwdiff --diff-input --color -P | less -RS
