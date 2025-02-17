@@ -275,7 +275,7 @@ jobs:
           echo '::warning::Workaround for https://launchpad.net/bugs/2095487'
           ssh sunbeam-multi-node-1 -- juju destroy-controller localhost-localhost --no-prompt
           ssh sunbeam-multi-node-1 -- lxc profile device remove default eth0
-          #ssh sunbeam-multi-node-1 -- lxc network delete sunbeambr0
+          ssh sunbeam-multi-node-1 -- lxc network delete sunbeambr0
       - name: Workaround - enable debug logging
         if: ${{ env.USE_WORKAROUND }}
         run: |
