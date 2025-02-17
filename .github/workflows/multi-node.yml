@@ -252,7 +252,9 @@ jobs:
       - name: Sunbeam - Prepare the first machine
         run: |
           ssh sunbeam-multi-node-1 -- sudo snap install openstack --channel 2024.1/edge
-          ssh sunbeam-multi-node-1 -- 'sunbeam prepare-node-script | bash -x'
+          # https://github.com/canonical/canonical-openstack-docs/issues/45
+          # TODO: Create a LXD controller with a static IP on the host
+          ssh sunbeam-multi-node-1 -- 'sunbeam prepare-node-script --bootstrap | bash -x'
       - name: Sunbeam - Bootstrap the cloud
         run: |
           # -t is necessary to see some progress in act env, LP:#2097451
@@ -317,7 +319,7 @@ jobs:
               scp sunbeam-multi-node-1:"sunbeam-multi-node-${i}.asc" "sunbeam-multi-node-${i}:"
               ssh "sunbeam-multi-node-${i}" -t -- "cat 'sunbeam-multi-node-${i}.asc' | sunbeam cluster join --role control,compute,storage -"
           done
-      - name: Workaround - check Ceph status before moving on
+      - name: Workaround - Check Ceph status before moving on
         if: ${{ env.USE_WORKAROUND }}
         run: |
           # LP: #2095570
