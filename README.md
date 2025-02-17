@@ -80,7 +80,7 @@ make single-node
 
 ~173 min total
 
-- `prepare-node-script --bootstrap` + 2x `sunbeam prepare-node-script` 7m16.604s
+- `prepare-node-script` + 2x `sunbeam prepare-node-script` 7m16.604s
 - `sunbeam cluster bootstrap` 25m49.372s
 - `sunbeam cluster join` 22m18.170s
 - `sunbeam cluster join` 22m10.131s

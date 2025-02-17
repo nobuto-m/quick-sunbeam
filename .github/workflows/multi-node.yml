@@ -253,7 +253,7 @@ jobs:
           #ssh sunbeam-multi-node-1 -- sudo snap install openstack --channel 2024.1/edge
           echo '::warning::Workaround for https://launchpad.net/bugs/2098626'
           ssh sunbeam-multi-node-1 -- sudo snap install openstack --channel 2024.1/edge --revision 657
-          ssh sunbeam-multi-node-1 -- 'sunbeam prepare-node-script --bootstrap | bash -x'
+          ssh sunbeam-multi-node-1 -- 'sunbeam prepare-node-script | bash -x'
       - name: Sunbeam - Bootstrap the cloud
         run: |
           # -t is necessary to see some progress in act env, LP:#2097451
