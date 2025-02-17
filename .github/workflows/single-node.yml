@@ -209,7 +209,13 @@ jobs:
       - name: Sunbeam - Prepare the machine
         run: |
           ssh sunbeam-single-node -- sudo snap install openstack --channel 2024.1/edge
-          ssh sunbeam-single-node -- 'sunbeam prepare-node-script | bash -x'
+          # https://github.com/canonical/canonical-openstack-docs/issues/45
+          if [ "$USE_WORKAROUND" = true ]; then
+              echo '::warning::Workaround for https://github.com/canonical/canonical-openstack-docs/issues/45'
+              ssh sunbeam-single-node -- 'sunbeam prepare-node-script --bootstrap | bash -x'
+          else
+              ssh sunbeam-single-node -- 'sunbeam prepare-node-script | bash -x'
+          fi
       - name: Sunbeam - Bootstrap the cloud
         run: |
           # -t is necessary to see some progress in act env, LP: #2097451
