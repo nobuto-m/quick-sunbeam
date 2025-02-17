@@ -92,7 +92,8 @@ core:
         osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
         {% else %}
         # LP: #2095570
-        osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
+        #osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
+        osd_devices: '/dev/sda'
         {% endif %}
       sunbeam-multi-node-2.localdomain:
         # Ceph devices
@@ -101,7 +102,8 @@ core:
         osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
         {% else %}
         # LP: #2095570
-        osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
+        #osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
+        osd_devices: '/dev/sda'
         {% endif %}
       sunbeam-multi-node-3.localdomain:
         # Ceph devices
@@ -110,7 +112,8 @@ core:
         osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
         {% else %}
         # LP: #2095570
-        osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
+        #osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
+        osd_devices: '/dev/sda'
         {% endif %}
   software:
     juju:
