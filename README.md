@@ -1,60 +1,51 @@
 ## Disclaimer
 
 Don't run this on a production system. It assumes a freshly installed
-system like a ephemeral test env provisioned by MAAS.
+system like an ephemeral physical host environment provisioned by MAAS.
 
-## IP address allocation
+## Networking
 
-Subnet: 192.168.124.0/24 (SNAT, no DHCP)
+The main NIC and the secondary NIC are connected to the same VLAN/subnet as follows.
 
-.1 - gateway (the host)
+### Subnet
 
-.6 - HTTP Proxy (the host)
+The CIDR is hardcoded on purpose for simplicity.
 
-.21 - sunbeam-single-node-guided
+`192.168.124.0/24`
 
-.31 - sunbeam-multi-node-1
-.32 - sunbeam-multi-node-2
-.33 - sunbeam-multi-node-3
+- On untagged VLAN
+- SNAT is enabled to access the internet
+- No DHCP server is running
 
-.41 - sunbeam-multi-node-ha-1
-.42 - sunbeam-multi-node-ha-2
-.43 - sunbeam-multi-node-ha-3
+### IP address allocation
 
-.121-.130 - k8s lb range: single-node-guided
-.131-.140 - k8s lb range: multi-node
-.141-.150 - k8s lb range: multi-node-ha
-
-.221-.230 - flat network range: single-node-guided
-.231-.240 - flat network range: multi-node
-.241-.250 - flat network range: multi-node-ha
-
-
-## Time
-
-### Single-node Guided
-
-~59 min total including the smoke reboot testing.
-
-### Multi-node
-
-~173 min total
-
-- `prepare-node-script --bootstrap` + 2x `sunbeam prepare-node-script` 7m16.604s
-- `sunbeam cluster bootstrap` 25m49.372s
-- `sunbeam cluster join` 22m18.170s
-- `sunbeam cluster join` 22m10.131s
-- `sunbeam cluster resize` 74m53.682s
-- `sunbeam configure` 3m2.064s
-
-
-[resize]
-Selected hardware profile: allowance.
-| Step total time:      16:21.31
-| ++ CPU=16
-| ++ MEMORY=64
-| ++ DISK=512
-| ++ EXTRA_DISK=512
+| 4th octet | purpose                                |
+|-----------|----------------------------------------|
+| .1        | Gateway (the host)                     |
+|           |                                        |
+| .6        | HTTP Proxy (the host)                  |
+|           |                                        |
+| .21       | sunbeam-single-node-guided             |
+|           |                                        |
+| .31       | sunbeam-multi-node-1                   |
+| .32       | sunbeam-multi-node-2                   |
+| .33       | sunbeam-multi-node-3                   |
+|           |                                        |
+| .41       | sunbeam-multi-node-ha-1                |
+| .42       | sunbeam-multi-node-ha-2                |
+| .43       | sunbeam-multi-node-ha-3                |
+|           |                                        |
+| .121-.130 | k8s LB range: single-node-guided       |
+|           |                                        |
+| .131-.140 | k8s LB range: multi-node               |
+|           |                                        |
+| .141-.150 | k8s LB range: multi-node-ha            |
+|           |                                        |
+| .221-.230 | flat network range: single-node-guided |
+|           |                                        |
+| .231-.240 | flat network range: multi-node         |
+|           |                                        |
+| .241-.250 | flat network range: multi-node-ha      |
 
 
 ## Prep
@@ -87,3 +78,30 @@ cd quick-sunbeam/
 
 make single-node-guided
 ```
+
+
+## Misc
+
+### Single-node Guided
+
+~59 min total including the smoke reboot testing.
+
+### Multi-node
+
+~173 min total
+
+- `prepare-node-script --bootstrap` + 2x `sunbeam prepare-node-script` 7m16.604s
+- `sunbeam cluster bootstrap` 25m49.372s
+- `sunbeam cluster join` 22m18.170s
+- `sunbeam cluster join` 22m10.131s
+- `sunbeam cluster resize` 74m53.682s
+- `sunbeam configure` 3m2.064s
+
+
+[resize]
+Selected hardware profile: allowance.
+| Step total time:      16:21.31
+| ++ CPU=16
+| ++ MEMORY=64
+| ++ DISK=512
+| ++ EXTRA_DISK=512
