@@ -1,8 +1,8 @@
 name: Sunbeam Single-node Guided
 
 on:
-  #push:
-  #  branches: ["act"]
+  push:
+    branches: ["main"]
 
   workflow_dispatch:
     inputs:
@@ -102,6 +102,8 @@ jobs:
               ip r
               resolvectl --no-pager
           fi
+          # bail out when no enough memory
+          [ "$(( $(grep MemTotal: /proc/meminfo | awk '{print $2}') / 1024**2 ))" -ge "$MEMORY" ]
       # TODO: check if greenfield or brownfield first
       - name: Install prerequisites
         if: ${{ !env.ACT }}
