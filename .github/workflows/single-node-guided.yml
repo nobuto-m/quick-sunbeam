@@ -71,7 +71,7 @@ jobs:
           fi
           case "$HARDWARE_PROFILE" in
               tutorial)
-                  # https://canonical.com/microstack/docs/single-node-guided
+                  # https://canonical-openstack.readthedocs-hosted.com/en/latest/reference/enterprise-requirements/#single-node
                   echo CPU=4             >> "$GITHUB_ENV"
                   echo MEMORY=16         >> "$GITHUB_ENV"
                   echo DISK=100          >> "$GITHUB_ENV"

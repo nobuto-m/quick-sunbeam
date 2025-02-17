@@ -86,11 +86,11 @@ jobs:
                   echo EXTRA_DISK=128    >> "$GITHUB_ENV"
               ;;
               tutorial)
-                  # https://canonical.com/microstack/docs/multi-node
-                  echo CPU=4             >> "$GITHUB_ENV"
+                  # https://canonical-openstack.readthedocs-hosted.com/en/latest/reference/enterprise-requirements/#multi-node
+                  echo CPU=16            >> "$GITHUB_ENV"
                   echo MEMORY=32         >> "$GITHUB_ENV"
-                  echo DISK=250          >> "$GITHUB_ENV"
-                  echo EXTRA_DISK=200    >> "$GITHUB_ENV"
+                  echo DISK=500          >> "$GITHUB_ENV"
+                  echo EXTRA_DISK=500    >> "$GITHUB_ENV"
               ;;
               allowance)
                   echo CPU=16            >> "$GITHUB_ENV"
