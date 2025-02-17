@@ -66,13 +66,13 @@ Use `act` command direcly or use an example in the Makefile, e.g.
 ```bash
 cd quick-sunbeam/
 
-make single-node-guided
+make single-node
 ```
 
 
 ## Misc
 
-### Single-node Guided
+### Single-node
 
 ~59 min total including the smoke reboot testing.
 
@@ -86,12 +86,3 @@ make single-node-guided
 - `sunbeam cluster join` 22m10.131s
 - `sunbeam cluster resize` 74m53.682s
 - `sunbeam configure` 3m2.064s
-
-
-[resize]
-Selected hardware profile: allowance.
-| Step total time:      16:21.31
-| ++ CPU=16
-| ++ MEMORY=64
-| ++ DISK=512
-| ++ EXTRA_DISK=512
