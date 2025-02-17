@@ -28,8 +28,8 @@ prerequisites:
 
 	@echo 'Please logout from the shell / SSH session and login again.'
 
-.PHONY: single-node-guided
-single-node-guided:
+.PHONY: single-node
+single-node:
 	/usr/bin/time -f 'Workflow total time:\t%E' act \
 		-P self-hosted=-self-hosted \
 		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
@@ -50,21 +50,6 @@ multi-node-minimal-with-cpu-overcommit:
 		-W .github/workflows/multi-node.yml \
 		--input hardware_profile=minimal-with-cpu-overcommit # FIXME
 
-.PHONY: multi-node-allowance
-multi-node-allowance:
-	/usr/bin/time -f 'Workflow total time:\t%E' act \
-		-P self-hosted=-self-hosted \
-		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
-		-W .github/workflows/multi-node.yml \
-		--input hardware_profile=allowance # FIXME
-
-.PHONY: multi-node-ha
-multi-node-ha:
-	/usr/bin/time -f 'Workflow total time:\t%E' act \
-		-P self-hosted=-self-hosted \
-		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
-		-W .github/workflows/$(@).yml
-
 .PHONY: destroy-all-sunbeam-machines
 destroy-all-sunbeam-machines:
 	@echo 'Review the list of machines and pass it to bash. e.g.' >&2
@@ -75,18 +60,9 @@ destroy-all-sunbeam-machines:
 .PHONY: review-diff-scenario-single-multi
 review-diff-scenario-single-multi:
 	# there should be no "multi" keyword in the single node scenario
-	! grep -iw multi .github/workflows/single-node-guided.yml
+	! grep -iw multi .github/workflows/single-node.yml
 	# likewise
 	! grep -iw single .github/workflows/multi-node.yml
-	(diff -u .github/workflows/single-node-guided.yml .github/workflows/multi-node.yml; \
-		diff -u .github/assets/workflows/single-node-guided/manifest.yaml.j2 .github/assets/workflows/multi-node/manifest.yaml.j2 ) \
-		| dwdiff --diff-input --color -P | less -RS
-
-.PHONY: review-diff-scenario-multi-multi-ha
-review-diff-scenario-multi-multi-ha:
-	# there should be no "single" keyword in the multi node scenario
-	! grep -iw single .github/workflows/multi-node*.yml
-	! grep -iw -E 'sunbeam-multi-node-([0-9]|\$$)' .github/workflows/multi-node-ha.yml
-	(diff -u .github/workflows/multi-node.yml .github/workflows/multi-node-ha.yml; \
-		diff -u .github/assets/workflows/multi-node/manifest.yaml.j2 .github/assets/workflows/multi-node-ha/manifest.yaml.j2 ) \
+	(diff -u .github/workflows/single-node.yml .github/workflows/multi-node.yml; \
+		diff -u .github/assets/workflows/single-node/manifest.yaml.j2 .github/assets/workflows/multi-node/manifest.yaml.j2 ) \
 		| dwdiff --diff-input --color -P | less -RS

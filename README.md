@@ -25,27 +25,17 @@ The CIDR is hardcoded on purpose for simplicity.
 |           |                                        |
 | .6        | HTTP Proxy (the host)                  |
 |           |                                        |
-| .21       | sunbeam-single-node-guided             |
+| .21       | sunbeam-single-node                    |
 |           |                                        |
 | .31       | sunbeam-multi-node-1                   |
 | .32       | sunbeam-multi-node-2                   |
 | .33       | sunbeam-multi-node-3                   |
 |           |                                        |
-| .41       | sunbeam-multi-node-ha-1                |
-| .42       | sunbeam-multi-node-ha-2                |
-| .43       | sunbeam-multi-node-ha-3                |
-|           |                                        |
-| .121-.130 | k8s LB range: single-node-guided       |
-|           |                                        |
+| .121-.130 | k8s LB range: single-node              |
 | .131-.140 | k8s LB range: multi-node               |
 |           |                                        |
-| .141-.150 | k8s LB range: multi-node-ha            |
-|           |                                        |
-| .221-.230 | flat network range: single-node-guided |
-|           |                                        |
+| .221-.230 | flat network range: single-node        |
 | .231-.240 | flat network range: multi-node         |
-|           |                                        |
-| .241-.250 | flat network range: multi-node-ha      |
 
 
 ## Prep
