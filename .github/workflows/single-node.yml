@@ -209,14 +209,15 @@ jobs:
       - name: Sunbeam - Prepare the machine
         run: |
           ssh sunbeam-single-node-guided -- sudo snap install openstack --channel 2024.1/edge
-          ssh sunbeam-single-node-guided -- 'sunbeam prepare-node-script --bootstrap | bash -x'
+          ssh sunbeam-single-node-guided -- 'sunbeam prepare-node-script | bash -x'
       - name: Sunbeam - Bootstrap the cloud
         run: |
           # -t is necessary to see some progress in act env, LP: #2097451
           # Also, without -t, somehow add-k8s command gets stuck in act env
           # although it doesn't happen in GitHub runner.
           # without -tt, GitHub runner's log should be quiet.
-          ssh sunbeam-single-node-guided -t -- sunbeam cluster bootstrap --manifest manifest.yaml
+          ssh sunbeam-single-node-guided -t -- sunbeam cluster bootstrap --role control,compute \
+              --manifest manifest.yaml
       - name: Workaround - destroy localhost controller
         if: ${{ env.USE_WORKAROUND }}
         run: |
