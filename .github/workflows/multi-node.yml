@@ -118,7 +118,7 @@ jobs:
               resolvectl --no-pager
           fi
           # bail out when no enough memory
-          [ "$(( $(grep MemTotal: /proc/meminfo | awk '{print $2}') / 1024**2 ))" -ge "$MEMORY" ]
+          [ "$(( $(grep MemTotal: /proc/meminfo | awk '{print $2}') / 1024**2 ))" -ge "$((MEMORY * 3))" ]
       - name: Install prerequisites
         if: ${{ !env.ACT }}
         run: |
