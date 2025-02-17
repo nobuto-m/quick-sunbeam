@@ -21,7 +21,7 @@ The CIDR is hardcoded on purpose for simplicity.
 
 | 4th octet | purpose                                |
 |-----------|----------------------------------------|
-| .1        | Gateway (the host)                     |
+| .1        | Gateway, DNS (the host)                |
 |           |                                        |
 | .6        | HTTP Proxy (the host)                  |
 |           |                                        |
