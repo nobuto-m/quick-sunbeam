@@ -41,7 +41,7 @@ defaults:
 
 jobs:
   actionlint:
-    runs-on: [self-hosted, linux, AMD64, X64, medium, noble]
+    runs-on: [self-hosted, linux, AMD64, X64, large, noble]
     steps:
       - uses: actions/checkout@v4
       - name: Download actionlint
