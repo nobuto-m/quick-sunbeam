@@ -48,7 +48,15 @@ multi-node-minimal-with-cpu-overcommit:
 		-P self-hosted=-self-hosted \
 		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
 		-W .github/workflows/multi-node.yml \
-		--input hardware_profile=minimal-with-cpu-overcommit # FIXME
+		--input hardware_profile=minimal-with-cpu-overcommit
+
+.PHONY: multi-node-allowance
+multi-node-allowance:
+	/usr/bin/time -f 'Workflow total time:\t%E' act \
+		-P self-hosted=-self-hosted \
+		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
+		-W .github/workflows/multi-node.yml \
+		--input hardware_profile=allowance
 
 .PHONY: destroy-all-sunbeam-machines
 destroy-all-sunbeam-machines:

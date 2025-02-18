@@ -20,6 +20,7 @@ on:
           - minimal
           - minimal-with-cpu-overcommit
           - tutorial
+          - allowance
 
 permissions:
   contents: read
@@ -88,6 +89,12 @@ jobs:
                   # https://canonical-openstack.readthedocs-hosted.com/en/latest/reference/enterprise-requirements/#multi-node
                   echo CPU=16            >> "$GITHUB_ENV"
                   echo MEMORY=32         >> "$GITHUB_ENV"
+                  echo DISK=500          >> "$GITHUB_ENV"
+                  echo EXTRA_DISK=500    >> "$GITHUB_ENV"
+              ;;
+              allowance)
+                  echo CPU=32            >> "$GITHUB_ENV"
+                  echo MEMORY=64         >> "$GITHUB_ENV"
                   echo DISK=500          >> "$GITHUB_ENV"
                   echo EXTRA_DISK=500    >> "$GITHUB_ENV"
               ;;
