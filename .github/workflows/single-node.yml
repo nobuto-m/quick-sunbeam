@@ -216,7 +216,7 @@ jobs:
           # Also, without -t, somehow add-k8s command gets stuck in act env
           # although it doesn't happen in GitHub runner.
           # without -tt, GitHub runner's log should be quiet.
-          ssh sunbeam-single-node -t -- sunbeam cluster bootstrap --role control,compute \
+          ssh sunbeam-single-node -t -- sunbeam cluster bootstrap --role control,compute,storage \
               --manifest manifest.yaml
       - name: Workaround - destroy localhost controller
         if: ${{ env.USE_WORKAROUND }}
@@ -273,13 +273,18 @@ jobs:
               cd logs/
               rsync -arv ~/snap/openstack/common/logs/ snap_openstack_common_logs/
               sunbeam cluster list | tee sunbeam_cluster_list.txt
+              sudo microceph status | tee microceph_status.txt
+              sudo microceph disk list | tee microceph_disk_list.txt
+              sudo ceph status | tee ceph_status.txt
+              sudo ceph health detail | tee ceph_health_detail.txt
+              sudo ceph osd pool autoscale-status | tee ceph_autoscale_status.txt
               sudo k8s status | tee k8s_status.txt
               sudo k8s kubectl get all -A | tee k8s_kubectl_get_all_-A.txt
               sudo k8s kubectl describe all -A > k8s_kubectl_describe_all_-A.txt
               juju controllers --refresh | tee juju_controllers.txt
               mkdir juju/
               for model in $(juju models --format json | jq -r .models[].name); do
-                  juju status -m "$model" --relations | tee "juju/status_${model##*/}.txt"
+                  juju status -m "$model" --relations > "juju/status_${model##*/}.txt"
                   juju status -m "$model" --relations --color | tee "juju/status_${model##*/}_color.txt"
                   juju debug-log -m "$model" --date --replay > "juju/debug_${model##*/}.log"
               done
