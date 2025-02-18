@@ -335,7 +335,7 @@ jobs:
               sudo ceph osd pool autoscale-status
 
               sudo ceph osd tree
-              echo 'check the number of OSD hosts and bail out when hosts are not added'
+              echo "check the number of OSD hosts and bail out when hosts are not added"
               [ "$(sudo ceph osd tree --format json | jq '\''.nodes[]|select(.type=="host")'\'' | jq -s length)" -ge 3 ]
           '
       - name: Sunbeam - Resize the control plane
