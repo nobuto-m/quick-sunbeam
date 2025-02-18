@@ -273,8 +273,6 @@ jobs:
               cd logs/
               rsync -arv ~/snap/openstack/common/logs/ snap_openstack_common_logs/
               sunbeam cluster list | tee sunbeam_cluster_list.txt
-              sudo microceph status | tee microceph_status.txt
-              sudo microceph disk list | tee microceph_disk_list.txt
               sudo k8s status | tee k8s_status.txt
               sudo k8s kubectl get all -A | tee k8s_kubectl_get_all_-A.txt
               sudo k8s kubectl describe all -A > k8s_kubectl_describe_all_-A.txt

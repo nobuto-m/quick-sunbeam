@@ -397,6 +397,9 @@ jobs:
                   sunbeam cluster list | tee sunbeam_cluster_list.txt
                   sudo microceph status | tee microceph_status.txt
                   sudo microceph disk list | tee microceph_disk_list.txt
+                  sudo ceph status | tee ceph_status.txt
+                  sudo ceph health detail | tee ceph_health_detail.txt
+                  sudo ceph osd pool autoscale-status | tee ceph_autoscale_status.txt
                   sudo k8s status | tee k8s_status.txt
                   sudo k8s kubectl get all -A | tee k8s_kubectl_get_all_-A.txt
                   sudo k8s kubectl describe all -A > k8s_kubectl_describe_all_-A.txt
