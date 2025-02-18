@@ -201,7 +201,6 @@ jobs:
       - name: Sunbeam - Prepare manifest file
         run: |
           if [ "$USE_WORKAROUND" = true ]; then
-              echo '::warning::Workaround for LP: #2098163'
               echo '::warning::Workaround for LP: #2098438'
           fi
           j2 -f yaml -o ./manifest.yaml .github/assets/workflows/single-node/manifest.yaml.j2 - <<EOF
