@@ -82,10 +82,16 @@ jobs:
                   exit 1
               ;;
           esac
-          # FIXME: use $GITHUB_STEP_SUMMARY
           # shellcheck source=/dev/null
           source "$GITHUB_ENV"
-          echo "::notice::Selected hardware profile: ${HARDWARE_PROFILE}.%0ACPU: ${CPU}%0AMEMORY: ${MEMORY}%0ADISK: ${DISK}%0AEXTRA_DISK: ${EXTRA_DISK}"
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          | Hardware profile  | $HARDWARE_PROFILE |
+          | ----------------- | ----------------- |
+          | CPU (cores)       | $CPU              |
+          | Memory (GB)       | $MEMORY           |
+          | Root Disk (GB)    | $DISK             |
+          | Extra Disk (GB)   | $EXTRA_DISK       |
+          EOF
       - name: Check runner specs
         run: |
           # bare metal returns "none" with exit 1
