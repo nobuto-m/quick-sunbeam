@@ -85,7 +85,7 @@ jobs:
           # shellcheck source=/dev/null
           source "$GITHUB_ENV"
           echo "::notice::Selected hardware profile: ${HARDWARE_PROFILE}.%0ACPU: ${CPU}%0AMEMORY: ${MEMORY}%0ADISK: ${DISK}"
-      - name: Check machine specs
+      - name: Check runner specs
         run: |
           # bare metal returns "none" with exit 1
           systemd-detect-virt || true
@@ -102,7 +102,7 @@ jobs:
               ip r
               resolvectl --no-pager
           fi
-          # bail out when no enough memory
+          echo 'check the memory size and bail out when no enough memory for a machine to be created'
           [ "$(( $(grep MemTotal: /proc/meminfo | awk '{print $2}') / 1024**2 ))" -ge "$MEMORY" ]
       - name: Install prerequisites
         if: ${{ !env.ACT }}
@@ -114,12 +114,12 @@ jobs:
           # group so it's not automatically added into the libvirt
           # group.
           sudo adduser "$USER" libvirt
-      - name: Download a VM image
+      - name: Download an OS image
         if: ${{ !env.ACT }}
         run: |
           sudo -g libvirt uvt-simplestreams-libvirt sync release=noble arch=amd64
           sudo -g libvirt uvt-simplestreams-libvirt query
-      - name: Prepare SSH, virtual network bridge
+      - name: Prepare SSH and a network bridge
         if: ${{ !env.ACT }}
         run: |
           # SSH
@@ -130,13 +130,13 @@ jobs:
           sudo -g libvirt virsh -c qemu:///system net-define .github/assets/workflows/sunbeam-virbr0.xml
           sudo -g libvirt virsh -c qemu:///system net-autostart sunbeam-virbr0
           sudo -g libvirt virsh -c qemu:///system net-start sunbeam-virbr0
-      - name: Clean up previous virtual machines
+      - name: Clean up previous machines
         if: ${{ env.ACT }}
         run: |
           # FIXME: the requirement of FQDN is not documented well in each tutorial
           sudo -g libvirt uvt-kvm destroy sunbeam-single-node.localdomain || true
           ssh-keygen -R 192.168.124.21 || true
-      - name: Prepare a virtual machine
+      - name: Prepare a machine
         run: |
           sudo -g libvirt uvt-kvm create \
               --machine-type q35 \
