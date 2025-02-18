@@ -243,6 +243,7 @@ jobs:
           if [ "$USE_WORKAROUND" = true ]; then
               echo '::warning::Workaround for LP: #2098163'
               echo '::warning::Workaround for LP: #2098438'
+              echo '::warning::Workaround for LP: #2098626'
           fi
           j2 -f yaml -o ./manifest.yaml .github/assets/workflows/multi-node/manifest.yaml.j2 - <<EOF
           use_workaround: $USE_WORKAROUND
