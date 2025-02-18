@@ -249,6 +249,13 @@ jobs:
       - name: Save admin-openrc
         run: |
           ssh sunbeam-single-node -t -- 'sunbeam openrc > admin-openrc'
+      - name: Enable Tempest
+        run: |
+          ssh sunbeam-single-node -t -- sunbeam enable validation
+      - name: Run Tempest RefStack
+        run: |
+          # TODO: collect logs
+          ssh sunbeam-single-node -t -- sunbeam validation run refstack
       - name: Smoke testing - Host reboot
         run: |
           ssh sunbeam-single-node -- sudo reboot
@@ -263,6 +270,9 @@ jobs:
               ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam -l ubuntu \
                   "$(openstack server show test-after-reboot --format yaml | grep -E -o 192\.168\.124\.[0-9]+)" -- cloud-init status --wait
           '
+      - name: Run Tempest RefStack again
+        run: |
+          ssh sunbeam-single-node -t -- sunbeam validation run refstack
       - name: Collect logs
         if: ${{ always() }}
         run: |
