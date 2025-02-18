@@ -287,12 +287,14 @@ jobs:
               done
           '
           rsync -arv --mkpath sunbeam-single-node:logs/ logs/
-      - uses: actions/upload-artifact@v4
+      - name: Upload manifest.yaml
+        uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
           name: manifest.yaml
           path: ./manifest.yaml
-      - uses: actions/upload-artifact@v4
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
           name: logs
