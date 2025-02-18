@@ -1,3 +1,5 @@
+[![Sunbeam Single-node How-to Guide](actions/workflows/single-node.yml/badge.svg)](actions/workflows/single-node.yml)
+
 ## Disclaimer
 
 Don't run this on a production system. It assumes a freshly installed
