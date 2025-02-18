@@ -375,6 +375,13 @@ jobs:
           for i in {1..3}; do
               ssh "sunbeam-multi-node-${i}" -t -- 'sunbeam openrc > admin-openrc'
           done
+      - name: Enable Tempest
+        run: |
+          ssh sunbeam-multi-node-1 -t -- sunbeam enable validation
+      - name: Run Tempest RefStack
+        run: |
+          # TODO: collect logs
+          ssh sunbeam-multi-node-1 -t -- sunbeam validation run refstack
       - name: Smoke testing - Host reboots
         run: |
           for i in {1..3}; do
@@ -391,6 +398,9 @@ jobs:
               ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam -l ubuntu \
                   "$(openstack server show test-after-reboot --format yaml | grep -E -o 192\.168\.124\.[0-9]+)" -- cloud-init status --wait
           '
+      - name: Run Tempest RefStack again
+        run: |
+          ssh sunbeam-multi-node-1 -t -- sunbeam validation run refstack
       - name: Collect logs
         if: ${{ always() }}
         run: |
