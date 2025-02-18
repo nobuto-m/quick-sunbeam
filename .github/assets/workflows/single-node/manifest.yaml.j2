@@ -66,7 +66,7 @@ core:
     # Remote Access
     external_network:
       # LP: #2095484
-      nic: enp7s0
+      nic: enp9s0
       # External network
       # Network from which the instances will be remotely accessed (outside OpenStack). Takes the form of a CIDR block.
       cidr: 192.168.124.0/24
@@ -87,7 +87,7 @@ core:
       sunbeam-single-node.localdomain:
         # Ceph devices
         # Comma separated list of devices to be used by Ceph OSDs. `/dev/disk/by-id/<id>` are preferred, as they are stable given the same device.
-        osd_devices: 
+        osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
   software:
     juju:
       bootstrap_args:

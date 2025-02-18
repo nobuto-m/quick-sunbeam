@@ -75,6 +75,7 @@ jobs:
                   echo CPU=4             >> "$GITHUB_ENV"
                   echo MEMORY=16         >> "$GITHUB_ENV"
                   echo DISK=100          >> "$GITHUB_ENV"
+                  echo EXTRA_DISK=100    >> "$GITHUB_ENV"
               ;;
               *)
                   echo '::error:: Invalid hardware profile'
@@ -84,7 +85,7 @@ jobs:
           # FIXME: use $GITHUB_STEP_SUMMARY
           # shellcheck source=/dev/null
           source "$GITHUB_ENV"
-          echo "::notice::Selected hardware profile: ${HARDWARE_PROFILE}.%0ACPU: ${CPU}%0AMEMORY: ${MEMORY}%0ADISK: ${DISK}"
+          echo "::notice::Selected hardware profile: ${HARDWARE_PROFILE}.%0ACPU: ${CPU}%0AMEMORY: ${MEMORY}%0ADISK: ${DISK}%0AEXTRA_DISK: ${EXTRA_DISK}"
       - name: Check runner specs
         run: |
           # bare metal returns "none" with exit 1
@@ -144,6 +145,8 @@ jobs:
               --host-passthrough \
               --memory "$((MEMORY * 1024))" \
               --disk "$DISK" \
+              --ephemeral-disk "$EXTRA_DISK" \
+              --ephemeral-disk "$EXTRA_DISK" \
               --unsafe-caching \
               --bridge sunbeam-virbr0 \
               --network-config /dev/stdin \
@@ -187,7 +190,7 @@ jobs:
             version: 2
             ethernets:
               # LP: #2065911
-              enp7s0:
+              enp9s0:
                 dhcp4: false
                 dhcp6: false
                 accept-ra: false
@@ -216,7 +219,8 @@ jobs:
           # Also, without -t, somehow add-k8s command gets stuck in act env
           # although it doesn't happen in GitHub runner.
           # without -tt, GitHub runner's log should be quiet.
-          ssh sunbeam-single-node -t -- sunbeam cluster bootstrap --role control,compute,storage \
+          ssh sunbeam-single-node -t -- sunbeam cluster bootstrap \
+              --role control,compute,storage \
               --manifest manifest.yaml
       - name: Workaround - destroy localhost controller
         if: ${{ env.USE_WORKAROUND }}
