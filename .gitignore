@@ -1,1 +1,3 @@
 /.artifacts/
+/logs/
+/manifest.yaml
