@@ -331,3 +331,4 @@ jobs:
         with:
           name: sosreport.tar.xz
           path: ./sosreport-*.tar.xz
+          retention-days: 7
