@@ -94,7 +94,7 @@ jobs:
           free -h
           lsblk -e7
           lsblk -e7 -f
-          if [ "$ACTIONS_STEP_DEBUG" = true ]; then
+          if [ "$RUNNER_DEBUG" = 1 ]; then
               lsblk
               lsblk -f
               # IPv6 address can be sensitive
