@@ -1,5 +1,5 @@
-[![Sunbeam Single-node How-to Guide](../../actions/workflows/single-node.yml/badge.svg)](../../actions/workflows/single-node.yml)  
-[![Sunbeam Multi-node How-to Guide](../../actions/workflows/multi-node.yml/badge.svg)](../../actions/workflows/multi-node.yml)
+[![Single-node How-to Guide](../../actions/workflows/single-node.yml/badge.svg)](../../actions/workflows/single-node.yml)  
+[![Multi-node How-to Guide](../../actions/workflows/multi-node.yml/badge.svg)](../../actions/workflows/multi-node.yml)
 
 ## Disclaimer
 
