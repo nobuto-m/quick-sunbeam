@@ -285,6 +285,16 @@ jobs:
               done
           '
           rsync -arv --mkpath sunbeam-single-node:logs/ logs/
+      - name: Collect sosreport
+        if: ${{ always() }}
+        run: |
+          set +e
+          ssh sunbeam-single-node -- '
+              set -x
+              sudo sos report --batch -a --all-logs --tmp-dir .
+              sudo chown $USER: sosreport-*.tar.xz
+          '
+          scp sunbeam-single-node:sosreport-*.tar.xz .
       - name: Upload manifest.yaml
         uses: actions/upload-artifact@v4
         if: ${{ always() }}
@@ -297,3 +307,9 @@ jobs:
         with:
           name: logs
           path: ./logs/
+      - name: Upload sosreport
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: sosreport.tar.xz
+          path: ./sosreport-*.tar.xz
