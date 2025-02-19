@@ -18,6 +18,7 @@ on:
         type: choice
         options:
           - tutorial
+          - allowance
 
 permissions:
   contents: read
@@ -76,6 +77,13 @@ jobs:
                   echo MEMORY=16         >> "$GITHUB_ENV"
                   echo DISK=100          >> "$GITHUB_ENV"
                   echo EXTRA_DISK=100    >> "$GITHUB_ENV"
+              ;;
+              allowance)
+                  # https://canonical-openstack.readthedocs-hosted.com/en/latest/reference/enterprise-requirements/#multi-node
+                  echo CPU=16            >> "$GITHUB_ENV"
+                  echo MEMORY=32         >> "$GITHUB_ENV"
+                  echo DISK=500          >> "$GITHUB_ENV"
+                  echo EXTRA_DISK=500    >> "$GITHUB_ENV"
               ;;
               *)
                   echo '::error:: Invalid hardware profile'
