@@ -37,6 +37,7 @@ The CIDR is hardcoded on purpose for simplicity.
 | .121-.130 | k8s LB range: single-node              |
 | .131-.140 | k8s LB range: multi-node               |
 |           |                                        |
+| .181-.220 | (additional range for Tempest plugin)  |
 | .221-.230 | flat network range: single-node        |
 | .231-.240 | flat network range: multi-node         |
 

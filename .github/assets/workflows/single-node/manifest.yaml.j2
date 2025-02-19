@@ -75,7 +75,9 @@ core:
       gateway: 192.168.124.1
       # External network's allocation range
       # VMs intended to be accessed from remote hosts will be assigned dedicated addresses from a portion of the physical network (outside OpenStack). Takes the form of an IP range.
-      range: 192.168.124.221-192.168.124.230
+      # LP: #2098823
+      #range: 192.168.124.221-192.168.124.230
+      range: 192.168.124.181-192.168.124.230
       # External network's type [flat/vlan]
       # Type of network to use for external access.
       network_type: flat
