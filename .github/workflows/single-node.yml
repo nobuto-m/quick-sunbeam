@@ -109,9 +109,8 @@ jobs:
               ip r
               resolvectl --no-pager
           fi
-          echo 'Check the memory size and bail out when no enough memory for a machine to be created'
-          echo "However, let's allow a few percent of overcommitting due to some reserved area, etc."
-          [ "$(( $(grep MemTotal: /proc/meminfo | awk '{print $2}') / 1024**2 * 1.03 ))" -ge "$MEMORY" ]
+          echo 'check the memory size and bail out when no enough memory for a machine to be created'
+          [ "$(( $(grep MemTotal: /proc/meminfo | awk '{print $2}') / 1024**2 ))" -ge "$MEMORY" ]
       - name: Install prerequisites
         if: ${{ !env.ACT }}
         run: |
