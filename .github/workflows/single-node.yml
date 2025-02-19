@@ -276,7 +276,7 @@ jobs:
           # LP: #2098851
           #ssh sunbeam-single-node -t -- sunbeam validation run refstack
           echo '::warning::Workaround for LP: #2098851'
-          ssh sunbeam-single-node -- juju run tempest/leader validate test-list=refstack serial=true
+          ssh sunbeam-single-node -- juju run -m openstack tempest/leader validate test-list=refstack-2022.11 serial=true --wait=30m
       - name: Smoke testing - Host reboot
         run: |
           ssh sunbeam-single-node -- sudo reboot
