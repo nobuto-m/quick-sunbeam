@@ -35,6 +35,14 @@ single-node:
 		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
 		-W .github/workflows/$(@).yml
 
+.PHONY: single-node-allowance
+single-node-allowance:
+	/usr/bin/time -f 'Workflow total time:\t%E' act \
+		-P self-hosted=-self-hosted \
+		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
+		-W .github/workflows/single-node.yml \
+		--input hardware_profile=allowance
+
 .PHONY: multi-node
 multi-node:
 	/usr/bin/time -f 'Workflow total time:\t%E' act \
