@@ -337,7 +337,7 @@ jobs:
               mkdir juju/
               for model in $(juju models --format json | jq -r .models[].name); do
                   juju status -m "$model" --relations > "juju/status_${model##*/}.txt"
-                  juju status -m "$model" --relations --color | tee "juju/status_${model##*/}_color.txt"
+                  juju status -m "$model" --color | tee "juju/status_${model##*/}_color.txt"
                   juju debug-log -m "$model" --date --replay > "juju/debug_${model##*/}.log"
               done
           '
