@@ -200,7 +200,7 @@ jobs:
 
           # LP: #2065911
           if [ "$USE_WORKAROUND" = true ]; then
-              echo '::warning::Workaround for LP: #2065911'
+              echo '- https://launchpad.net/bugs/2065911' >> "$GITHUB_STEP_SUMMARY"
               ssh sunbeam-single-node -- 'sudo install -m 0600 /dev/stdin /etc/netplan/90-local-ovs-ext-port.yaml <<EOF
           network:
             version: 2
@@ -217,8 +217,8 @@ jobs:
       - name: Sunbeam - Prepare manifest file
         run: |
           if [ "$USE_WORKAROUND" = true ]; then
-              echo '::warning::Workaround for LP: #2098438'
-              echo '::warning::Workaround for LP: #2098823'
+              echo '- https://launchpad.net/bugs/2098438' >> "$GITHUB_STEP_SUMMARY"
+              echo '- https://launchpad.net/bugs/2098823' >> "$GITHUB_STEP_SUMMARY"
           fi
           j2 -f yaml -o ./manifest.yaml .github/assets/workflows/single-node/manifest.yaml.j2 - <<EOF
           use_workaround: $USE_WORKAROUND
@@ -242,7 +242,7 @@ jobs:
         if: ${{ env.USE_WORKAROUND }}
         run: |
           # LP: #2098915
-          echo '::warning::Workaround for https://bugs.launchpad.net/bugs/2098915' >> "$GITHUB_STEP_SUMMARY"
+          echo '- https://launchpad.net/bugs/2098915' >> "$GITHUB_STEP_SUMMARY"
           ssh sunbeam-single-node -- '
               set -ex
               lxc network list
@@ -257,7 +257,7 @@ jobs:
           # dead from a user perspective and the OpenStack API cannot
           # return a response to the range since it will go to the
           # unused network bridge.
-          echo '::warning::Workaround for LP: #2095487'
+          echo '- https://launchpad.net/bugs/2095487' >> "$GITHUB_STEP_SUMMARY"
           ssh sunbeam-single-node -- juju destroy-controller localhost-localhost --no-prompt
           ssh sunbeam-single-node -- lxc profile device remove default eth0
           ssh sunbeam-single-node -- lxc network delete sunbeambr0
@@ -289,7 +289,7 @@ jobs:
           # TODO: collect logs
           # LP: #2098851
           #ssh sunbeam-single-node -t -- sunbeam validation run refstack
-          echo '::warning::Workaround for LP: #2098851'
+          echo '- https://launchpad.net/bugs/2098851' >> "$GITHUB_STEP_SUMMARY"
           if ssh sunbeam-single-node -- juju run -m openstack tempest/leader validate test-list=refstack-2022.11 serial=true --wait=30m; then
               ssh sunbeam-single-node -t -- sunbeam validation get-last-result -o ./validation.log
           else
