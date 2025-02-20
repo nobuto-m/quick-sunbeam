@@ -239,6 +239,18 @@ jobs:
       - name: Workaround - destroy localhost controller
         if: ${{ env.USE_WORKAROUND }}
         run: |
+          # LP: #2098915
+          echo '::warning::Workaround for https://bugs.launchpad.net/bugs/2098915' >> "$GITHUB_STEP_SUMMARY"
+          ssh sunbeam-single-node -- '
+              set -ex
+              lxc network list
+              sunbeambr0_ip="$(lxc network show sunbeambr0 | grep ipv4.address: | awk '\''{print $2}'\'' | cut -d / -f1)"
+              deployment="$(sunbeam deployment list --format yaml | grep active: | awk '\''{print $2}'\'')"
+              juju show-cloud -c sunbeam-controller "${deployment}-k8s"
+              sed -i -e "s/${sunbeambr0_ip}/192.168.124.31/" ~/.local/share/juju/clouds.yaml
+              juju update-cloud -c sunbeam-controller "${deployment}-k8s"
+              juju show-cloud -c sunbeam-controller "${deployment}-k8s"
+          '
           # LP: #2095487, without doing it, a random /24 range will be
           # dead from a user perspective and the OpenStack API cannot
           # return a response to the range since it will go to the
