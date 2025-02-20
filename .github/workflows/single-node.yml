@@ -67,9 +67,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Set env
         run: |
-          if [ "$USE_WORKAROUND" = true ]; then
-              echo '::warning::Not a clean run. Some workarounds are going to be used.'
-          fi
           case "$HARDWARE_PROFILE" in
               tutorial)
                   # https://canonical-openstack.readthedocs-hosted.com/en/latest/reference/enterprise-requirements/#single-node
@@ -79,7 +76,7 @@ jobs:
                   echo EXTRA_DISK=100    >> "$GITHUB_ENV"
               ;;
               allowance)
-                  # https://canonical-openstack.readthedocs-hosted.com/en/latest/reference/enterprise-requirements/#multi-node
+                  # https://canonical-openstack.readthedocs-hosted.com/en/latest/reference/enterprise-requirements/
                   echo CPU=16            >> "$GITHUB_ENV"
                   echo MEMORY=32         >> "$GITHUB_ENV"
                   echo DISK=500          >> "$GITHUB_ENV"
@@ -93,6 +90,7 @@ jobs:
           # shellcheck source=/dev/null
           source "$GITHUB_ENV"
           cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## Hardware profile
           | Hardware profile  | $HARDWARE_PROFILE |
           | ----------------- | ----------------- |
           | CPU (cores)       | $CPU              |
@@ -100,6 +98,10 @@ jobs:
           | Root Disk (GB)    | $DISK             |
           | Extra Disk (GB)   | $EXTRA_DISK       |
           EOF
+          if [ "$USE_WORKAROUND" = true ]; then
+              echo '::warning::Not a clean run. Some workarounds are going to be used.'
+              echo '## :construction: Workaround' >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Check runner specs
         run: |
           # bare metal returns "none" with exit 1
