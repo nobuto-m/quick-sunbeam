@@ -249,7 +249,7 @@ jobs:
               sunbeambr0_ip="$(lxc network show sunbeambr0 | grep ipv4.address: | awk '\''{print $2}'\'' | cut -d / -f1)"
               deployment="$(sunbeam deployment list --format yaml | grep active: | awk '\''{print $2}'\'')"
               juju show-cloud -c sunbeam-controller "${deployment}-k8s"
-              sed -i -e "s/${sunbeambr0_ip}/192.168.124.31/" ~/.local/share/juju/clouds.yaml
+              sed -i -e "s/${sunbeambr0_ip}/192.168.124.21/" ~/.local/share/juju/clouds.yaml
               juju update-cloud -c sunbeam-controller "${deployment}-k8s"
               juju show-cloud -c sunbeam-controller "${deployment}-k8s"
           '
@@ -291,9 +291,9 @@ jobs:
           #ssh sunbeam-single-node -t -- sunbeam validation run refstack
           echo '- https://launchpad.net/bugs/2098851' >> "$GITHUB_STEP_SUMMARY"
           if ssh sunbeam-single-node -- juju run -m openstack tempest/leader validate test-list=refstack-2022.11 serial=true --wait=30m; then
-              ssh sunbeam-single-node -t -- sunbeam validation get-last-result -o ./validation.log
+              juju scp -m openstack --container tempest tempest/0:/var/lib/tempest/workspace/tempest-validation.log .
           else
-              ssh sunbeam-single-node -t -- sunbeam validation get-last-result -o ./validation.log
+              juju scp -m openstack --container tempest tempest/0:/var/lib/tempest/workspace/tempest-validation.log .
               exit 1
           fi
       - name: Smoke testing - Host reboot
@@ -323,7 +323,7 @@ jobs:
               cd logs/
               pwd
               rsync -arv ~/snap/openstack/common/logs/ snap_openstack_common_logs/
-              cp -v ../validation.log .
+              cp -v ../tempest-validation.log .
               sunbeam cluster list | tee sunbeam_cluster_list.txt
               sudo microceph status | tee microceph_status.txt
               sudo microceph disk list | tee microceph_disk_list.txt
