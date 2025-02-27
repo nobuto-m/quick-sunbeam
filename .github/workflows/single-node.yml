@@ -194,7 +194,7 @@ jobs:
 
           sudo -g libvirt virsh -c qemu:///system start sunbeam-single-node.localdomain
 
-          until ssh -oStrictHostKeyChecking=no sunbeam-single-node -- 'cloud-init status --wait; ip -br a; lsblk'; do
+          until ssh -oStrictHostKeyChecking=no sunbeam-single-node -- 'systemctl is-system-running --wait; ip -br a; lsblk'; do
               sleep 5
           done
 
@@ -284,7 +284,7 @@ jobs:
               set -ex
               source demo-openrc
               demo_floating_ip="$(openstack floating ip list -c Floating\ IP\ Address -f value | head -n1)"
-              ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam "ubuntu@${demo_floating_ip}" -- cloud-init status --wait
+              ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam "ubuntu@${demo_floating_ip}" -- systemctl is-system-running --wait
           '
       - name: Save admin-openrc
         run: |
@@ -316,7 +316,7 @@ jobs:
               sleep 5m
               source demo-openrc
               ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam -l ubuntu \
-                  "$(openstack server show test-after-reboot --format yaml | grep -E -o 192\.168\.124\.[0-9]+)" -- cloud-init status --wait
+                  "$(openstack server show test-after-reboot --format yaml | grep -E -o 192\.168\.124\.[0-9]+)" -- systemctl is-system-running --wait
           '
       - name: Run Tempest RefStack again
         run: |
