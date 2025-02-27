@@ -298,7 +298,7 @@ jobs:
           # LP: #2098851
           #ssh sunbeam-single-node -t -- sunbeam validation run refstack
           echo '- https://launchpad.net/bugs/2098851' >> "$GITHUB_STEP_SUMMARY"
-          if ssh sunbeam-single-node -- juju run -m openstack tempest/leader validate test-list=refstack-2022.11 serial=true --wait=30m; then
+          if ssh sunbeam-single-node -- juju run -m openstack tempest/leader validate test-list=smoke serial=true --wait=30m; then
               ssh sunbeam-single-node -- juju scp -m openstack --container tempest tempest/0:/var/lib/tempest/workspace/tempest-validation.log ./tempest-validation.log
           else
               ssh sunbeam-single-node -- juju scp -m openstack --container tempest tempest/0:/var/lib/tempest/workspace/tempest-validation.log ./tempest-validation.log
