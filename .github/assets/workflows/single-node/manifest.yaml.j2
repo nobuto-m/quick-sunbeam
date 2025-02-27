@@ -101,10 +101,6 @@ core:
       scale_args: []
       destroy_args: []
     charms:
-      cinder-ceph-k8s:
-        channel: 2024.1/edge
-        revision: null
-        config: null
       cinder-k8s:
         channel: 2024.1/edge
         revision: null
@@ -200,12 +196,22 @@ core:
         channel: latest/edge
         revision: null
         config: null
+      cinder-volume:
+        channel: 2024.1/edge
+        revision: null
+        config: null
+      cinder-volume-ceph:
+        channel: 2024.1/edge
+        revision: null
+        config: null
   #   terraform:
   #     sunbeam-machine-plan:
   #       source: null
   #     k8s-plan:
   #       source: null
   #     microceph-plan:
+  #       source: null
+  #     cinder-volume-plan:
   #       source: null
   #     openstack-plan:
   #       source: null
