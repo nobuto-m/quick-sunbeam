@@ -144,15 +144,15 @@ jobs:
           tee -a ~/.ssh/config < .github/assets/workflows/ssh_config
 
           # bridge
-          sudo -g libvirt virsh -c qemu:///system net-define .github/assets/workflows/sunbeam-virbr0.xml
-          sudo -g libvirt virsh -c qemu:///system net-autostart sunbeam-virbr0
-          sudo -g libvirt virsh -c qemu:///system net-start sunbeam-virbr0
+          sudo -g libvirt virsh -c qemu:///system net-define .github/assets/workflows/sunbeam-virbr1.xml
+          sudo -g libvirt virsh -c qemu:///system net-autostart sunbeam-virbr1
+          sudo -g libvirt virsh -c qemu:///system net-start sunbeam-virbr1
       - name: Clean up previous machines
         if: ${{ env.ACT }}
         run: |
           # FIXME: the requirement of FQDN is not documented well in each tutorial
           sudo -g libvirt uvt-kvm destroy sunbeam-single-node.localdomain || true
-          ssh-keygen -R 192.168.124.21 || true
+          ssh-keygen -R 10.1.124.21 || true
       - name: Prepare a machine
         run: |
           sudo -g libvirt uvt-kvm create \
@@ -164,7 +164,7 @@ jobs:
               --ephemeral-disk "$EXTRA_DISK" \
               --ephemeral-disk "$EXTRA_DISK" \
               --unsafe-caching \
-              --bridge sunbeam-virbr0 \
+              --bridge sunbeam-virbr1 \
               --network-config /dev/stdin \
               --ssh-public-key-file ~/.ssh/id_ed25519.pub \
               --no-start \
@@ -178,18 +178,18 @@ jobs:
                 dhcp6: false
                 accept-ra: false
                 addresses:
-                  - 192.168.124.21/24
+                  - 10.1.124.21/24
                 routes:
                   - to: default
-                    via: 192.168.124.1
+                    via: 10.1.124.1
                 nameservers:
                   addresses:
-                    - 192.168.124.1
+                    - 10.1.124.1
           EOF
 
           # secondary NIC
           sudo -g libvirt virsh -c qemu:///system attach-interface sunbeam-single-node.localdomain \
-              network sunbeam-virbr0 \
+              network sunbeam-virbr1 \
               --model virtio --config
 
           sudo -g libvirt virsh -c qemu:///system start sunbeam-single-node.localdomain
@@ -257,7 +257,7 @@ jobs:
               sunbeambr0_ip="$(lxc network show sunbeambr0 | grep ipv4.address: | awk '\''{print $2}'\'' | cut -d / -f1)"
               deployment="$(sunbeam deployment list --format yaml | grep active: | awk '\''{print $2}'\'')"
               juju show-cloud -c sunbeam-controller "${deployment}-k8s"
-              sed -i -e "s/${sunbeambr0_ip}/192.168.124.21/" ~/.local/share/juju/clouds.yaml
+              sed -i -e "s/${sunbeambr0_ip}/10.1.124.21/" ~/.local/share/juju/clouds.yaml
               juju update-cloud -c sunbeam-controller "${deployment}-k8s"
               juju show-cloud -c sunbeam-controller "${deployment}-k8s"
           '
