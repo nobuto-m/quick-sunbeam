@@ -295,6 +295,8 @@ jobs:
         run: |
           # TODO: collect logs
           ssh sunbeam-single-node -t -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
+          # LP: #2100739
+          ssh sunbeam-single-node -t -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
           # LP: #2098851
           #echo '- https://launchpad.net/bugs/2098851' >> "$GITHUB_STEP_SUMMARY"
           #ssh sunbeam-single-node -- juju run -m openstack tempest/leader get-lists
