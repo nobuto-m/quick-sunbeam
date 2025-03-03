@@ -40,7 +40,7 @@ defaults:
     # act doesn't show a good summary of elapsed time of each step, and
     # having an unnecessary `bash -e -c` at the beginning is for
     # actionlint to activate shellcheck.
-    shell: bash -e -c "/usr/bin/time -f \"\nStep total time:\t%E\" bash -ex {0}"
+    shell: bash -e -c "date --utc -Isec; /usr/bin/time -f \"\nStep total time:\t%E\" bash -ex {0}"
 
 jobs:
   actionlint:
