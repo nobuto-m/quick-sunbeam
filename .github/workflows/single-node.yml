@@ -152,7 +152,7 @@ jobs:
         run: |
           # FIXME: the requirement of FQDN is not documented well in each tutorial
           sudo -g libvirt uvt-kvm destroy sunbeam-single-node.localdomain || true
-          ssh-keygen -R 10.1.124.21 || true
+          ssh-keygen -R 10.1.0.21 || true
       - name: Prepare a machine
         run: |
           sudo -g libvirt uvt-kvm create \
@@ -178,13 +178,13 @@ jobs:
                 dhcp6: false
                 accept-ra: false
                 addresses:
-                  - 10.1.124.21/24
+                  - 10.1.0.21/24
                 routes:
                   - to: default
-                    via: 10.1.124.1
+                    via: 10.1.0.1
                 nameservers:
                   addresses:
-                    - 10.1.124.1
+                    - 10.1.0.1
           EOF
 
           # secondary NIC
@@ -257,7 +257,7 @@ jobs:
               sunbeambr0_ip="$(lxc network show sunbeambr0 | grep ipv4.address: | awk '\''{print $2}'\'' | cut -d / -f1)"
               deployment="$(sunbeam deployment list --format yaml | grep active: | awk '\''{print $2}'\'')"
               juju show-cloud -c sunbeam-controller "${deployment}-k8s"
-              sed -i -e "s/${sunbeambr0_ip}/10.1.124.21/" ~/.local/share/juju/clouds.yaml
+              sed -i -e "s/${sunbeambr0_ip}/10.1.0.21/" ~/.local/share/juju/clouds.yaml
               juju update-cloud -c sunbeam-controller "${deployment}-k8s"
               juju show-cloud -c sunbeam-controller "${deployment}-k8s"
           '
