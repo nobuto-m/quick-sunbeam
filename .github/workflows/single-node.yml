@@ -294,6 +294,13 @@ jobs:
       - name: Run Tempest smoke tests
         run: |
           # TODO: collect logs
+          # debugging for LP: #2100739
+          ssh sunbeam-single-node -- juju show-unit -m openstack tempest/0 | grep leader_ready || true
+          ssh sunbeam-single-node -- juju ssh -m openstack --container tempest tempest/0 'ls -alF /var/lib/tempest/workspace/'
+          ssh sunbeam-single-node -t -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
+          sleep 6m  # more than the update-status hook interval
+          ssh sunbeam-single-node -- juju show-unit -m openstack tempest/0 | grep leader_ready || true
+          ssh sunbeam-single-node -- juju ssh -m openstack --container tempest tempest/0 'ls -alF /var/lib/tempest/workspace/'
           ssh sunbeam-single-node -t -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
           # LP: #2098851
           #echo '- https://launchpad.net/bugs/2098851' >> "$GITHUB_STEP_SUMMARY"
