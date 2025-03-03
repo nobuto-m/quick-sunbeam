@@ -217,7 +217,6 @@ jobs:
       - name: Sunbeam - Prepare manifest file
         run: |
           if [ "$USE_WORKAROUND" = true ]; then
-              echo '- https://launchpad.net/bugs/2098438' >> "$GITHUB_STEP_SUMMARY"
               echo '- https://launchpad.net/bugs/2098823' >> "$GITHUB_STEP_SUMMARY"
           fi
           j2 -f yaml -o ./manifest.yaml .github/assets/workflows/single-node/manifest.yaml.j2 - <<EOF
