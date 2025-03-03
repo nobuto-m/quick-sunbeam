@@ -50,6 +50,14 @@ multi-node:
 		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
 		-W .github/workflows/$(@).yml
 
+.PHONY: multi-node-without-workaround
+multi-node-without-workaround:
+	/usr/bin/time -f 'Workflow total time:\t%E' act \
+		-P self-hosted=-self-hosted \
+		--artifact-server-path .artifacts/$(@)/$$(date -u -Isec) \
+		-W .github/workflows/multi-node.yml \
+		--input use_workaround=false
+
 .PHONY: multi-node-minimal-with-cpu-overcommit
 multi-node-minimal-with-cpu-overcommit:
 	/usr/bin/time -f 'Workflow total time:\t%E' act \
