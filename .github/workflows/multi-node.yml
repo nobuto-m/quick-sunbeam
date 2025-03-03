@@ -276,17 +276,9 @@ jobs:
           # Also, without -t, somehow add-k8s command gets stuck in act env
           # although it doesn't happen in GitHub runner.
           # without -tt, GitHub runner's log should be quiet.
-          if [ "$USE_WORKAROUND" = true ]; then
-              echo '- https://launchpad.net/bugs/2100289' >> "$GITHUB_STEP_SUMMARY"
-              ssh sunbeam-multi-node-1 -t -- sunbeam cluster bootstrap \
-                  --role control,compute,storage \
-                  --manifest manifest.yaml \
-                  --database single  # LP: #2100289
-          else
-              ssh sunbeam-multi-node-1 -t -- sunbeam cluster bootstrap \
-                  --role control,compute,storage \
-                  --manifest manifest.yaml
-          fi
+          ssh sunbeam-multi-node-1 -t -- sunbeam cluster bootstrap \
+              --role control,compute,storage \
+              --manifest manifest.yaml
       - name: Workaround - destroy localhost controller
         if: ${{ env.USE_WORKAROUND }}
         run: |
