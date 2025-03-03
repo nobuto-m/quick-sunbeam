@@ -168,8 +168,8 @@ jobs:
               --network-config /dev/stdin \
               --ssh-public-key-file ~/.ssh/id_ed25519.pub \
               --no-start \
-              sunbeam-single-node.localdomain \
               --password ubuntu \
+              sunbeam-single-node.localdomain \
               release=noble <<EOF
           network:
             version: 2
