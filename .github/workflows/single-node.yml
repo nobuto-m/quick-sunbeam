@@ -294,7 +294,7 @@ jobs:
       - name: Run Tempest smoke tests
         run: |
           # TODO: collect logs
-          ssh sunbeam-single-node -t -- sunbeam validation run smoke --output ./tempest-validation.log
+          ssh sunbeam-single-node -t -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
           # LP: #2098851
           #echo '- https://launchpad.net/bugs/2098851' >> "$GITHUB_STEP_SUMMARY"
           #ssh sunbeam-single-node -- juju run -m openstack tempest/leader get-lists
@@ -326,7 +326,6 @@ jobs:
               set -x
               mkdir logs
               cd logs/
-              pwd
               rsync -arv ~/snap/openstack/common/logs/ snap_openstack_common_logs/
               cp -v ../tempest-validation.log .
               sunbeam cluster list | tee sunbeam_cluster_list.txt

@@ -73,6 +73,8 @@ core:
       gateway: 192.168.124.1
       # External network's allocation range
       # VMs intended to be accessed from remote hosts will be assigned dedicated addresses from a portion of the physical network (outside OpenStack). Takes the form of an IP range.
+      # LP: #2098823
+      #range: 192.168.124.231-192.168.124.240
       range: 192.168.124.231-192.168.124.250
       # External network's type [flat/vlan]
       # Type of network to use for external access.
@@ -130,10 +132,6 @@ core:
       scale_args: []
       destroy_args: []
     charms:
-      cinder-ceph-k8s:
-        channel: 2024.1/edge
-        revision: null
-        config: null
       cinder-k8s:
         channel: 2024.1/edge
         revision: null
@@ -225,12 +223,22 @@ core:
         channel: latest/edge
         revision: null
         config: null
+      cinder-volume:
+        channel: 2024.1/edge
+        revision: null
+        config: null
+      cinder-volume-ceph:
+        channel: 2024.1/edge
+        revision: null
+        config: null
   #   terraform:
   #     sunbeam-machine-plan:
   #       source: null
   #     k8s-plan:
   #       source: null
   #     microceph-plan:
+  #       source: null
+  #     cinder-volume-plan:
   #       source: null
   #     openstack-plan:
   #       source: null
