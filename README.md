@@ -40,6 +40,7 @@ The CIDR is hardcoded on purpose for simplicity.
 | .181-.220 | (additional range for Tempest plugin)  |
 | .221-.230 | flat network range: single-node        |
 | .231-.240 | flat network range: multi-node         |
+| .241-.250 | (additional range for Tempest plugin)  |
 
 
 ## Prep
