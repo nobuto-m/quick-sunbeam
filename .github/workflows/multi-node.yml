@@ -399,7 +399,8 @@ jobs:
       - name: Run Tempest RefStack
         run: |
           # TODO: collect logs
-          ssh sunbeam-multi-node-1 -t -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
+          # LP: #2100739
+          ssh sunbeam-multi-node-1 -t -- sunbeam validation run smoke --output ./validation.log | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Smoke testing - Host reboots
         run: |
           for i in {1..3}; do
@@ -429,7 +430,7 @@ jobs:
                   mkdir logs
                   cd logs/
                   rsync -arv ~/snap/openstack/common/logs/ snap_openstack_common_logs/
-                  cp -v ../tempest-validation.log .
+                  cp -v ../validation.log .
                   sunbeam cluster list | tee sunbeam_cluster_list.txt
                   sudo microceph status | tee microceph_status.txt
                   sudo microceph disk list | tee microceph_disk_list.txt
