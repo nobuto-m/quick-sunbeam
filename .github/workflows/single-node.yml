@@ -295,9 +295,7 @@ jobs:
         run: |
           # TODO: collect logs
           # debugging for LP: #2100739
-          ssh sunbeam-single-node -- juju status -m sunbeam-controller:sunbeam-single-node.localdomain/openstack
-          ssh sunbeam-single-node -- juju status -m sunbeam-controller:sunbeam-single-node.localdomain/openstack
-          ssh sunbeam-single-node -- juju models
+          ssh sunbeam-single-node -- juju scp --model sunbeam-controller:sunbeam-single-node.localdomain/openstack --container tempest tempest/0:/var/lib/tempest/workspace/tempest-validation.log ./tempest-validation.log
           ssh sunbeam-single-node -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
           sleep 6m  # more than the update-status hook interval
           ssh sunbeam-single-node -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
