@@ -402,7 +402,7 @@ jobs:
           if [ "$USE_WORKAROUND" = true ]; then
               echo '- https://launchpad.net/bugs/2100739' >> "$GITHUB_STEP_SUMMARY"
               # just talk to a controller once
-              juju models
+              ssh sunbeam-multi-node-1 -- juju models
           fi
           set -o pipefail
           ssh sunbeam-multi-node-1 -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
