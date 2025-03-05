@@ -326,7 +326,7 @@ jobs:
               sudo ceph config set global osd_pool_default_pg_autoscale_mode warn
               sudo ceph osd pool ls | xargs -t -I{} sudo ceph osd pool set {} pg_autoscale_mode warn
               sudo ceph osd pool set glance pg_num 32
-              sudo ceph osd pool set cinder-ceph pg_num 32
+              sudo ceph osd pool set cinder-volume-ceph pg_num 32
           '
       - name: Sunbeam - Create registration tokens for the second and the third machines
         run: |
