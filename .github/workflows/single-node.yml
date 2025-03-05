@@ -61,7 +61,7 @@ jobs:
               .github/workflows/single-node.yml
   single-node-how-to:
     name: Single-node How-to Guide
-    runs-on: [self-hosted, linux, AMD64, X64, testflinger, jammy]
+    runs-on: [self-hosted, testflinger]
     needs: actionlint
     steps:
       - uses: actions/checkout@v4
