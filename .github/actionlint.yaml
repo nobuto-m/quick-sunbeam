@@ -1,7 +1,9 @@
 self-hosted-runner:
   labels:
     - AMD64
+    - jammy
     - noble
     - medium
     - large
     - xlarge
+    - testflinger
