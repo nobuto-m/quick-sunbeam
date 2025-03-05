@@ -313,7 +313,7 @@ jobs:
               sleep 5m
               source demo-openrc
               ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam -l ubuntu \
-                  "$(openstack server show test-after-reboot --format yaml | grep -E -o 192\.168\.124\.[0-9]+)" -- systemctl is-system-running --wait
+                  "$(openstack server show test-after-reboot --format yaml | grep -E -o '\''192\.168\.124\.[0-9]+'\'')" -- systemctl is-system-running --wait
           '
       - name: Run Tempest smoke tests again
         run: |
