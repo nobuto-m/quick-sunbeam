@@ -396,10 +396,16 @@ jobs:
       - name: Enable Tempest
         run: |
           ssh sunbeam-multi-node-1 -t -- sunbeam enable validation
-      - name: Run Tempest RefStack
+      - name: Run Tempest smoke tests
         run: |
-          # TODO: collect logs
-          ssh sunbeam-multi-node-1 -t -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
+          # LP: #2100739
+          if [ "$USE_WORKAROUND" = true ]; then
+              echo '- https://launchpad.net/bugs/2100739' >> "$GITHUB_STEP_SUMMARY"
+              # just talk to a controller once
+              juju models
+          fi
+          set -o pipefail
+          ssh sunbeam-multi-node-1 -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Smoke testing - Host reboots
         run: |
           for i in {1..3}; do
@@ -416,9 +422,10 @@ jobs:
               ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam -l ubuntu \
                   "$(openstack server show test-after-reboot --format yaml | grep -E -o 192\.168\.124\.[0-9]+)" -- systemctl is-system-running --wait
           '
-      - name: Run Tempest RefStack again
+      - name: Run Tempest smoke tests again
         run: |
-          ssh sunbeam-multi-node-1 -t -- sunbeam validation run refstack
+          set -o pipefail
+          ssh sunbeam-multi-node-1 -- sunbeam validation run smoke --output ./tempest-validation_after-reboot.log | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Collect logs
         if: ${{ always() }}
         run: |
@@ -429,7 +436,7 @@ jobs:
                   mkdir logs
                   cd logs/
                   rsync -arv ~/snap/openstack/common/logs/ snap_openstack_common_logs/
-                  cp -v ../tempest-validation.log .
+                  cp -v ../tempest-validation*.log .
                   sunbeam cluster list | tee sunbeam_cluster_list.txt
                   sudo microceph status | tee microceph_status.txt
                   sudo microceph disk list | tee microceph_disk_list.txt
