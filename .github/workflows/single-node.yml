@@ -356,7 +356,7 @@ jobs:
           set +e
           ssh sunbeam-single-node -- '
               set -x
-              sudo sos report --batch --all-logs --tmp-dir .
+              sudo sos report -q --batch --all-logs --tmp-dir .
               sudo chown $USER: sosreport-*.tar.xz
           '
           scp sunbeam-single-node:sosreport-*.tar.xz .
