@@ -66,6 +66,10 @@ Use `act` command direcly or use an example in the Makefile, e.g.
 ```bash
 make single-node
 ```
+or
+```bash
+make multi-node
+```
 
 
 ## Misc
