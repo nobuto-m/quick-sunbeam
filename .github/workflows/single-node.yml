@@ -294,6 +294,8 @@ jobs:
       - name: Run Tempest smoke tests
         run: |
           # LP: #2100739
+          # TODO: remove debug
+          ssh sunbeam-single-node -- 'juju scp --model openstack --show-log --logging-config "<root>=TRACE" --container tempest tempest/0:/var/lib/tempest/workspace/tempest-validation.log ./tempest-validation.log'
           if [ "$USE_WORKAROUND" = true ]; then
               echo '- https://launchpad.net/bugs/2100739' >> "$GITHUB_STEP_SUMMARY"
               # just talk to a controller once
