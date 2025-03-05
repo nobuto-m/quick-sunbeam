@@ -464,7 +464,7 @@ jobs:
           for i in {1..3}; do
               ssh "sunbeam-multi-node-${i}" -- '
                   set -x
-                  sudo sos report --batch --all-logs --tmp-dir .
+                  sudo sos report -q --batch --all-logs --tmp-dir .
                   sudo chown $USER: sosreport-*.tar.xz
               '
               scp "sunbeam-multi-node-${i}:sosreport-*.tar.xz" .
