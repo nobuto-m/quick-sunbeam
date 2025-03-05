@@ -293,23 +293,14 @@ jobs:
           ssh sunbeam-single-node -t -- sunbeam enable validation
       - name: Run Tempest smoke tests
         run: |
-          # TODO: collect logs
-          # debugging for LP: #2100739
-          set +e
-          ssh sunbeam-single-node -- 'juju scp --model sunbeam-controller:sunbeam-single-node.localdomain/openstack --show-log --logging-config "<root>=TRACE" --container tempest tempest/0:/var/lib/tempest/workspace/tempest-validation.log ./tempest-validation.log'
-          ssh sunbeam-single-node -- 'juju scp --model sunbeam-controller:sunbeam-single-node.localdomain/openstack --show-log --logging-config "<root>=TRACE" --container tempest tempest/0:/var/lib/tempest/workspace/tempest-validation.log ./tempest-validation.log'
-          ssh sunbeam-single-node -- juju models
-          ssh sunbeam-single-node -- 'juju scp --model sunbeam-controller:sunbeam-single-node.localdomain/openstack --show-log --logging-config "<root>=TRACE" --container tempest tempest/0:/var/lib/tempest/workspace/tempest-validation.log ./tempest-validation.log'
-          exit 1
+          # LP: #2100739
+          if [ "$USE_WORKAROUND" = true ]; then
+              echo '- https://launchpad.net/bugs/2100739' >> "$GITHUB_STEP_SUMMARY"
+              # just talk to a controller once
+              juju models
+          fi
+          set -o pipefail
           ssh sunbeam-single-node -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
-          sleep 6m  # more than the update-status hook interval
-          ssh sunbeam-single-node -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
-          # LP: #2098851
-          #echo '- https://launchpad.net/bugs/2098851' >> "$GITHUB_STEP_SUMMARY"
-          #ssh sunbeam-single-node -- juju run -m openstack tempest/leader get-lists
-          #ssh sunbeam-single-node -- juju run -m openstack tempest/leader validate test-list=refstack-2022.11 serial=true --wait=30m
-          #ssh sunbeam-single-node -- juju scp -m openstack --container tempest tempest/0:/var/lib/tempest/workspace/tempest-validation.log ./tempest-validation.log
-          # TODO: check the output
       - name: Smoke testing - Host reboot
         run: |
           ssh sunbeam-single-node -- sudo reboot
@@ -324,9 +315,10 @@ jobs:
               ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam -l ubuntu \
                   "$(openstack server show test-after-reboot --format yaml | grep -E -o 192\.168\.124\.[0-9]+)" -- systemctl is-system-running --wait
           '
-      - name: Run Tempest RefStack again
+      - name: Run Tempest smoke tests again
         run: |
-          ssh sunbeam-single-node -t -- sunbeam validation run refstack
+          set -o pipefail
+          ssh sunbeam-single-node -- sunbeam validation run smoke --output ./tempest-validation_after-reboot.log | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Collect logs
         if: ${{ always() }}
         run: |
@@ -336,7 +328,7 @@ jobs:
               mkdir logs
               cd logs/
               rsync -arv ~/snap/openstack/common/logs/ snap_openstack_common_logs/
-              cp -v ../tempest-validation.log .
+              cp -v ../tempest-validation*.log .
               sunbeam cluster list | tee sunbeam_cluster_list.txt
               sudo microceph status | tee microceph_status.txt
               sudo microceph disk list | tee microceph_disk_list.txt
