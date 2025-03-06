@@ -26,7 +26,7 @@ The CIDR is hardcoded on purpose for simplicity.
 |-----------|----------------------------------------|
 | .1        | Gateway, DNS (the host)                |
 |           |                                        |
-| .6        | HTTP Proxy (the host)                  |
+| .6        | HTTP Proxy (the host) TODO             |
 |           |                                        |
 | .21       | sunbeam-single-node                    |
 |           |                                        |
