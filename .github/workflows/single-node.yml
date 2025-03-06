@@ -291,7 +291,7 @@ jobs:
       - name: Enable Tempest
         run: |
           ssh sunbeam-single-node -t -- sunbeam enable validation
-      - name: Run Tempest smoke tests
+      - name: Run Tempest tests
         run: |
           # LP: #2100739
           if [ "$USE_WORKAROUND" = true ]; then
@@ -300,7 +300,7 @@ jobs:
               ssh sunbeam-single-node -- juju models
           fi
           set -o pipefail
-          ssh sunbeam-single-node -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
+          ssh sunbeam-single-node -- sunbeam validation run --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Smoke testing - Host reboot
         run: |
           ssh sunbeam-single-node -- sudo reboot
@@ -315,10 +315,10 @@ jobs:
               ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam -l ubuntu \
                   "$(openstack server show test-after-reboot --format yaml | grep -E -o '\''192\.168\.124\.[0-9]+'\'')" -- systemctl is-system-running --wait
           '
-      - name: Run Tempest smoke tests again
+      - name: Run Tempest tests again
         run: |
           set -o pipefail
-          ssh sunbeam-single-node -- sunbeam validation run smoke --output ./tempest-validation_after-reboot.log | tee -a "$GITHUB_STEP_SUMMARY"
+          ssh sunbeam-single-node -- sunbeam validation run --output ./tempest-validation_after-reboot.log | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Collect logs
         if: ${{ always() }}
         run: |
