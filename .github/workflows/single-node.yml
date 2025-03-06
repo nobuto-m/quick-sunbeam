@@ -294,15 +294,10 @@ jobs:
       - name: Run Tempest smoke tests
         run: |
           # LP: #2100739
-          # TODO: remove debug
           if [ "$USE_WORKAROUND" = true ]; then
               echo '- https://launchpad.net/bugs/2100739' >> "$GITHUB_STEP_SUMMARY"
               # just talk to a controller once
-              ssh sunbeam-single-node -- '
-                  cp -av ~/.local/share/juju{,.bak}
-                  juju models
-                  diff -Nru ~/.local/share/juju{.bak,} || true
-              '
+              ssh sunbeam-single-node -- juju models
           fi
           set -o pipefail
           ssh sunbeam-single-node -- sunbeam validation run smoke --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
