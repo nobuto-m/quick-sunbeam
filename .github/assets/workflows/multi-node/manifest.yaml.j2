@@ -94,10 +94,8 @@ core:
         {% if not use_workaround %}
         osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
         {% else %}
-        # LP: #2095570
-        #osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
-        # LP: #2098626
-        osd_devices: '/dev/sda'
+        # https://github.com/canonical/microceph/issues/506
+        osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
         {% endif %}
       sunbeam-multi-node-2.localdomain:
         # Ceph devices
@@ -105,10 +103,8 @@ core:
         {% if not use_workaround %}
         osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
         {% else %}
-        # LP: #2095570
-        #osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
-        # LP: #2098626
-        osd_devices: '/dev/sda'
+        # https://github.com/canonical/microceph/issues/506
+        osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
         {% endif %}
       sunbeam-multi-node-3.localdomain:
         # Ceph devices
@@ -116,10 +112,8 @@ core:
         {% if not use_workaround %}
         osd_devices: '/dev/disk/by-path/virtio-pci-0000:06:00.0'  # /dev/vdc
         {% else %}
-        # LP: #2095570
-        #osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
-        # LP: #2098626
-        osd_devices: '/dev/sda'
+        # https://github.com/canonical/microceph/issues/506
+        osd_devices: '/dev/disk/by-path/pci-0000:00:1f.2-ata-1'  # /dev/sda
         {% endif %}
   software:
     juju:
