@@ -302,6 +302,7 @@ jobs:
           set -o pipefail
           ssh sunbeam-single-node -- sunbeam validation run --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Smoke testing - Host reboot
+        if: ${{ !env.SKIP_REBOOT_TEST }}
         run: |
           ssh sunbeam-single-node -- sudo reboot
           # wait some time to settle
@@ -316,6 +317,7 @@ jobs:
                   "$(openstack server show test-after-reboot --format yaml | grep -E -o '\''192\.168\.124\.[0-9]+'\'')" -- systemctl is-system-running --wait
           '
       - name: Run Tempest tests again
+        if: ${{ !env.SKIP_REBOOT_TEST }}
         run: |
           set -o pipefail
           ssh sunbeam-single-node -- sunbeam validation run --output ./tempest-validation_after-reboot.log | tee -a "$GITHUB_STEP_SUMMARY"
