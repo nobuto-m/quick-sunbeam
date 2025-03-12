@@ -1,21 +1,38 @@
-name: Submit a test job to Testflinger
+name: Submit a job to Testflinger
+
 on:
   workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   testflinger-submit:
     runs-on: [self-hosted, testflinger]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      - name: Pack the repository
+        run: |
+          tar acvf repository.tar.gz "$GITHUB_WORKSPACE"
       - name: Submit job
         uses: canonical/testflinger/.github/actions/submit@main
         with:
           poll: true
           job: |
             job_queue: beldam
+            provision_data:
+              # noble has duplicate deb line warnings
+              distro: jammy
+              kernel: hwe-22.04
             test_data:
+              attachments:
+                - local: repository.tar.gz
               test_cmds: |
-                #!/usr/bin/env bash
                 set -x
                 pwd
+                env
+                tar xvf ./attachments/repository.tar.gz
                 ls -alR
+                false
+                echo 'false was ignored'
