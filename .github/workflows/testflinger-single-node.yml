@@ -7,7 +7,8 @@ permissions:
   contents: read
 
 jobs:
-  testflinger-submit:
+  testflinger-single-node-how-to:
+    name: Testflinger - Single-node How-to Guide
     runs-on: [self-hosted, testflinger]
     steps:
       - name: Checkout repo
