@@ -27,7 +27,7 @@ jobs:
               # noble has duplicate deb line warnings
               distro: noble
               #kernel: hwe-24.04
-            output_timeout: 5400  # 90 min
+            output_timeout: 7200  # 120 min
             test_data:
               attachments:
                 - local: repository.tar.gz
