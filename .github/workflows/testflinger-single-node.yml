@@ -32,8 +32,9 @@ jobs:
                 - local: repository.tar.gz
               test_cmds: |
                 set -ex
-                ps faux
-                tar xvf ./attachments/test/repository.tar.gz
+                tar xf ./attachments/test/repository.tar.gz
                 cd repository/
+                sudo apt-get update
+                sudo apt-get install -y iproute2
                 make prerequisites
                 make single-node
