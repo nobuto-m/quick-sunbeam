@@ -1,4 +1,4 @@
-name: Submit a job to Testflinger
+name: Testflinger - Single-node How-to Guide
 
 on:
   workflow_dispatch:
