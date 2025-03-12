@@ -1,5 +1,5 @@
-[![Single-node How-to Guide](../../actions/workflows/single-node.yml/badge.svg)](../../actions/workflows/single-node.yml)  
-[![Multi-node How-to Guide](../../actions/workflows/multi-node.yml/badge.svg)](../../actions/workflows/multi-node.yml)
+[![Testflinger - Single-node How-to Guide](../../actions/workflows/testflinger-single-node.yml/badge.svg)](../../actions/workflows/testflinger-single-node.yml)  
+[![Testflinger - Multi-node How-to Guide](../../actions/workflows/testflinger-multi-node.yml/badge.svg)](../../actions/workflows/testflinger-multi-node.yml)
 
 ## Disclaimer
 
