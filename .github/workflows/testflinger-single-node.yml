@@ -32,8 +32,8 @@ jobs:
                 - local: repository.tar.gz
               test_cmds: |
                 set -ex
-                scp ./attachments/test/repository.tar.gz "ubuntu@$DEVICE_IP:"
-                ssh -t "ubuntu@$DEVICE_IP" '
+                scp ./attachments/test/repository.tar.gz "ubuntu@\${DEVICE_IP}:"
+                ssh -t "ubuntu@\${DEVICE_IP}" '
                     set -ex
                     tar xf repository.tar.gz
                     cd repository/
