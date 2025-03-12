@@ -33,8 +33,12 @@ jobs:
               test_cmds: |
                 set -ex
                 tar xf ./attachments/test/repository.tar.gz
-                cd repository/
-                sudo apt-get update
-                sudo apt-get install -y iproute2
-                make prerequisites
-                make single-node
+                rsync -avr repository/ "ubuntu@$DEVICE_IP:repository/"
+                ssh -t "ubuntu@$DEVICE_IP" '
+                    set -ex
+                    cd repository/
+                    sudo apt-get update
+                    sudo apt-get install -y make
+                    make prerequisites
+                    make single-node
+                '
