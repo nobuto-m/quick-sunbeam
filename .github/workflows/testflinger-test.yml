@@ -31,10 +31,17 @@ jobs:
               attachments:
                 - local: repository.tar.gz
               test_cmds: |
-                set -x
+                set -ex
                 pwd
+                whoami
                 env
-                tar xvf ./attachments/repository.tar.gz
+                ps aux | grep $$ || true
+                tar xvf ./attachments/test/repository.tar.gz
                 ls -alR
+                cd repository/
+                sudo apt-get update
+                sudo apt-get install -y make
+                make prerequisites
+                make single-node
                 false
                 echo 'false was ignored'
