@@ -16,7 +16,7 @@ jobs:
           path: repository
       - name: Pack the repository
         run: |
-          tar acvf repository.tar.gz repository/
+          tar acf repository.tar.gz repository/
       - name: Submit job
         uses: canonical/testflinger/.github/actions/submit@main
         with:
@@ -38,10 +38,11 @@ jobs:
                     set -ex
                     tar xf repository.tar.gz
                     cd repository/
-                    sudo apt-get update
-                    sudo apt-get install -y make
+                    sudo apt-get -q update
+                    sudo apt-get -q install -y make
                     make prerequisites
-                    export PATH="\$HOME/.local/bin:\$PATH"
+                    # include ~/.local/bin in PATH
+                    source  ~/.profile
                     make single-node
                 '
                 # TODO: scp artifacts
