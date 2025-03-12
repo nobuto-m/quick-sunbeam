@@ -32,10 +32,10 @@ jobs:
                 - local: repository.tar.gz
               test_cmds: |
                 set -ex
-                tar xf ./attachments/test/repository.tar.gz
-                rsync -avr repository/ "ubuntu@$DEVICE_IP:repository/"
+                scp ./attachments/test/repository.tar.gz "ubuntu@$DEVICE_IP:"
                 ssh -t "ubuntu@$DEVICE_IP" '
                     set -ex
+                    tar xf repository.tar.gz
                     cd repository/
                     sudo apt-get update
                     sudo apt-get install -y make
