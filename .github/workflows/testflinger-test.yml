@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          - path: repository
+          path: repository
       - name: Pack the repository
         run: |
           tar acvf repository.tar.gz repository/
