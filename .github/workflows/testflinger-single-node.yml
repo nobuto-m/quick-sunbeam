@@ -26,7 +26,7 @@ jobs:
             provision_data:
               # noble has duplicate deb line warnings
               distro: noble
-              kernel: hwe-24.04
+              #kernel: hwe-24.04
             test_data:
               attachments:
                 - local: repository.tar.gz
