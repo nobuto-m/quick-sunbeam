@@ -25,23 +25,15 @@ jobs:
             job_queue: beldam
             provision_data:
               # noble has duplicate deb line warnings
-              distro: jammy
-              kernel: hwe-22.04
+              distro: noble
+              kernel: hwe-24.04
             test_data:
               attachments:
                 - local: repository.tar.gz
               test_cmds: |
                 set -ex
-                pwd
-                whoami
-                env
-                ps aux | grep $$ || true
+                ps faux
                 tar xvf ./attachments/test/repository.tar.gz
-                ls -alR
                 cd repository/
-                sudo apt-get update
-                sudo apt-get install -y make
                 make prerequisites
                 make single-node
-                false
-                echo 'false was ignored'
