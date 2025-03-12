@@ -12,9 +12,11 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          - path: repository
       - name: Pack the repository
         run: |
-          tar acvf repository.tar.gz "$GITHUB_WORKSPACE"
+          tar acvf repository.tar.gz repository/
       - name: Submit job
         uses: canonical/testflinger/.github/actions/submit@main
         with:
