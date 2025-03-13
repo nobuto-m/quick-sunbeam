@@ -1,4 +1,4 @@
-name: Testflinger - Single-node How-to Guide
+name: Testflinger - Single-node
 
 on:
   workflow_dispatch:
