@@ -35,15 +35,14 @@ jobs:
               test_cmds: |
                 set -ex
                 scp ./attachments/test/repository.tar.gz "ubuntu@\${DEVICE_IP}:"
-                ssh -t "ubuntu@\${DEVICE_IP}" '
+                ssh "ubuntu@\${DEVICE_IP}" '
                     set -ex
                     tar xf repository.tar.gz
                     cd repository/
                     # LP: #2093303
                     sudo mv -v /etc/apt/sources.list{,.bak}
-                    echo '\''\$nrconf{verbosity} = 0;'\'' | sudo tee /etc/needrestart/conf.d/quiet.conf
-                    sudo apt-get -q update
-                    sudo apt-get -q install -y make
+                    sudo apt-get update
+                    sudo apt-get install -y make
                     make prerequisites
                     # include ~/.local/bin in PATH
                     source  ~/.profile
