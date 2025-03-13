@@ -272,7 +272,7 @@ jobs:
           # Also, without -t, somehow add-k8s command gets stuck in act env
           # although it doesn't happen in GitHub runner.
           # without -tt, GitHub runner's log should be quiet.
-          ssh sunbeam-multi-node-1 -- sunbeam cluster bootstrap \
+          ssh sunbeam-multi-node-1 -t -- sunbeam cluster bootstrap \
               --role control,compute,storage \
               --manifest manifest.yaml
       - name: Workaround - destroy localhost controller
@@ -305,7 +305,7 @@ jobs:
           ssh sunbeam-multi-node-1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
       - name: Sunbeam - Configure the cloud
         run: |
-          ssh sunbeam-multi-node-1 -- sunbeam configure --openrc demo-openrc
+          ssh sunbeam-multi-node-1 -t -- sunbeam configure --openrc demo-openrc
       - name: Workaround - reset PG num
         if: ${{ env.USE_WORKAROUND }}
         run: |
@@ -328,7 +328,7 @@ jobs:
       - name: Sunbeam - Create registration tokens for the second and the third machines
         run: |
           for i in {2..3}; do
-              ssh sunbeam-multi-node-1 -- sunbeam cluster add "sunbeam-multi-node-${i}.localdomain" --output "sunbeam-multi-node-${i}.asc"
+              ssh sunbeam-multi-node-1 -t -- sunbeam cluster add "sunbeam-multi-node-${i}.localdomain" --output "sunbeam-multi-node-${i}.asc"
           done
       - name: Sunbeam - Prepare the second and the third machines
         run: |
@@ -340,7 +340,7 @@ jobs:
         run: |
           for i in {2..3}; do
               scp sunbeam-multi-node-1:"sunbeam-multi-node-${i}.asc" "sunbeam-multi-node-${i}:"
-              ssh "sunbeam-multi-node-${i}" -- "cat 'sunbeam-multi-node-${i}.asc' | sunbeam cluster join --role control,compute,storage -"
+              ssh "sunbeam-multi-node-${i}" -t -- "cat 'sunbeam-multi-node-${i}.asc' | sunbeam cluster join --role control,compute,storage -"
           done
       - name: Workaround - Check Ceph status before moving on
         if: ${{ env.USE_WORKAROUND }}
@@ -365,15 +365,15 @@ jobs:
           # LP: #2065469
           if [ "$USE_WORKAROUND" = true ]; then
               echo '- https://launchpad.net/bugs/2065469' >> "$GITHUB_STEP_SUMMARY"
-              ssh sunbeam-multi-node-1 -- sunbeam cluster resize \
+              ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize \
               || \
-              ssh sunbeam-multi-node-1 -- sunbeam cluster resize
+              ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize
           else
-              ssh sunbeam-multi-node-1 -- sunbeam cluster resize
+              ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize
           fi
       - name: Sunbeam - Launch a VM
         run: |
-          ssh sunbeam-multi-node-1 -- sunbeam launch ubuntu --name test
+          ssh sunbeam-multi-node-1 -t -- sunbeam launch ubuntu --name test
       - name: Sunbeam - Connect to the VM
         run: |
           # The cloud-init process inside the VM takes ~2 minutes to bring up the
@@ -388,11 +388,11 @@ jobs:
       - name: Save admin-openrc
         run: |
           for i in {1..3}; do
-              ssh "sunbeam-multi-node-${i}" -- 'sunbeam openrc > admin-openrc'
+              ssh "sunbeam-multi-node-${i}" -t -- 'sunbeam openrc > admin-openrc'
           done
       - name: Enable Tempest
         run: |
-          ssh sunbeam-multi-node-1 -- sunbeam enable validation
+          ssh sunbeam-multi-node-1 -t -- sunbeam enable validation
       - name: Run Tempest tests
         run: |
           # LP: #2100739
@@ -411,7 +411,7 @@ jobs:
               # wait some time to settle
               sleep 15m
           done
-          ssh sunbeam-multi-node-1 -- '
+          ssh sunbeam-multi-node-1 -t -- '
               set -ex
               uptime -p
               sunbeam launch ubuntu --name test-after-reboot

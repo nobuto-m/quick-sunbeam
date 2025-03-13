@@ -234,7 +234,7 @@ jobs:
           # Also, without -t, somehow add-k8s command gets stuck in act env
           # although it doesn't happen in GitHub runner.
           # without -tt, GitHub runner's log should be quiet.
-          ssh sunbeam-single-node -- sunbeam cluster bootstrap \
+          ssh sunbeam-single-node -t -- sunbeam cluster bootstrap \
               --role control,compute,storage \
               --manifest manifest.yaml
       - name: Workaround - destroy localhost controller
@@ -262,10 +262,10 @@ jobs:
           ssh sunbeam-single-node -- lxc network delete sunbeambr0
       - name: Sunbeam - Configure the cloud
         run: |
-          ssh sunbeam-single-node -- sunbeam configure --openrc demo-openrc
+          ssh sunbeam-single-node -t -- sunbeam configure --openrc demo-openrc
       - name: Sunbeam - Launch a VM
         run: |
-          ssh sunbeam-single-node -- sunbeam launch ubuntu --name test
+          ssh sunbeam-single-node -t -- sunbeam launch ubuntu --name test
       - name: Sunbeam - Connect to the VM
         run: |
           # The cloud-init process inside the VM takes ~2 minutes to bring up the
@@ -279,10 +279,10 @@ jobs:
           '
       - name: Save admin-openrc
         run: |
-          ssh sunbeam-single-node -- 'sunbeam openrc > admin-openrc'
+          ssh sunbeam-single-node -t -- 'sunbeam openrc > admin-openrc'
       - name: Enable Tempest
         run: |
-          ssh sunbeam-single-node -- sunbeam enable validation
+          ssh sunbeam-single-node -t -- sunbeam enable validation
       - name: Run Tempest tests
         run: |
           # LP: #2100739
@@ -299,7 +299,7 @@ jobs:
           ssh sunbeam-single-node -- sudo reboot
           # wait some time to settle
           sleep 15m
-          ssh sunbeam-single-node -- '
+          ssh sunbeam-single-node -t -- '
               set -ex
               uptime -p
               sunbeam launch ubuntu --name test-after-reboot
