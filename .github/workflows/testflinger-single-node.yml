@@ -41,7 +41,7 @@ jobs:
                     cd repository/
                     # LP: #2093303
                     sudo mv -v /etc/apt/sources.list{,.bak}
-                    echo '\$nrconf{verbosity} = 0;' | sudo tee /etc/needrestart/conf.d/quiet.conf
+                    echo '\''\$nrconf{verbosity} = 0;'\'' | sudo tee /etc/needrestart/conf.d/quiet.conf
                     sudo apt-get -q update
                     sudo apt-get -q install -y make
                     make prerequisites
