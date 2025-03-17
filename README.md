@@ -37,10 +37,8 @@ The CIDR is hardcoded on purpose for simplicity.
 | .121-.130 | k8s LB range: single-node              |
 | .131-.140 | k8s LB range: multi-node               |
 |           |                                        |
-| .181-.220 | (additional range for Tempest plugin)  |
-| .221-.230 | flat network range: single-node        |
-| .231-.240 | flat network range: multi-node         |
-| .241-.250 | (additional range for Tempest plugin)  |
+| .151-.200 | flat network range: single-node, [LP #2098823](https://bugs.launchpad.net/snap-openstack/+bug/2098823) |
+| .201-.250 | flat network range: multi-node,  [LP #2098823](https://bugs.launchpad.net/snap-openstack/+bug/2098823) |
 
 
 ## Prep
