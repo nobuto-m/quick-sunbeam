@@ -53,9 +53,9 @@ The CIDR is hardcoded on purpose for simplicity.
    sudo apt-get update
    sudo apt-get install -y make
    make prerequisites
+   # make sure ~/.local/bin is in PATH
+   source  ~/.profile
    ```
-
-1. Re-login or re-open an SSH session
 
 ## Run
 
