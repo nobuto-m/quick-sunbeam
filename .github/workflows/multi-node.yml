@@ -325,15 +325,7 @@ jobs:
           done
       - name: Sunbeam - Resize the control plane
         run: |
-          # LP: #2065469
-          if [ "$USE_WORKAROUND" = true ]; then
-              echo '- https://launchpad.net/bugs/2065469' >> "$GITHUB_STEP_SUMMARY"
-              ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize \
-              || \
-              ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize
-          else
-              ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize
-          fi
+          ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize
       - name: Sunbeam - Launch a VM
         run: |
           ssh sunbeam-multi-node-1 -t -- sunbeam launch ubuntu --name test
