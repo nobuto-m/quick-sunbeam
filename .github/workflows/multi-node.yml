@@ -306,25 +306,6 @@ jobs:
       - name: Sunbeam - Configure the cloud
         run: |
           ssh sunbeam-multi-node-1 -t -- sunbeam configure --openrc demo-openrc
-      - name: Workaround - reset PG num
-        if: ${{ env.USE_WORKAROUND }}
-        run: |
-          # LP: #2096923
-          echo '- https://launchpad.net/bugs/2096923' >> "$GITHUB_STEP_SUMMARY"
-          ssh sunbeam-multi-node-1 -- '
-              set -ex
-              sudo microceph status
-              sunbeam cluster list
-
-              sudo ceph status
-              sudo ceph health detail
-              sudo ceph osd pool autoscale-status
-
-              sudo ceph config set global osd_pool_default_pg_autoscale_mode warn
-              sudo ceph osd pool ls | xargs -t -I{} sudo ceph osd pool set {} pg_autoscale_mode warn
-              sudo ceph osd pool set glance pg_num 32
-              sudo ceph osd pool set cinder-volume-ceph pg_num 32
-          '
       - name: Sunbeam - Create registration tokens for the second and the third machines
         run: |
           for i in {2..3}; do
@@ -342,24 +323,6 @@ jobs:
               scp sunbeam-multi-node-1:"sunbeam-multi-node-${i}.asc" "sunbeam-multi-node-${i}:"
               ssh "sunbeam-multi-node-${i}" -t -- "cat 'sunbeam-multi-node-${i}.asc' | sunbeam cluster join --role control,compute,storage -"
           done
-      - name: Workaround - Check Ceph status before moving on
-        if: ${{ env.USE_WORKAROUND }}
-        run: |
-          # LP: #2095570
-          echo '- https://launchpad.net/bugs/2095570' >> "$GITHUB_STEP_SUMMARY"
-          ssh sunbeam-multi-node-1 -- '
-              set -ex
-              sudo microceph status
-              sunbeam cluster list
-
-              sudo ceph status
-              sudo ceph health detail
-              sudo ceph osd pool autoscale-status
-
-              sudo ceph osd tree
-              echo "check the number of OSD hosts and bail out when hosts are not added"
-              [ "$(sudo ceph osd tree --format json | jq '\''.nodes[]|select(.type=="host")'\'' | jq -s length)" -ge 3 ]
-          '
       - name: Sunbeam - Resize the control plane
         run: |
           # LP: #2065469
