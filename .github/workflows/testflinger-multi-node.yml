@@ -1,0 +1,54 @@
+name: Testflinger - Multi-node
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: '41 */8 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  testflinger-multi-node-how-to:
+    name: Testflinger - Multi-node How-to Guide
+    runs-on: [self-hosted, testflinger]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          path: repository
+      - name: Pack the repository
+        run: |
+          tar acf repository.tar.gz repository/
+      - name: Submit job
+        uses: canonical/testflinger/.github/actions/submit@main
+        with:
+          poll: true
+          job: |
+            job_queue: beldam
+            provision_data:
+              # noble has duplicate deb line warnings
+              distro: noble
+              #kernel: hwe-24.04
+            output_timeout: 5400  # 90 min
+            test_data:
+              attachments:
+                - local: repository.tar.gz
+              test_cmds: |
+                set -ex
+                scp ./attachments/test/repository.tar.gz "ubuntu@\${DEVICE_IP}:"
+                ssh "ubuntu@\${DEVICE_IP}" '
+                    set -ex
+                    tar xf repository.tar.gz
+                    cd repository/
+                    # LP: #2093303
+                    sudo mv -v /etc/apt/sources.list{,.bak}
+                    sudo apt-get update
+                    sudo apt-get install -y make
+                    make prerequisites
+                    # include ~/.local/bin in PATH
+                    source  ~/.profile
+                    make multi-node
+                '
+                # TODO: scp artifacts
