@@ -6,6 +6,10 @@
 Don't run this on a production system. It assumes a freshly installed
 system like an ephemeral physical host environment provisioned by MAAS.
 
+Having repetitive steps and having no abstraction are very much on
+purpose so that we can test each step as if a human follows the public
+documentation step by step.
+
 ## Networking
 
 The main NIC and the secondary NIC are connected to the same VLAN/subnet as follows.
