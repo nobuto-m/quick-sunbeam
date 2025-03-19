@@ -3,6 +3,9 @@ name: Testflinger - Single-node
 on:
   workflow_dispatch:
 
+  schedule:
+    - cron: '11 */8 * * *'
+
 permissions:
   contents: read
 
