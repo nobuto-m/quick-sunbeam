@@ -26,7 +26,7 @@ jobs:
         with:
           poll: true
           job: |
-            job_queue: beldam
+            job_queue: blobule-boddle
             provision_data:
               # noble has duplicate deb line warnings
               distro: noble
