@@ -1,0 +1,54 @@
+name: Testflinger - SSH
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash -ex {0}
+
+jobs:
+  testflinger-ssh:
+    name: Testflinger - SSH
+    runs-on: [self-hosted, testflinger]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Reserve a machine through Testflinger
+        id: testflinger_reserve
+        uses: canonical/testflinger/.github/actions/submit@main
+        with:
+          poll: true
+          job: |
+            job_queue: beldam
+            provision_data:
+              # noble has duplicate deb line warnings
+              distro: noble
+              #kernel: hwe-24.04
+            reserve_data:
+              #timeout: 21600  # 6 hours
+              timeout: 1200  # 20 min
+      - name: Run some local commands
+        run: |
+          systemd-detect-virt || true
+          lscpu
+          free -h
+          lsblk -e7
+      - name: Run some SSH commands
+        run: |
+          ssh "${{ steps.testflinger_reserve.outputs.device-ip }}" -- '
+              set -x
+              systemd-detect-virt || true
+              lscpu
+              free -h
+              lsblk -e7
+          '
+      - name: Release the Testflinger machine
+        if: ${{ always() }}
+        run: |
+          echo "${{ steps.testflinger_reserve.outputs.device-ip }}"
+          echo "${{ steps.testflinger_reserve.outputs.id }}"
+          testflinger cancel "${{ steps.testflinger_reserve.outputs.id }}"
