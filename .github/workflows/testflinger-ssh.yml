@@ -51,4 +51,4 @@ jobs:
         run: |
           echo "${{ steps.testflinger_reserve.outputs.device-ip }}"
           echo "${{ steps.testflinger_reserve.outputs.id }}"
-          testflinger cancel "${{ steps.testflinger_reserve.outputs.id }}"
+          testflinger cancel "${{ steps.testflinger_reserve.outputs.id }}" || true
