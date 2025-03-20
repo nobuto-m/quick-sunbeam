@@ -21,7 +21,7 @@ jobs:
         id: testflinger_reserve
         uses: canonical/testflinger/.github/actions/submit@main
         with:
-          # poll: true
+          poll: true
           job: |
             job_queue: beldam
             provision_data:
