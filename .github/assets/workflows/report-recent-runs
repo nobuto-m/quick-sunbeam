@@ -2,6 +2,8 @@
 
 set -e
 
+LIMIT=2
+
 echo '## Recent runs'
 
 gh workflow list --json name --jq .[].name | while read -r workflow; do
@@ -9,7 +11,7 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
 
     echo '| conclusion/status | databaseId | event | createdAt | startedAt | updatedAt |'
     echo '| ----------------- | ---------- | ----- | --------- | --------- | --------- |'
-    gh run list --limit 10 --workflow "$workflow" --json databaseId --jq '.[].databaseId' | while read -r run; do
+    gh run list --limit "$LIMIT" --workflow "$workflow" --json databaseId --jq '.[].databaseId' | while read -r run; do
         eval "$(gh run view "$run" --json conclusion,status,databaseId,url,event,createdAt,startedAt,updatedAt --jq 'to_entries | .[] | .key + "=" + (.value | @sh)')"
         case "$conclusion" in
             success)
@@ -22,6 +24,8 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
                 conclusion=':no_entry_sign: cancelled'
             ;;
             '')
+                # When the conclusion is empty, it's not finished yet.
+                # Use the status such as queued/in_progress instead.
                 # shellcheck disable=SC2154
                 conclusion=":yellow_circle: $status"
             ;;
