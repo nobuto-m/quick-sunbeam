@@ -15,7 +15,7 @@ jobs:
     name: Testflinger - SSH
     runs-on: [self-hosted, testflinger]
     steps:
-      - name: Checkout repo
+      - name: Run actions/checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Reserve a Testflinger machine
         id: testflinger_reserve
