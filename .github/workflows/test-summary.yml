@@ -1,0 +1,20 @@
+name: Test Summary
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash -ex {0}
+
+jobs:
+  generate-summary:
+    runs-on: [self-hosted, linux, AMD64, X64, large, noble]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - name: Summary
+        run: |
+          echo '## Recent runs' >> "$GITHUB_STEP_SUMMARY"
