@@ -15,7 +15,8 @@ jobs:
   report:
     runs-on: [self-hosted, linux, AMD64, X64, large, noble]
     steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Recent Runs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: .github/assets/workflows/report-recent-runs.sh >> "$GITHUB_STEP_SUMMARY"
+        run: .github/assets/workflows/report-recent-runs >> "$GITHUB_STEP_SUMMARY"
