@@ -12,13 +12,10 @@ defaults:
     shell: bash -ex {0}
 
 jobs:
-  generate-summary:
+  report:
     runs-on: [self-hosted, linux, AMD64, X64, large, noble]
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - name: Summary
+      - name: Recent Runs
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo '## Recent runs' >> "$GITHUB_STEP_SUMMARY"
-          gh run list
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: .github/assets/workflows/report-recent-runs.sh >> "$GITHUB_STEP_SUMMARY"
