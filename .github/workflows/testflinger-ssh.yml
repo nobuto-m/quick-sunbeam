@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-      - name: Reserve a machine through Testflinger
+      - name: Reserve a Testflinger machine
         id: testflinger_reserve
         # https://github.com/canonical/testflinger/issues/528
         #uses: canonical/testflinger/.github/actions/submit@main
@@ -39,9 +39,11 @@ jobs:
           lscpu
           free -h
           lsblk -e7
+          ip -br a
+          ip r
       - name: Run some SSH commands
         run: |
-          ssh "${{ steps.testflinger_reserve.outputs.device-ip }}" -- '
+          ssh "$ubuntu@{{ steps.testflinger_reserve.outputs.device-ip }}" -- '
               set -x
               systemd-detect-virt || true
               lscpu
@@ -51,6 +53,4 @@ jobs:
       - name: Release the Testflinger machine
         if: ${{ always() }}
         run: |
-          echo "${{ steps.testflinger_reserve.outputs.device-ip }}"
-          echo "${{ steps.testflinger_reserve.outputs.id }}"
           testflinger cancel "${{ steps.testflinger_reserve.outputs.id }}" || true
