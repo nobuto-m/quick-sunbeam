@@ -12,7 +12,7 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
     echo '| conclusion | databaseId | event | createdAt | startedAt | updatedAt |'
     echo '| ---------- | ---------- | ----- | --------- | --------- | --------- |'
     gh run list --limit 10 --status completed --workflow "$workflow" --json databaseId --jq .[].databaseId | while read -r run; do
-        eval "$(gh run view "$run" --json databaseId,url,event,headSha,conclusion,createdAt,startedAt,updatedAt | jq -r 'to_entries | .[] | .key + "=" + (.value | @sh)')"
+        eval "$(gh run view "$run" --json databaseId,url,event,headSha,conclusion,createdAt,startedAt,updatedAt --jq 'to_entries | .[] | .key + "=" + (.value | @sh)')"
         case "$conclusion" in
             success)
                 conclusion=':white_check_mark:'
@@ -24,6 +24,7 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
                 conclusion=':no_entry_sign:'
             ;;
         esac
+        # shellcheck disable=SC2154
         echo "| $conclusion | [$databaseId]($url) | $event | $createdAt | $startedAt | $updatedAt |"
     done
 done
