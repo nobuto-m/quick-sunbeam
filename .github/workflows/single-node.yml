@@ -44,7 +44,7 @@ jobs:
   actionlint:
     runs-on: [self-hosted, linux, AMD64, X64, large, noble]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Download actionlint
         if: ${{ !env.ACT }}
         id: get_actionlint
@@ -64,7 +64,7 @@ jobs:
     runs-on: [self-hosted, linux, AMD64, X64, large, noble]
     needs: actionlint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Set env
         run: |
           case "$HARDWARE_PROFILE" in
@@ -353,19 +353,19 @@ jobs:
           '
           scp sunbeam-single-node:sosreport-*.tar.xz .
       - name: Upload manifest.yaml
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: ${{ !cancelled() }}
         with:
           name: manifest.yaml
           path: ./manifest.yaml
       - name: Upload logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: ${{ !cancelled() }}
         with:
           name: logs
           path: ./logs/
       - name: Upload sosreport
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: ${{ !cancelled() }}
         with:
           name: sosreport.tar.xz
