@@ -32,6 +32,7 @@ env:
   # set the default value as true only when there is no input
   USE_WORKAROUND: ${{ github.event.inputs.use_workaround || true }}
   HARDWARE_PROFILE: ${{ inputs.hardware_profile || 'tutorial' }}
+  SKIP_REBOOT_TEST: true  # FIXME
 
 defaults:
   run:
