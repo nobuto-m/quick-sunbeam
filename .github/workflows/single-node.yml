@@ -314,7 +314,7 @@ jobs:
           set -o pipefail
           ssh sunbeam-single-node -- sunbeam validation run --output ./tempest-validation_after-reboot.log | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Collect logs
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         run: |
           set +e
           ssh sunbeam-single-node -- '
@@ -343,7 +343,7 @@ jobs:
           '
           rsync -ar --mkpath sunbeam-single-node:logs/ logs/
       - name: Collect sosreport
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         run: |
           set +e
           ssh sunbeam-single-node -- '
@@ -354,19 +354,19 @@ jobs:
           scp sunbeam-single-node:sosreport-*.tar.xz .
       - name: Upload manifest.yaml
         uses: actions/upload-artifact@v4
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         with:
           name: manifest.yaml
           path: ./manifest.yaml
       - name: Upload logs
         uses: actions/upload-artifact@v4
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         with:
           name: logs
           path: ./logs/
       - name: Upload sosreport
         uses: actions/upload-artifact@v4
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         with:
           name: sosreport.tar.xz
           path: ./sosreport-*.tar.xz
