@@ -7,10 +7,10 @@ echo '## Recent runs'
 gh workflow list --json name --jq .[].name | while read -r workflow; do
     echo "### $workflow"
 
-    echo '| conclusion | databaseId | event | createdAt | startedAt | updatedAt |'
-    echo '| ---------- | ---------- | ----- | --------- | --------- | --------- |'
-    gh run list --limit 10 --status completed --workflow "$workflow" --json databaseId --jq .[].databaseId | while read -r run; do
-        eval "$(gh run view "$run" --json databaseId,url,event,headSha,conclusion,createdAt,startedAt,updatedAt --jq 'to_entries | .[] | .key + "=" + (.value | @sh)')"
+    echo '| conclusion/status | databaseId | event | createdAt | startedAt | updatedAt |'
+    echo '| ----------------- | ---------- | ----- | --------- | --------- | --------- |'
+    gh run list --limit 10 --workflow "$workflow" --json databaseId --jq '.[].databaseId' | while read -r run; do
+        eval "$(gh run view "$run" --json conclusion,status,databaseId,url,event,createdAt,startedAt,updatedAt --jq 'to_entries | .[] | .key + "=" + (.value | @sh)')"
         case "$conclusion" in
             success)
                 conclusion=':white_check_mark: success'
@@ -20,6 +20,10 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
             ;;
             cancelled)
                 conclusion=':no_entry_sign: cancelled'
+            ;;
+            '')
+                # shellcheck disable=SC2154
+                conclusion=":yellow_circle: $status"
             ;;
         esac
         # shellcheck disable=SC2154
