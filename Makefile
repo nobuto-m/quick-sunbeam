@@ -84,9 +84,11 @@ destroy-all-sunbeam-machines:
 .PHONY: review-diff-scenario-single-multi
 review-diff-scenario-single-multi:
 	# there should be no "multi" keyword in the single node scenario
-	! grep -iw multi .github/workflows/single-node.yml
+	! grep -iw multi .github/workflows/*single-node.yml
 	# likewise
-	! grep -iw single .github/workflows/multi-node.yml
-	(diff -u .github/workflows/single-node.yml .github/workflows/multi-node.yml; \
-		diff -u .github/assets/workflows/single-node/manifest.yaml.j2 .github/assets/workflows/multi-node/manifest.yaml.j2 ) \
-		| dwdiff --diff-input --color -P | less -RS
+	! grep -iw single .github/workflows/*multi-node.yml
+	(\
+		diff -u .github/workflows/testflinger-single-node.yml .github/workflows/testflinger-multi-node.yml; \
+		diff -u .github/workflows/single-node.yml .github/workflows/multi-node.yml; \
+		diff -u .github/assets/workflows/single-node/manifest.yaml.j2 .github/assets/workflows/multi-node/manifest.yaml.j2; \
+	) | dwdiff --diff-input --color -P | less -RS
