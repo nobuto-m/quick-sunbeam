@@ -51,4 +51,6 @@ jobs:
                     source  ~/.profile
                     make multi-node
                 '
-                # TODO: scp artifacts
+              cleanup_command: |
+                set -x
+                scp -r "ubuntu@\${DEVICE_IP}:repository/artifacts/" artifacts/
