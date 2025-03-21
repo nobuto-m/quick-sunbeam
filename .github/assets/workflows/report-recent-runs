@@ -15,19 +15,19 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
         eval "$(gh run view "$run" --json conclusion,status,databaseId,url,event,createdAt,startedAt,updatedAt --jq 'to_entries | .[] | .key + "=" + (.value | @sh)')"
         case "$conclusion" in
             success)
-                conclusion=':white_check_mark: success'
+                conclusion='✅ success'
             ;;
             failure)
-                conclusion=':x: failure'
+                conclusion='❌ failure'
             ;;
             cancelled)
-                conclusion=':no_entry_sign: cancelled'
+                conclusion='🚫 cancelled'
             ;;
             '')
                 # When the conclusion is empty, it's not finished yet.
                 # Use the status such as queued/in_progress instead.
                 # shellcheck disable=SC2154
-                conclusion=":yellow_circle: $status"
+                conclusion="🟡 $status"
             ;;
         esac
         # shellcheck disable=SC2154
