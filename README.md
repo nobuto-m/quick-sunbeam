@@ -1,5 +1,6 @@
 [![Testflinger - Single-node How-to Guide](../../actions/workflows/testflinger-single-node.yml/badge.svg)](../../actions/workflows/testflinger-single-node.yml)  
-[![Testflinger - Multi-node How-to Guide](../../actions/workflows/testflinger-multi-node.yml/badge.svg)](../../actions/workflows/testflinger-multi-node.yml)
+[![Testflinger - Multi-node How-to Guide](../../actions/workflows/testflinger-multi-node.yml/badge.svg)](../../actions/workflows/testflinger-multi-node.yml)  
+[:page_with_curl: See more history](../../actions/workflows/report.yml)  
 
 ## Disclaimer
 
