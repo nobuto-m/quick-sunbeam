@@ -7,10 +7,6 @@ permissions:
   contents: read
   actions: read
 
-defaults:
-  run:
-    shell: bash -ex {0}
-
 jobs:
   report:
     name: Report
