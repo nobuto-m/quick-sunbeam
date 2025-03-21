@@ -1,4 +1,4 @@
-name: Report
+name: Click to see a report of recent runs
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ jobs:
     runs-on: [self-hosted, linux, AMD64, X64, large, noble]
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - name: Recent Runs
+      - name: Report recent Runs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: .github/assets/workflows/report-recent-runs >> "$GITHUB_STEP_SUMMARY"
