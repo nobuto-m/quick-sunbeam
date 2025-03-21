@@ -44,7 +44,7 @@ jobs:
           ip r
       - name: Run some SSH commands
         run: |
-          ssh "$ubuntu@{{ steps.testflinger_reserve.outputs.device-ip }}" -- '
+          ssh "ubuntu@${{ steps.testflinger_reserve.outputs.device-ip }}" -- '
               set -x
               systemd-detect-virt || true
               env
