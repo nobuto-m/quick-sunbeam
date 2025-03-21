@@ -63,6 +63,9 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
                 skipped)
                     step_conclusion='⏩'
                 ;;
+                cancelled)
+                    step_conclusion='🚫'
+                ;;
             esac
             result="$(printf '%s %s |' "$result" "$step_conclusion")"
         done
