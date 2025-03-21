@@ -8,5 +8,22 @@ echo '## Recent runs'
 
 gh workflow list --json name --jq .[].name | while read -r workflow; do
     echo "### $workflow"
-    gh run list --limit 10 --status completed --workflow "$workflow"
+
+    echo '| conclusion | databaseId | event | createdAt | startedAt | updatedAt |'
+    echo '| ---------- | ---------- | ----- | --------- | --------- | --------- |'
+    gh run list --limit 10 --status completed --workflow "$workflow" --json databaseId --jq .[].databaseId | while read -r run; do
+        eval "$(gh run view "$run" --json databaseId,url,event,headSha,conclusion,createdAt,startedAt,updatedAt | jq -r 'to_entries | .[] | .key + "=" + (.value | @sh)')"
+        case "$conclusion" in
+            success)
+                conclusion=':white_check_mark:'
+            ;;
+            failure)
+                conclusion=':x:'
+            ;;
+            cancelled)
+                conclusion=':no_entry_sign:'
+            ;;
+        esac
+        echo "| $conclusion | [$databaseId]($url) | $event | $createdAt | $startedAt | $updatedAt |"
+    done
 done
