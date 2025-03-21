@@ -36,6 +36,7 @@ jobs:
       - name: Run some local commands
         run: |
           systemd-detect-virt || true
+          env
           lscpu
           free -h
           lsblk -e7
@@ -46,6 +47,7 @@ jobs:
           ssh "$ubuntu@{{ steps.testflinger_reserve.outputs.device-ip }}" -- '
               set -x
               systemd-detect-virt || true
+              env
               lscpu
               free -h
               lsblk -e7
