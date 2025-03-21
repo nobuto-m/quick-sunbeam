@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Reserve a Testflinger machine
         id: testflinger_reserve
-        if: ${{ !env.ACT && contains(fromJson(github.jobs.testflinger-ssh.runs-on), 'testflinger') }}
+        if: ${{ !env.ACT }}
         # https://github.com/canonical/testflinger/issues/528
         #uses: canonical/testflinger/.github/actions/submit@main
         uses: nobuto-m/testflinger/.github/actions/submit@actions-submit-retrieve-ip
@@ -44,6 +44,7 @@ jobs:
           ip -br a
           ip r
       - name: Run some SSH commands
+        if: ${{ !env.ACT }}
         run: |
           ssh "ubuntu@${{ steps.testflinger_reserve.outputs.device-ip }}" -- '
               set -x
@@ -54,6 +55,6 @@ jobs:
               lsblk -e7
           '
       - name: Release the Testflinger machine
-        if: ${{ always() && !env.ACT && contains(fromJson(github.jobs.testflinger-ssh.runs-on), 'testflinger') }}
+        if: ${{ always() && !env.ACT }}
         run: |
           testflinger cancel "${{ steps.testflinger_reserve.outputs.id }}" || true
