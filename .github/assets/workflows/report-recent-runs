@@ -15,13 +15,13 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
         eval "$(gh run view "$run" --json databaseId,url,event,headSha,conclusion,createdAt,startedAt,updatedAt --jq 'to_entries | .[] | .key + "=" + (.value | @sh)')"
         case "$conclusion" in
             success)
-                conclusion=':white_check_mark:'
+                conclusion=':white_check_mark: - success'
             ;;
             failure)
-                conclusion=':x:'
+                conclusion=':x: - failure'
             ;;
             cancelled)
-                conclusion=':no_entry_sign:'
+                conclusion=':no_entry_sign: - cancelled'
             ;;
         esac
         # shellcheck disable=SC2154
