@@ -47,7 +47,8 @@ jobs:
   actionlint:
     runs-on: [self-hosted, linux, AMD64, X64, large, noble]
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - name: actions/checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Download actionlint
         if: ${{ !env.ACT }}
         id: get_actionlint
@@ -67,7 +68,8 @@ jobs:
     runs-on: [self-hosted, linux, AMD64, X64, large, noble]
     needs: actionlint
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - name: actions/checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Set env
         run: |
           case "$HARDWARE_PROFILE" in

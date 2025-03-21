@@ -15,7 +15,8 @@ jobs:
     name: Report
     runs-on: [self-hosted, linux, AMD64, X64, large, noble]
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - name: actions/checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Report recent runs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
