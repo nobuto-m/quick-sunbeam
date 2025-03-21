@@ -19,7 +19,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Reserve a machine through Testflinger
         id: testflinger_reserve
-        uses: canonical/testflinger/.github/actions/submit@main
+        # https://github.com/canonical/testflinger/issues/528
+        #uses: canonical/testflinger/.github/actions/submit@main
+        uses: nobuto-m/testflinger/.github/actions/submit@actions-submit-retrieve-ip
         with:
           poll: true
           job: |
