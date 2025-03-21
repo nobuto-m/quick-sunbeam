@@ -11,7 +11,16 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
 
     header='| conclusion/status | databaseId | event | createdAt | startedAt | updatedAt |'
     border='| ----------------- | ---------- | ----- | --------- | --------- | --------- |'
-    latest_run_id="$(gh run list --limit 1 --status completed --workflow "$workflow" --json databaseId --jq '.[].databaseId')"
+    # search for a succeeded workflow first, it must have data of all steps
+    latest_run_id="$(gh run list --limit 1 --status success --workflow "$workflow" --json databaseId --jq '.[].databaseId')"
+    if [ -z "$latest_run_id" ]; then
+        # try for a failed workflow next, it should have the definition of all steps
+        latest_run_id="$(gh run list --limit 1 --status failure --workflow "$workflow" --json databaseId --jq '.[].databaseId')"
+    fi
+    if [ -z "$latest_run_id" ]; then
+        # fall back to any completed job even if it was cancelled
+        latest_run_id="$(gh run list --limit 1 --status completed --workflow "$workflow" --json databaseId --jq '.[].databaseId')"
+    fi
     # for simplicity, use only the last job defined
     gh run view "$latest_run_id" --json jobs --jq '.jobs[-1].steps[].name' | { while read -r step; do
         header="$(printf '%s %s |' "$header" "$step")"
