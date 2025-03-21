@@ -9,10 +9,19 @@ echo '## Recent runs'
 gh workflow list --json name --jq .[].name | while read -r workflow; do
     echo "### $workflow"
 
-    echo '| conclusion/status | databaseId | event | createdAt | startedAt | updatedAt |'
-    echo '| ----------------- | ---------- | ----- | --------- | --------- | --------- |'
+    header='| conclusion/status | databaseId | event | createdAt | startedAt | updatedAt |'
+    border='| ----------------- | ---------- | ----- | --------- | --------- | --------- |'
+    latest_run_id="$(gh run list --limit 1 --status completed --workflow "$workflow" --json databaseId --jq '.[].databaseId')"
+    # for simplicity, use only the last job defined
+    gh run view "$latest_run_id" --json jobs --jq '.jobs[-1].steps[].name' | { while read -r step; do
+        header="$(printf '%s %s |' "$header" "$step")"
+        border="$(printf '%s -- |' "$border")"
+    done
+    echo "$header"
+    echo "$border"
+    }
     gh run list --limit "$LIMIT" --workflow "$workflow" --json databaseId --jq '.[].databaseId' | while read -r run; do
-        eval "$(gh run view "$run" --json conclusion,status,databaseId,url,event,createdAt,startedAt,updatedAt --jq 'to_entries | .[] | .key + "=" + (.value | @sh)')"
+        eval "$(gh run view "$run" --json conclusion,status,databaseId,url,event,createdAt,startedAt,updatedAt --jq 'to_entries.[] | .key + "=" + (.value | @sh)')"
         case "$conclusion" in
             success)
                 conclusion='✅ success'
@@ -31,6 +40,24 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
             ;;
         esac
         # shellcheck disable=SC2154
-        echo "| $conclusion | [$databaseId]($url) | $event | $createdAt | $startedAt | $updatedAt |"
+        result="| $conclusion | [$databaseId]($url) | $event | $createdAt | $startedAt | $updatedAt |"
+        steps=$(gh run view "$run" --json jobs --jq '.jobs[-1].steps[]')
+        gh run view "$latest_run_id" --json jobs --jq '.jobs[-1].steps[].name' | { while read -r step_name; do
+            step_conclusion="$(echo "$steps" | jq -r "select(.name==\"$step_name\").conclusion")"
+            case "$step_conclusion" in
+                success)
+                    step_conclusion='✅'
+                ;;
+                failure)
+                    step_conclusion='❌'
+                ;;
+                skipped)
+                    step_conclusion='⏩'
+                ;;
+            esac
+            result="$(printf '%s %s |' "$result" "$step_conclusion")"
+        done
+        echo "$result"
+        }
     done
 done
