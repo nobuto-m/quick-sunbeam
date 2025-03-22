@@ -53,6 +53,6 @@ jobs:
               lsblk -e7
           '
       - name: Release the Testflinger machine
-        if: ${{ always() && !env.ACT }}
+        if: ${{ always() && steps.testflinger_reserve.outputs.id }}
         run: |
-          testflinger cancel "${{ steps.testflinger_reserve.outputs.id }}" || true
+          testflinger cancel "${{ steps.testflinger_reserve.outputs.id }}"
