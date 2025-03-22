@@ -6,6 +6,9 @@ on:
   schedule:
     - cron: '41 */17 * * *'
 
+concurrency:
+  group: ${{ github.workflow }}
+
 permissions:
   contents: read
 
