@@ -28,8 +28,9 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
         header="$(printf '%s %s |' "$header" "$step_name")"
         border="$(printf '%s -- |' "$border")"
     done
-    printf '%s log |\n' "$header"
-    printf '%s --- |\n' "$border"
+    # add the failed log column
+    printf '%s log-failed |\n' "$header"
+    printf '%s ---------- |\n' "$border"
     }
     gh run list --limit "$LIMIT" --workflow "$workflow" --json databaseId --jq '.[].databaseId' | while read -r run; do
         eval "$(gh run view "$run" --json conclusion,status,databaseId,url,event,createdAt,startedAt,updatedAt --jq 'to_entries.[] | .key + "=" + (.value | @sh)')"
@@ -40,7 +41,7 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
             ;;
             failure)
                 conclusion='❌ failure'
-                log="<details><pre>$(gh run view "$run" --log-failed | sed -e 's/.*\.[0-9]\{7\}Z //' | tail -n "$LOG_LINES" | sed -e 's/$/<br>/' | tr -d '\n')</pre></details>"
+                log="<details><pre>$(gh run view "$run" --log-failed | sed -e 's/.*\.[0-9]\{7\}Z //' | grep -m1 -B "$LOG_LINES" '^##\[error\]' | sed -e 's/$/<br>/' | tr -d '\n')</pre></details>"
             ;;
             cancelled)
                 conclusion='🚫 cancelled'
