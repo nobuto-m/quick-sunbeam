@@ -6,11 +6,12 @@ LIMIT=10
 
 echo '## Recent runs'
 
+header='| conclusion/status | databaseId | event | createdAt<br>startedAt<br>updatedAt |'
+border='| ----------------- | ---------- | ----- | ----------------------------------- |'
+
 gh workflow list --json name --jq .[].name | while read -r workflow; do
     echo "### $workflow"
 
-    header='| conclusion/status | databaseId | event | createdAt | startedAt | updatedAt |'
-    border='| ----------------- | ---------- | ----- | --------- | --------- | --------- |'
     # search for a succeeded or failed workflow first, it must have data of all steps
     latest_run_id="$(gh run list --workflow "$workflow" --status completed \
         --json databaseId,conclusion \
@@ -48,7 +49,7 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
             ;;
         esac
         # shellcheck disable=SC2154
-        result="| $conclusion | [$databaseId]($url) | $event | $createdAt | $startedAt | $updatedAt |"
+        result="| $conclusion | [$databaseId]($url) | $event | ${createdAt}<br>${startedAt}<br>${updatedAt} |"
 
         steps=$(gh run view "$run" --json jobs --jq '.jobs[-1].steps[]')
         echo "$step_names" | { while read -r step_name; do
