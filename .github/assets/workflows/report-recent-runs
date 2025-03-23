@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+set -u
 
 LIMIT=10
 
@@ -26,11 +27,12 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
         header="$(printf '%s %s |' "$header" "$step_name")"
         border="$(printf '%s -- |' "$border")"
     done
-    echo "$header"
-    echo "$border"
+    printf '%s log |\n' "$header"
+    printf '%s --- |\n' "$border"
     }
     gh run list --limit "$LIMIT" --workflow "$workflow" --json databaseId --jq '.[].databaseId' | while read -r run; do
         eval "$(gh run view "$run" --json conclusion,status,databaseId,url,event,createdAt,startedAt,updatedAt --jq 'to_entries.[] | .key + "=" + (.value | @sh)')"
+        log=
         case "$conclusion" in
             success)
                 conclusion='✅ success'
@@ -71,7 +73,7 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
             esac
             result="$(printf '%s %s |' "$result" "$step_conclusion")"
         done
-        echo "$result"
+        printf '%s %s |\n' "$result" "$log"
         }
     done
 done
