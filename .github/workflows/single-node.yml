@@ -118,16 +118,16 @@ jobs:
           cat /etc/os-release
           echo '::group::lscpu'
           lscpu
-          echo '::endgroup:'
+          echo '::endgroup::'
           echo '::group::free -h'
           free -h
-          echo '::endgroup:'
+          echo '::endgroup::'
           echo '::group::lsblk -e7'
           lsblk -e7
-          echo '::endgroup:'
+          echo '::endgroup::'
           echo '::group::lsblk -e7 -f'
           lsblk -e7 -f
-          echo '::endgroup:'
+          echo '::endgroup::'
           if [ "$RUNNER_DEBUG" = 1 ]; then
               lsblk
               lsblk -f
