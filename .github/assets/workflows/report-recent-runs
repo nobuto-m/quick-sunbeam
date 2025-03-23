@@ -4,7 +4,7 @@ set -e
 set -u
 
 LIMIT=10
-LOG_LINES=7
+LOG_LINES_MORE=9
 
 echo '## Recent runs'
 
@@ -41,7 +41,7 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
             ;;
             failure)
                 conclusion='❌ failure'
-                log="<details><pre>$(gh run view "$run" --log-failed | sed -e 's/.*\.[0-9]\{7\}Z //' | grep -m1 -B "$LOG_LINES" '^##\[error\]' | sed -e 's/$/<br>/' | tr -d '\n')</pre></details>"
+                log="<details><pre>$(gh run view "$run" --log-failed | sed -e 's/.*\.[0-9]\{7\}Z //' | grep -m1 -B "$LOG_LINES_MORE" '^##\[error\]' | sed -e 's/$/<br>/' | tr -d '\n')</pre></details>"
             ;;
             cancelled)
                 conclusion='🚫 cancelled'
