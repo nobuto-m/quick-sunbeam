@@ -53,7 +53,9 @@ jobs:
                     make prerequisites
                     # include ~/.local/bin in PATH
                     source  ~/.profile
-                    make multi-node
+                    # LP: #2097451
+                    # LP: #2102175
+                    make multi-node | (grep --line-buffered -v '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏' || true)
                 '
               cleanup_command: |
                 set -x

@@ -53,7 +53,10 @@ jobs:
                     make prerequisites
                     # include ~/.local/bin in PATH
                     source  ~/.profile
-                    make single-node
+                    set -o pipefail
+                    # LP: #2097451
+                    # LP: #2102175
+                    make single-node | (grep --line-buffered -v '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏' || true)
                 '
               cleanup_command: |
                 set -x
