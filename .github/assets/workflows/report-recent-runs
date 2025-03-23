@@ -62,7 +62,8 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
                     step_conclusion='❌'
                 ;;
                 skipped)
-                    step_conclusion='⏩'
+                    # "⏩" can be too distracting
+                    step_conclusion='⊘'
                 ;;
                 cancelled)
                     step_conclusion='🚫'
