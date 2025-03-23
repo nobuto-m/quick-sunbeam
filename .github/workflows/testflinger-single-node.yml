@@ -56,7 +56,7 @@ jobs:
                     set -o pipefail
                     # LP: #2097451
                     # LP: #2102175
-                    make single-node | (grep --line-buffered -v '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏' || true)
+                    make single-node-allowance | (grep --line-buffered -v '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏' || true)
                 '
               cleanup_command: |
                 set -x
