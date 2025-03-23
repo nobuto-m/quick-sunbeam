@@ -16,8 +16,6 @@ prerequisites:
 	sudo snap install node --classic
 	sudo apt-get update
 	sudo apt-get install -y uvtool j2cli shellcheck
-	sudo -g libvirt uvt-simplestreams-libvirt sync release=noble arch=amd64
-	sudo -g libvirt uvt-simplestreams-libvirt query
 
 	echo n | ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N '' || true
 	cat .github/assets/workflows/ssh_config | tee -a ~/.ssh/config

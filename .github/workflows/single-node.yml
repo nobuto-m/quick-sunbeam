@@ -162,13 +162,10 @@ jobs:
           sudo -g libvirt virsh -c qemu:///system net-define .github/assets/workflows/sunbeam-virbr0.xml
           sudo -g libvirt virsh -c qemu:///system net-autostart sunbeam-virbr0
           sudo -g libvirt virsh -c qemu:///system net-start sunbeam-virbr0
-      - name: Download an OS image
-        if: ${{ !env.ACT }}
+      - name: Prepare a machine
         run: |
           sudo -g libvirt uvt-simplestreams-libvirt sync release=noble arch=amd64
           sudo -g libvirt uvt-simplestreams-libvirt query
-      - name: Prepare a machine
-        run: |
           sudo -g libvirt uvt-kvm create \
               --machine-type q35 \
               --cpu "$CPU" \
