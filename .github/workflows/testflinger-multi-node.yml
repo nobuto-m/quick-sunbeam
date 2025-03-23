@@ -3,12 +3,12 @@ name: Testflinger - Multi-node
 on:
   workflow_dispatch:
 
-  schedule:
-    - cron: '41 */17 * * *'
+  #schedule:
+  #  - cron: '41 */17 * * *'
 
 concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # cancel-in-progress: true
 
 permissions:
   contents: read
