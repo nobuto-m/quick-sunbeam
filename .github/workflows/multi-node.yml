@@ -318,7 +318,7 @@ jobs:
       - name: Sunbeam - Configure the cloud
         run: |
           ssh sunbeam-multi-node-1 -t -- sunbeam configure --openrc demo-openrc
-      - name: Workaround - reset PG num
+      - name: Workaround - Check PG num
         if: ${{ env.USE_WORKAROUND }}
         run: |
           # LP: #2096923
@@ -331,11 +331,6 @@ jobs:
               sudo ceph status
               sudo ceph health detail
               sudo ceph osd pool autoscale-status
-
-              #sudo ceph config set global osd_pool_default_pg_autoscale_mode warn
-              #sudo ceph osd pool ls | xargs -t -I{} sudo ceph osd pool set {} pg_autoscale_mode warn
-              #sudo ceph osd pool set glance pg_num 32
-              #sudo ceph osd pool set cinder-volume-ceph pg_num 32
           '
       - name: Sunbeam - Create registration tokens for the second and the third machines
         run: |
@@ -375,6 +370,20 @@ jobs:
       - name: Sunbeam - Resize the control plane
         run: |
           ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize
+      - name: Workaround - Check PG num
+        if: ${{ env.USE_WORKAROUND }}
+        run: |
+          # LP: #2096923
+          echo '- https://launchpad.net/bugs/2096923' >> "$GITHUB_STEP_SUMMARY"
+          ssh sunbeam-multi-node-1 -- '
+              set -ex
+              sudo microceph status
+              sunbeam cluster list
+
+              sudo ceph status
+              sudo ceph health detail
+              sudo ceph osd pool autoscale-status
+          '
       - name: Sunbeam - Launch a VM
         run: |
           ssh sunbeam-multi-node-1 -t -- sunbeam launch ubuntu --name test
