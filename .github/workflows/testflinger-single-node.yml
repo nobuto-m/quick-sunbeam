@@ -42,7 +42,7 @@ jobs:
               test_cmds: |
                 set -ex
                 scp ./attachments/test/repository.tar.gz "ubuntu@\${DEVICE_IP}:"
-                ssh "ubuntu@\${DEVICE_IP}" '
+                if ssh "ubuntu@\${DEVICE_IP}" '
                     set -ex
                     tar xf repository.tar.gz
                     cd repository/
@@ -57,7 +57,9 @@ jobs:
                     # LP: #2097451
                     # LP: #2102175
                     make single-node-allowance | (grep --line-buffered -v '[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏]' || true)
-                '
-              cleanup_command: |
-                set -x
-                scp -r "ubuntu@\${DEVICE_IP}:repository/artifacts/" artifacts/
+                '; then
+                    scp -r "ubuntu@\${DEVICE_IP}:repository/artifacts/" artifacts/ || true
+                else
+                    scp -r "ubuntu@\${DEVICE_IP}:repository/artifacts/" artifacts/ || true
+                    exit 1
+                fi
