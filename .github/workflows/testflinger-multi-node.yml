@@ -58,6 +58,6 @@ jobs:
                     # LP: #2102175
                     make multi-node | (grep --line-buffered -v '[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏]' || true)
                 '
-            cleanup_command: |
-              set -x
-              scp -r "ubuntu@\${DEVICE_IP}:repository/artifacts/" artifacts/
+              cleanup_command: |
+                set -x
+                scp -r "ubuntu@\${DEVICE_IP}:repository/artifacts/" artifacts/
