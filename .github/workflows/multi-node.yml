@@ -457,7 +457,7 @@ jobs:
                   sudo ceph health detail | tee ceph_health_detail.txt
                   sudo ceph osd pool autoscale-status | tee ceph_autoscale_status.txt
                   sudo k8s status | tee k8s_status.txt
-                  sudo k8s kubectl get pod -A | tee k8s_kubectl_get_pod_-A.txt
+                  sudo k8s kubectl get pod -A -o custom-columns=PodName:.metadata.name,PodUID:.metadata.uid | tee k8s_kubectl_get_pod_-A_custom.txt
                   sudo k8s kubectl get all -A > k8s_kubectl_get_all_-A.txt
                   sudo k8s kubectl describe all -A > k8s_kubectl_describe_all_-A.txt
                   systemd-cgtop -c --cpu=time -1 | tee systemd-cgtop_-c_--cpu_time_-1.txt
