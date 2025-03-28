@@ -375,6 +375,11 @@ jobs:
         run: |
           # LP: #2096923
           echo '- https://launchpad.net/bugs/2096923' >> "$GITHUB_STEP_SUMMARY"
+          # make sure the actual resize of the pools are done since the
+          # step above just sets `cinder-volume-ceph
+          # ceph-osd-replication-count=3` and it doesn't wait for events
+          # after that.
+          sleep 5m
           ssh sunbeam-multi-node-1 -- '
               set -ex
               sudo microceph status
