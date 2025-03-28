@@ -379,7 +379,7 @@ jobs:
           # step above just sets `cinder-volume-ceph
           # ceph-osd-replication-count=3` and it doesn't wait for events
           # after that.
-          sleep 5m
+          sleep 3m
           ssh sunbeam-multi-node-1 -- '
               set -ex
               sudo microceph status
