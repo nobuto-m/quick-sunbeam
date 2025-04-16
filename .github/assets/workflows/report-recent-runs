@@ -56,7 +56,8 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
         # shellcheck disable=SC2154
         result="| $conclusion | [$databaseId]($url) | $event | <details>${createdAt}<br>${startedAt}<br>${updatedAt}</details> |"
 
-        steps=$(gh run view "$run" --json jobs --jq '.jobs[-1].steps[]')
+        # when there is no step run yet, it will error out with "cannot iterate over: null"
+        steps=$(gh run view "$run" --json jobs --jq '.jobs[-1].steps[]') || steps=
         echo "$step_names" | { while read -r step_name; do
             step_conclusion="$(echo "$steps" | jq -r "select(.name==\"$step_name\").conclusion")"
             case "$step_conclusion" in
