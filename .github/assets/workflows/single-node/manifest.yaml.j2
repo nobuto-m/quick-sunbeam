@@ -87,8 +87,8 @@ core:
       # segmentation_id: 0
       # External network's interface
       # Interface used by networking layer to allow remote access to cloud instances. This interface must be unconfigured (no IP address assigned) and connected to the external network.
-      # LP: #2065920
-      nic: enp9s0
+      nics:
+        sunbeam-single-node.localdomain: enp9s0
     # MicroCeph config
     microceph_config:
       sunbeam-single-node.localdomain:
