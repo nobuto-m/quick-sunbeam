@@ -41,6 +41,15 @@ single-node-allowance:
 		-W .github/workflows/single-node.yml \
 		--input hardware_profile=allowance
 
+.PHONY: single-node-allowance-skip-reboot
+single-node-allowance-skip-reboot:
+	/usr/bin/time -f 'Workflow total time:\t%E' act \
+		-P self-hosted=-self-hosted \
+		--artifact-server-path ./artifacts/$(@)/$$(date -u -Isec) \
+		-W .github/workflows/single-node.yml \
+		--input hardware_profile=allowance \
+		--env SKIP_REBOOT_TEST=true
+
 .PHONY: multi-node
 multi-node:
 	/usr/bin/time -f 'Workflow total time:\t%E' act \
