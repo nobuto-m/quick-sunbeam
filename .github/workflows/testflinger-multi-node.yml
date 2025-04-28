@@ -42,6 +42,7 @@ jobs:
                 - local: repository.tar.gz
               test_cmds: |
                 set -ex
+                echo "\${DEVICE_IP}"
                 scp ./attachments/test/repository.tar.gz "ubuntu@\${DEVICE_IP}:"
                 if ssh "ubuntu@\${DEVICE_IP}" '
                     set -ex
