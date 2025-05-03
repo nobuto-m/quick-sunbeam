@@ -245,6 +245,7 @@ jobs:
               echo '- https://launchpad.net/bugs/2104066' >> "$GITHUB_STEP_SUMMARY"
               # shellcheck disable=SC2016
               timeout 30m ssh sunbeam-single-node -- '
+                  set -x
                   until sudo snap install openstack --channel 2024.1/edge; do
                     sleep "$((RANDOM % 60))"
                   done
