@@ -299,12 +299,6 @@ jobs:
           ssh sunbeam-single-node -t -- sunbeam enable validation
       - name: Run Tempest tests
         run: |
-          # LP: #2100739
-          if [ "$USE_WORKAROUND" = true ]; then
-              echo '- https://launchpad.net/bugs/2100739' >> "$GITHUB_STEP_SUMMARY"
-              # just talk to a controller once
-              ssh sunbeam-single-node -- juju models
-          fi
           set -o pipefail
           ssh sunbeam-single-node -- sunbeam validation run --output ./tempest-validation.log | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Smoke testing - Host reboot
