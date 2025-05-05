@@ -31,11 +31,11 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
             header="$(printf '%s %s |' "$header" "$step_name")"
             border="$(printf '%s -- |' "$border")"
         done
+        # add the failed log column
+        printf '%s log-failed |\n' "$header"
+        printf '%s ---------- |\n' "$border"
+        }
     fi
-    # add the failed log column
-    printf '%s log-failed |\n' "$header"
-    printf '%s ---------- |\n' "$border"
-    }
     gh run list --limit "$LIMIT" --workflow "$workflow" --json databaseId --jq '.[].databaseId' | while read -r run; do
         eval "$(gh run view "$run" --json conclusion,status,databaseId,url,event,createdAt,startedAt,updatedAt --jq 'to_entries.[] | .key + "=" + (.value | @sh)')"
         log=
