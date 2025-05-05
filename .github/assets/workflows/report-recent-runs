@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+[ "$RUNNER_DEBUG" = 1 ] && set -x
 set -u
 
 LIMIT=10
