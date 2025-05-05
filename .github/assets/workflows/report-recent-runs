@@ -24,7 +24,7 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
         latest_run_id="$(gh run list --limit 1 --status completed --workflow "$workflow" --json databaseId --jq '.[].databaseId')"
     fi
     # for simplicity, use only the last job defined
-    step_names="$(gh run view "$latest_run_id" --json jobs --jq '.jobs[-1].steps[].name')"
+    step_names="$(gh run view "$latest_run_id" --json jobs --jq '.jobs[-1].steps[].name')" || step_names=
     echo "$step_names" | { while read -r step_name; do
         header="$(printf '%s %s |' "$header" "$step_name")"
         border="$(printf '%s -- |' "$border")"
