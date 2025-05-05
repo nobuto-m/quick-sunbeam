@@ -24,6 +24,7 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
         latest_run_id="$(gh run list --limit 1 --status completed --workflow "$workflow" --json databaseId --jq '.[].databaseId')"
     fi
     # for simplicity, use only the last job defined
+    # and skip "cannot iterate over: null"
     step_names="$(gh run view "$latest_run_id" --json jobs --jq '.jobs[-1].steps[].name')" || step_names=
     if [ -n "$step_names" ]; then
         echo "$step_names" | { while read -r step_name; do
@@ -44,7 +45,8 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
             ;;
             failure)
                 conclusion='❌ failure'
-                log="<details><pre>$(gh run view "$run" --log-failed | sed -e 's/.*\.[0-9]\{7\}Z //' | grep -m1 -B "$LOG_LINES_MORE" '^##\[error\]' | sed -e 's/$/<br>/' | tr -d '\n')</pre></details>"
+                log="$(gh run view "$run" --log-failed)" || true
+                log="<details><pre>$(echo "$log" | sed -e 's/.*\.[0-9]\{7\}Z //' | grep -m1 -B "$LOG_LINES_MORE" '^##\[error\]' | sed -e 's/$/<br>/' | tr -d '\n')</pre></details>"
             ;;
             cancelled)
                 conclusion='🚫 cancelled'
