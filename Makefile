@@ -65,6 +65,14 @@ multi-node-without-workaround:
 		-W .github/workflows/multi-node.yml \
 		--input use_workaround=false
 
+.PHONY: multi-node-skip-reboot
+multi-node-skip-reboot:
+	/usr/bin/time -f 'Workflow total time:\t%E' act \
+		-P self-hosted=-self-hosted \
+		--artifact-server-path ./artifacts/$(@)/$$(date -u -Isec) \
+		-W .github/workflows/multi-node.yml \
+		--env SKIP_REBOOT_TEST=true
+
 .PHONY: multi-node-minimal-with-cpu-overcommit
 multi-node-minimal-with-cpu-overcommit:
 	/usr/bin/time -f 'Workflow total time:\t%E' act \
