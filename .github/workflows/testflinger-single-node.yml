@@ -26,7 +26,7 @@ jobs:
         run: |
           tar acf repository.tar.gz repository/
       - name: Submit job
-        uses: canonical/testflinger/.github/actions/submit@main
+        uses: canonical/testflinger/.github/actions/submit@5182b45a313bc0dc75296d1f79da06b4c44cb4e3 # main
         with:
           poll: true
           job: |
