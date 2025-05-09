@@ -59,8 +59,12 @@ jobs:
                     # LP: #2102175
                     make multi-node | (grep --line-buffered -v '[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏]' || true)
                 '; then
+                    mkdir artifacts/
+                    ssh "ubuntu@${DEVICE_IP}" -- find -maxdepth 3
                     scp -r "ubuntu@${DEVICE_IP}:repository/artifacts/" artifacts/ || true
                 else
+                    mkdir artifacts/
+                    ssh "ubuntu@${DEVICE_IP}" -- find -maxdepth 3
                     scp -r "ubuntu@${DEVICE_IP}:repository/artifacts/" artifacts/ || true
                     exit 1
                 fi
