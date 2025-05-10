@@ -58,12 +58,10 @@ jobs:
                     # LP: #2102175
                     make single-node-allowance | (grep --line-buffered -v '[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏]' || true)
                 '; then
-                    mkdir artifacts/
-                    ssh "ubuntu@${DEVICE_IP}" -- find -maxdepth 3
                     scp -r "ubuntu@${DEVICE_IP}:repository/artifacts/" artifacts/ || true
+                    find artifacts/
                 else
-                    mkdir artifacts/
-                    ssh "ubuntu@${DEVICE_IP}" -- find -maxdepth 3
                     scp -r "ubuntu@${DEVICE_IP}:repository/artifacts/" artifacts/ || true
+                    find artifacts/
                     exit 1
                 fi
