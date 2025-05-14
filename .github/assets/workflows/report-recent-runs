@@ -25,7 +25,7 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
     fi
     # for simplicity, use only the last job defined
     # and skip "cannot iterate over: null"
-    step_names="$(gh run view "$latest_run_id" --json jobs --jq '.jobs[-1].steps[].name')" || step_names=
+    step_names="$(gh run view "$latest_run_id" --json jobs --jq '.jobs[-1].steps[].name' || true)"
     echo "$step_names" | { while read -r step_name; do
         header="$(printf '%s %s |' "$header" "$step_name")"
         border="$(printf '%s -- |' "$border")"
@@ -60,8 +60,9 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
         result="| $conclusion | [$databaseId]($url) | $event | <details>${createdAt}<br>${startedAt}<br>${updatedAt}</details> |"
 
         # when there is no step run yet, it will error out with "cannot iterate over: null"
-        steps=$(gh run view "$run" --json jobs --jq '.jobs[-1].steps[]') || steps=
+        steps="$(gh run view "$run" --json jobs --jq '.jobs[-1].steps[]' || true)"
         echo "$step_names" | { while read -r step_name; do
+            [ -z "$step_name" ] && continue
             step_conclusion="$(echo "$steps" | jq -r "select(.name==\"$step_name\").conclusion")"
             case "$step_conclusion" in
                 success)
