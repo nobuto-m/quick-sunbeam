@@ -27,6 +27,7 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
     # and skip "cannot iterate over: null"
     step_names="$(gh run view "$latest_run_id" --json jobs --jq '.jobs[-1].steps[].name' || true)"
     echo "$step_names" | { while read -r step_name; do
+        [ -z "$step_name" ] && continue
         header="$(printf '%s %s |' "$header" "$step_name")"
         border="$(printf '%s -- |' "$border")"
     done
