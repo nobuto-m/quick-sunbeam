@@ -36,6 +36,8 @@ jobs:
             reserve_data:
               #timeout: 21600  # 6 hours
               timeout: 1200  # 20 min
+              ssh_keys:
+                - lp:sunbeam-tutorial-tests-bot
       - name: Run some local commands
         run: |
           systemd-detect-virt || true
@@ -48,6 +50,8 @@ jobs:
       - name: Run some SSH commands
         if: ${{ !env.ACT }}
         run: |
+          ls -alF ~/.ssh/
+          echo "${{ secrets.ID_ED25519_SUNBEAM_TUTORIAL_TESTS_BOT }}" | install -m 0600 /dev/stdin ~/.ssh/id_ed25519
           ssh -oStrictHostKeyChecking=no "ubuntu@${{ steps.testflinger_reserve.outputs.device-ip }}" -- '
               set -x
               systemd-detect-virt || true
