@@ -21,6 +21,11 @@ jobs:
     steps:
       - name: Run actions/checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - name: Setup SSH key
+        env:
+          SSH_KEY_ID_ED25519: "${{ secrets.ID_ED25519_SUNBEAM_TUTORIAL_TESTS_BOT }}"
+        run: |
+          echo "$SSH_KEY_ID_ED25519" | install -m 0600 /dev/stdin ~/.ssh/id_ed25519
       - name: Reserve a Testflinger machine
         id: testflinger_reserve
         if: ${{ !env.ACT }}
@@ -50,8 +55,6 @@ jobs:
       - name: Run some SSH commands
         if: ${{ !env.ACT }}
         run: |
-          ls -alF ~/.ssh/
-          echo "${{ secrets.ID_ED25519_SUNBEAM_TUTORIAL_TESTS_BOT }}" | install -m 0600 /dev/stdin ~/.ssh/id_ed25519
           ssh -oStrictHostKeyChecking=no "ubuntu@${{ steps.testflinger_reserve.outputs.device-ip }}" -- '
               set -x
               systemd-detect-virt || true
