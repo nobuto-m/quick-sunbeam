@@ -48,7 +48,7 @@ jobs:
       - name: Run some SSH commands
         if: ${{ !env.ACT }}
         run: |
-          ssh "ubuntu@${{ steps.testflinger_reserve.outputs.device-ip }}" -- '
+          ssh -oStrictHostKeyChecking=no "ubuntu@${{ steps.testflinger_reserve.outputs.device-ip }}" -- '
               set -x
               systemd-detect-virt || true
               env
