@@ -44,7 +44,7 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
             ;;
             failure)
                 conclusion='❌ failure'
-                log="$(gh run view "$run" --log-failed) || true"
+                log="$(gh run view "$run" --log-failed || true)"
                 log="$(echo "$log" | sed -e 's/.*\.[0-9]\{7\}Z //' | grep -m1 -B "$LOG_LINES_MORE" '^##\[error\]' || true)"
                 log="$(echo "$log" | sed -e 's/$/<br>/' | tr -d '\n')"
                 log="<details><pre>${log}</pre></details>"
