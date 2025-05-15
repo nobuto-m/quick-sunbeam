@@ -17,7 +17,7 @@ defaults:
 jobs:
   testflinger-ssh:
     name: Testflinger - SSH
-    runs-on: [self-hosted, testflinger]
+    runs-on: [self-hosted, tutorial]
     steps:
       - name: Run actions/checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
