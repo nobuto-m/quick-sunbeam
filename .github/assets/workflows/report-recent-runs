@@ -53,7 +53,8 @@ gh workflow list --json name --jq .[].name | while read -r workflow; do
                 # the second error and on can be in a log collection phase for example.
                 log="$(echo "$log" | grep -m1 -B "$LOG_LINES_MORE" '^##\[error\]' || true)"
                 # format as HTML in Markdown
-                log="${log//$/<br>}"
+                # shellcheck disable=SC2001
+                log="$(echo "$log" | sed -e 's/$/<br>/')"
                 # remove line breaks to fit into a Markdown table
                 log="$(echo "$log" | tr -d '\n')"
                 log="<details><pre>${log}</pre></details>"
