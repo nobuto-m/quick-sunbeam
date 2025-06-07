@@ -147,7 +147,7 @@ jobs:
           fi
           echo 'check the memory size and bail out when no enough memory for machines to be created'
           grep MemTotal: /proc/meminfo
-          [ "$(( $(grep MemTotal: /proc/meminfo | awk '{print $2}') / 1024**2 ))" -ge "$((MEMORY * 3))" ]
+          [ "$(( $(grep MemTotal: /proc/meminfo | awk '{print $2}') / 1024**2 ))" -ge "$((MEMORY * 3 - 2))" ]  ## 2 GiB of overcommitting
       - name: Install prerequisites
         if: ${{ !env.ACT }}
         run: |
