@@ -103,7 +103,7 @@ destroy-all-sunbeam-machines:
 	@echo 'Review the list of machines and pass it to bash. e.g.' >&2
 	@echo 'make destroy-all-sunbeam-machines | bash -x' >&2
 	@echo >&2
-	@uvt-kvm list | grep ^sunbeam- | xargs --no-run-if-empty -L1 echo uvt-kvm destroy
+	@uvt-kvm list | grep -E -o 'sunbeam-[^ ]+\.localdomain' | xargs --no-run-if-empty -L1 echo uvt-kvm destroy
 
 .PHONY: review-diff-scenario-single-multi
 review-diff-scenario-single-multi:
