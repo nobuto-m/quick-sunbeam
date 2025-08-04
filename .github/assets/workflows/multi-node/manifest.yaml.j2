@@ -32,10 +32,10 @@ core:
       loadbalancer: 192.168.124.131-192.168.124.140
     {% if use_workaround %}
     # LP: #2119425
-    traefik_endpoints:
-      public: ""
-      internal: ""
-      rgw: ""
+    traefik-endpoints:
+      traefik: ""
+      traefik-public: ""
+      traefik-rgw: ""
     {% endif %}
     user:
       # Populate OpenStack cloud with demo user, default images, flavors etc
