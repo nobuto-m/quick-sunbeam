@@ -30,6 +30,13 @@ core:
       # OpenStack services are exposed via virtual IP addresses. This range should contain at least ten addresses and must not overlap with external network CIDR. To access APIs from a remote host, the range must reside within the subnet that the primary network interface is on.
       # On multi-node deployments, the range must be addressable from all nodes in the deployment.
       loadbalancer: 192.168.124.121-192.168.124.130
+    {% if use_workaround %}
+    # LP: #2119425
+    traefik_endpoints:
+      public: ""
+      internal: ""
+      rgw: ""
+    {% endif %}
     user:
       # Populate OpenStack cloud with demo user, default images, flavors etc
       # If enabled, demonstration resources will be created on the cloud.

@@ -229,6 +229,7 @@ jobs:
         run: |
           if [ "$USE_WORKAROUND" = true ]; then
               echo '- https://launchpad.net/bugs/2098823' >> "$GITHUB_STEP_SUMMARY"
+              echo '- https://launchpad.net/bugs/2119425' >> "$GITHUB_STEP_SUMMARY"
           fi
           j2 -f yaml -o ./manifest.yaml .github/assets/workflows/single-node/manifest.yaml.j2 - <<EOF
           use_workaround: $USE_WORKAROUND
