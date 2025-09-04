@@ -36,6 +36,7 @@ jobs:
           sudo snap install lxd
       - name: Launch LXD container
         run: |
+          lxd init --auto
           lxc launch ubuntu:noble snap-test1
       - name: Guest snapd current status
         run: |
