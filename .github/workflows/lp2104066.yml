@@ -26,14 +26,25 @@ jobs:
   snapd:
     runs-on: [self-hosted, linux, AMD64, X64, medium, noble]
     steps:
-      - name: Snapd current status
+      - name: Host snapd current status
         run: |
           apt-cache policy snapd
           snap list
           snap version
-      - name: Refresh to the latest revision in latest/stable
+      - name: Install LXD
         run: |
-          sudo snap refresh snapd
-      - name: Install a snap
+          sudo snap install lxd
+      - name: Launch LXD container
         run: |
-          sudo snap install hello-world
+          lxc launch ubuntu:noble snap-test1
+      - name: Guest snapd current status
+        run: |
+          lxc exec snap-test1 -- '
+              snap install openstack
+              apt-cache policy snapd
+              snap list
+              snap version
+          '
+      - name: Install a snap inside the guest
+        run: |
+          lxc exec snap-test1 -- snap install openstack
