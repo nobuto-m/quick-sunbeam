@@ -40,9 +40,7 @@ jobs:
           lxc launch ubuntu:noble snap-test1
       - name: Guest snapd current status
         run: |
-          lxc exec snap-test1 -- '
-              apt-get install -y snapd
-              snap install openstack
+          lxc exec snap-test1 -- bash -ex '
               apt-cache policy snapd
               snap list
               snap version
