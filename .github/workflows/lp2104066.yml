@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Snapd current status
         run: |
-          apt policy snapd
+          apt-cache policy snapd
           snap list
           snap version
       - name: Refresh to the latest revision in latest/stable
