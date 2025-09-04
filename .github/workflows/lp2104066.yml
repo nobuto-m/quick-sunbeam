@@ -23,7 +23,7 @@ defaults:
     shell: bash -ex {0}
 
 jobs:
-  actionlint:
+  snapd:
     runs-on: [self-hosted, linux, AMD64, X64, medium, noble]
     steps:
       - name: Snapd current status
