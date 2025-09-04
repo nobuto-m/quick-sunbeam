@@ -40,7 +40,7 @@ jobs:
           lxc launch ubuntu:noble snap-test1
       - name: Guest snapd current status
         run: |
-          lxc exec snap-test1 -- bash -ex '
+          lxc exec snap-test1 -- bash -ex -c '
               apt-cache policy snapd
               snap list
               snap version
