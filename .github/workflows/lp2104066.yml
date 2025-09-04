@@ -41,6 +41,7 @@ jobs:
       - name: Guest snapd current status
         run: |
           lxc exec snap-test1 -- '
+              apt-get install -y snapd
               snap install openstack
               apt-cache policy snapd
               snap list
