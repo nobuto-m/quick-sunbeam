@@ -1,0 +1,39 @@
+name: "LP: #2104066"
+
+on:
+  workflow_dispatch:
+    inputs:
+
+  schedule:
+    - cron: '*/17 * * * *'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  COLUMNS: 160  # default: 80
+  DEBIAN_FRONTEND: noninteractive
+
+defaults:
+  run:
+    shell: bash -ex {0}
+
+jobs:
+  actionlint:
+    runs-on: [self-hosted, linux, AMD64, X64, medium, noble]
+    steps:
+      - name: Snapd current status
+        run: |
+          apt policy snapd
+          snap list
+          snap version
+      - name: Refresh to the latest revision in latest/stable
+        run: |
+          sudo snap refresh snapd
+      - name: Install a snap
+        run: |
+          sudo snap install hello-world
