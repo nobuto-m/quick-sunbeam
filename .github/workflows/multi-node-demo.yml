@@ -255,3 +255,148 @@ jobs:
           dockerhub_mirror: $DOCKERHUB_MIRROR
           EOF
           scp ./manifest.yaml sunbeam-multi-node-1:
+      - name: Sunbeam - Prepare the first machine
+        run: |
+          # LP: #2104066
+          if [ "$USE_WORKAROUND" = true ]; then
+              echo '- https://launchpad.net/bugs/2104066' >> "$GITHUB_STEP_SUMMARY"
+              # shellcheck disable=SC2016
+              timeout --foreground 30m ssh sunbeam-multi-node-1 -- '
+                  set -x
+                  until sudo snap install openstack --channel 2024.1/edge; do
+                    sleep "$((RANDOM % 60))"
+                  done
+              '
+          else
+              ssh sunbeam-multi-node-1 -- sudo snap install openstack --channel 2024.1/edge
+          fi
+          # https://github.com/canonical/canonical-openstack-docs/issues/45
+          # TODO: Create a LXD controller with a static IP on the host
+          ssh sunbeam-multi-node-1 -- 'sunbeam prepare-node-script --bootstrap | bash -x'
+      - name: Sunbeam - Bootstrap the cloud
+        run: |
+          # -t is necessary to see some progress in act env, LP:#2097451
+          # Also, without -t, somehow add-k8s command gets stuck in act env
+          # although it doesn't happen in GitHub runner.
+          # without -tt, GitHub runner's log should be quiet.
+          ssh sunbeam-multi-node-1 -t -- sunbeam cluster bootstrap \
+              --role control,compute,storage \
+              --manifest manifest.yaml
+      - name: Workaround - destroy localhost controller
+        if: ${{ env.USE_WORKAROUND }}
+        run: |
+          # LP: #2095487, without doing it, a random /24 range will be
+          # dead from a user perspective and the OpenStack API cannot
+          # return a response to the range since it will go to the
+          # unused network bridge.
+          echo '- https://launchpad.net/bugs/2095487' >> "$GITHUB_STEP_SUMMARY"
+          ssh sunbeam-multi-node-1 -- juju destroy-controller localhost-localhost --no-prompt
+          ssh sunbeam-multi-node-1 -- lxc profile device remove default eth0
+          ssh sunbeam-multi-node-1 -- lxc network delete sunbeambr0
+      - name: Workaround - enable debug logging
+        if: ${{ env.USE_WORKAROUND }}
+        run: |
+          # LP: #2065490
+          ssh sunbeam-multi-node-1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
+      - name: Sunbeam - Configure the cloud
+        run: |
+          ssh sunbeam-multi-node-1 -t -- sunbeam configure --openrc demo-openrc
+      - name: Sunbeam - Create registration tokens for the second and the third machines
+        run: |
+          for i in {2..3}; do
+              ssh sunbeam-multi-node-1 -t -- sunbeam cluster add "sunbeam-multi-node-${i}.localdomain" --output "sunbeam-multi-node-${i}.asc"
+          done
+      - name: Sunbeam - Prepare the second and the third machines
+        run: |
+          for i in {2..3}; do
+              ssh "sunbeam-multi-node-${i}" -- sudo snap install openstack --channel 2024.1/edge
+              ssh "sunbeam-multi-node-${i}" -- 'sunbeam prepare-node-script | bash -x'
+          done
+      - name: Sunbeam - Add the second and the third machines
+        run: |
+          for i in {2..3}; do
+              scp sunbeam-multi-node-1:"sunbeam-multi-node-${i}.asc" "sunbeam-multi-node-${i}:"
+              ssh "sunbeam-multi-node-${i}" -t -- "cat 'sunbeam-multi-node-${i}.asc' | sunbeam cluster join --role control,compute,storage -"
+          done
+      - name: Sunbeam - Resize the control plane
+        run: |
+          ssh sunbeam-multi-node-1 -t -- sunbeam cluster resize
+      - name: Sunbeam - Launch a VM
+        run: |
+          ssh sunbeam-multi-node-1 -t -- sunbeam launch ubuntu --name test
+      - name: Sunbeam - Connect to the VM
+        run: |
+          # The cloud-init process inside the VM takes ~2 minutes to bring up the
+          # SSH service after the VM gets ACTIVE in OpenStack
+          sleep 5m
+          ssh sunbeam-multi-node-1 -- '
+              set -ex
+              source demo-openrc
+              demo_floating_ip="$(openstack floating ip list -c Floating\ IP\ Address -f value | head -n1)"
+              ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ~/snap/openstack/current/sunbeam "ubuntu@${demo_floating_ip}" -- systemctl is-system-running --wait
+          '
+      - name: Save admin-openrc and kube/config
+        run: |
+          for i in {1..3}; do
+              ssh "sunbeam-multi-node-${i}" -t -- '
+                  set -ex
+                  sunbeam openrc > admin-openrc
+                  sudo snap install kubectl --classic
+                  mkdir ~/.kube/
+                  sudo k8s kubectl config view --raw > ~/.kube/config
+              '
+          done
+      - name: Sunbeam - enable embedded Observability
+        run: |
+          ssh sunbeam-multi-node-1 -t -- '
+              set -ex
+              sunbeam enable observability embedded
+              sunbeam observability dashboard-url
+              juju run --model observability grafana/leader get-admin-password
+          '
+      - name: Collect logs
+        if: ${{ !cancelled() }}
+        run: |
+          set +e
+          for i in {1..3}; do
+              ssh "sunbeam-multi-node-${i}" -- '
+                  set -x
+                  mkdir logs
+                  cd logs/
+                  rsync -arv ~/snap/openstack/common/logs/ snap_openstack_common_logs/
+                  cp -v ../tempest-validation*.log .
+                  snap list | tee snap_list.txt
+                  sunbeam cluster list | tee sunbeam_cluster_list.txt
+                  sudo microceph status | tee microceph_status.txt
+                  sudo microceph disk list | tee microceph_disk_list.txt
+                  sudo ceph status | tee ceph_status.txt
+                  sudo ceph health detail | tee ceph_health_detail.txt
+                  sudo ceph osd pool autoscale-status | tee ceph_autoscale_status.txt
+                  sudo k8s status | tee k8s_status.txt
+                  sudo k8s kubectl get pod -A -o custom-columns=PodName:.metadata.name,PodUID:.metadata.uid > k8s_kubectl_get_pod_-A_custom.txt
+                  sudo k8s kubectl get all -A > k8s_kubectl_get_all_-A.txt
+                  sudo k8s kubectl describe all -A > k8s_kubectl_describe_all_-A.txt
+                  systemd-cgtop -c --cpu=time -1 > systemd-cgtop_-c_--cpu_time_-1.txt
+                  systemd-cgtop -m -1 > systemd-cgtop_-m_-1.txt
+                  juju controllers --refresh | tee juju_controllers.txt
+                  mkdir juju/
+                  for model in $(juju models --format json | jq -r .models[].name); do
+                      juju status -m "$model" --relations > "juju/status_${model##*/}.txt"
+                      juju status -m "$model" --color | tee "juju/status_${model##*/}_color.txt"
+                      juju debug-log -m "$model" --date --replay > "juju/debug_${model##*/}.log"
+                  done
+              '
+              rsync -ar --mkpath "sunbeam-multi-node-${i}:logs/" "logs/sunbeam-multi-node-${i}"
+          done
+      - name: Upload manifest.yaml
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: ${{ !cancelled() }}
+        with:
+          name: manifest.yaml
+          path: ./manifest.yaml
+      - name: Upload logs
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: ${{ !cancelled() }}
+        with:
+          name: logs
+          path: ./logs/
