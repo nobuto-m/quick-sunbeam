@@ -1,0 +1,257 @@
+name: Manual bare metal demo
+
+on:
+  #push:
+  #  branches: ["main"]
+
+  workflow_dispatch:
+    inputs:
+      use_workaround:
+        description: 'Apply a workaround'
+        required: true
+        default: true
+        type: boolean
+      hardware_profile:
+        description: 'Specs for each machine'
+        required: true
+        default: tutorial
+        type: choice
+        options:
+          - minimal
+          - minimal-with-cpu-overcommit
+          - tutorial
+          - allowance
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  COLUMNS: 160  # default: 80
+  DEBIAN_FRONTEND: noninteractive
+  # github.event.inputs.use_workaround returns a string
+  # - non-empty 'true' or 'false' from the workflow_dispatch
+  # - '' from the on-push event
+  # set the default value as true only when there is no input
+  USE_WORKAROUND: ${{ github.event.inputs.use_workaround || true }}
+  HARDWARE_PROFILE: ${{ inputs.hardware_profile || 'tutorial' }}
+
+defaults:
+  run:
+    # having an unnecessary `bash -e -c` at the beginning is for
+    # actionlint to activate shellcheck.
+    shell: bash -e -c "date --utc -Isec; bash -ex {0}"
+
+jobs:
+  manual-bare-metal:
+    name: Manual bare metal demo
+    runs-on: [self-hosted, linux, AMD64, X64, large, noble]
+    steps:
+      - name: Run actions/checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - name: Set env
+        run: |
+          case "$HARDWARE_PROFILE" in
+              minimal)
+                  echo CPU=4             >> "$GITHUB_ENV"
+                  echo MEMORY=20         >> "$GITHUB_ENV"
+                  echo DISK=128          >> "$GITHUB_ENV"
+                  echo EXTRA_DISK=128    >> "$GITHUB_ENV"
+              ;;
+              minimal-with-cpu-overcommit)
+                  echo CPU=16            >> "$GITHUB_ENV"
+                  echo MEMORY=20         >> "$GITHUB_ENV"
+                  echo DISK=128          >> "$GITHUB_ENV"
+                  echo EXTRA_DISK=128    >> "$GITHUB_ENV"
+              ;;
+              tutorial)
+                  # https://canonical-openstack.readthedocs-hosted.com/en/latest/reference/enterprise-requirements/#multi-node
+                  echo CPU=16            >> "$GITHUB_ENV"
+                  echo MEMORY=32         >> "$GITHUB_ENV"
+                  echo DISK=500          >> "$GITHUB_ENV"
+                  echo EXTRA_DISK=500    >> "$GITHUB_ENV"
+              ;;
+              allowance)
+                  echo CPU=32            >> "$GITHUB_ENV"
+                  echo MEMORY=64         >> "$GITHUB_ENV"
+                  echo DISK=500          >> "$GITHUB_ENV"
+                  echo EXTRA_DISK=500    >> "$GITHUB_ENV"
+              ;;
+              *)
+                  echo '::error:: Invalid hardware profile'
+                  exit 1
+              ;;
+          esac
+          # shellcheck source=/dev/null
+          source "$GITHUB_ENV"
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## Hardware profile
+          | Hardware profile  | $HARDWARE_PROFILE |
+          | ----------------- | ----------------- |
+          | CPU (cores)       | $CPU              |
+          | Memory (GB)       | $MEMORY           |
+          | Root Disk (GB)    | $DISK             |
+          | Extra Disk (GB)   | $EXTRA_DISK       |
+          EOF
+          if [ "$USE_WORKAROUND" = true ]; then
+              echo '::warning::Not a clean run. Some workarounds are going to be used.'
+              echo '## :construction: Workaround' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Check host specs
+        run: |
+          # bare metal returns "none" with exit 1
+          systemd-detect-virt || true
+          cat /etc/os-release
+          echo '::group::lscpu'
+          lscpu
+          echo '::endgroup::'
+          echo '::group::free -h'
+          free -h
+          echo '::endgroup::'
+          echo '::group::lsblk -e7'
+          lsblk -e7
+          echo '::endgroup::'
+          echo '::group::lsblk -e7 -f'
+          lsblk -e7 -f
+          echo '::endgroup::'
+          if [ "$RUNNER_DEBUG" = 1 ]; then
+              lsblk
+              lsblk -f
+              # IPv6 address can be sensitive
+              ip -br a
+              ip r
+              resolvectl --no-pager
+          fi
+          echo 'check the memory size and bail out when no enough memory for machines to be created'
+          grep MemTotal: /proc/meminfo
+          [ "$(( $(grep MemTotal: /proc/meminfo | awk '{print $2}') / 1024**2 ))" -ge "$((MEMORY * 3 - 2))" ]  ## 2 GiB of overcommitting
+      - name: Install prerequisites
+        if: ${{ !env.ACT }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y uvtool j2cli
+          # make sure the default user is in the libvirt group.
+          # the "runner" user in Github workflow is not in the sudo
+          # group so it's not automatically added into the libvirt
+          # group.
+          sudo adduser "$USER" libvirt
+      - name: Clean up previous machines
+        if: ${{ env.ACT }}
+        run: |
+          for i in {1..3}; do
+              # FIXME: the requirement of FQDN is not documented well in each tutorial
+              sudo -g libvirt uvt-kvm destroy "sunbeam-multi-node-${i}.localdomain" || true
+              ssh-keygen -R "192.168.124.3${i}" || true
+          done
+      - name: Prepare SSH, and a network bridge
+        if: ${{ !env.ACT }}
+        run: |
+          # SSH
+          ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
+          tee -a ~/.ssh/config < .github/assets/workflows/ssh_config
+
+          # bridge
+          sudo -g libvirt virsh -c qemu:///system net-define .github/assets/workflows/sunbeam-virbr0.xml
+          sudo -g libvirt virsh -c qemu:///system net-autostart sunbeam-virbr0
+          sudo -g libvirt virsh -c qemu:///system net-start sunbeam-virbr0
+      - name: Prepare machines
+        run: |
+          sudo -g libvirt uvt-simplestreams-libvirt sync release=noble arch=amd64
+          sudo -g libvirt uvt-simplestreams-libvirt query
+          for i in {1..3}; do
+              sudo -g libvirt uvt-kvm create \
+                  --machine-type q35 \
+                  --cpu "$CPU" \
+                  --host-passthrough \
+                  --memory "$((MEMORY * 1024))" \
+                  --disk "$DISK" \
+                  --ephemeral-disk "$EXTRA_DISK" \
+                  --ephemeral-disk "$EXTRA_DISK" \
+                  --unsafe-caching \
+                  --bridge sunbeam-virbr0 \
+                  --network-config /dev/stdin \
+                  --ssh-public-key-file ~/.ssh/id_ed25519.pub \
+                  --no-start \
+                  "sunbeam-multi-node-${i}.localdomain" \
+                  release=noble <<EOF
+          network:
+            version: 2
+            ethernets:
+              enp1s0:
+                dhcp4: false
+                dhcp6: false
+                accept-ra: false
+                addresses:
+                  - 192.168.124.3${i}/24
+                routes:
+                  - to: default
+                    via: 192.168.124.1
+                nameservers:
+                  addresses:
+                    - 192.168.124.1
+          EOF
+          done
+
+          # secondary NIC
+          for i in {1..3}; do
+              sudo -g libvirt virsh -c qemu:///system attach-interface "sunbeam-multi-node-${i}.localdomain" \
+                  network sunbeam-virbr0 \
+                  --model virtio --config
+          done
+
+          # LP: #2095570
+          if [ "$USE_WORKAROUND" = true ]; then
+              echo '- https://launchpad.net/bugs/2095570' >> "$GITHUB_STEP_SUMMARY"
+              for i in {1..3}; do
+                  sudo -g libvirt virsh -c qemu:///system vol-create-as uvtool --format qcow2 \
+                      "sunbeam-multi-node-${i}-sata1.qcow" "$((EXTRA_DISK * 1024**3))"
+                  sudo -g libvirt virsh -c qemu:///system attach-disk "sunbeam-multi-node-${i}.localdomain" \
+                      "/var/lib/uvtool/libvirt/images/sunbeam-multi-node-${i}-sata1.qcow" \
+                      sda --subdriver qcow2 --targetbus sata \
+                      --serial "node-${i}-sata1" \
+                      --config
+              done
+          fi
+
+          for i in {1..3}; do
+              sudo -g libvirt virsh -c qemu:///system start "sunbeam-multi-node-${i}.localdomain"
+          done
+
+          for i in {1..3}; do
+              until ssh -oStrictHostKeyChecking=no "sunbeam-multi-node-${i}" -- 'systemctl is-system-running --wait; ip -br a; lsblk'; do
+                  sleep 5
+              done
+          done
+
+          # LP: #2065911
+          if [ "$USE_WORKAROUND" = true ]; then
+              echo '- https://launchpad.net/bugs/2065911' >> "$GITHUB_STEP_SUMMARY"
+              for i in {1..3}; do
+                  ssh "sunbeam-multi-node-${i}" -- 'sudo install -m 0600 /dev/stdin /etc/netplan/90-local-ovs-ext-port.yaml <<EOF
+          network:
+            version: 2
+            ethernets:
+              # LP: #2065911
+              enp9s0:
+                dhcp4: false
+                dhcp6: false
+                accept-ra: false
+          EOF
+                      sudo netplan apply
+                  '
+              done
+          fi
+      - name: Sunbeam - Prepare manifest file
+        run: |
+          if [ "$USE_WORKAROUND" = true ]; then
+              echo '- https://launchpad.net/bugs/2098823' >> "$GITHUB_STEP_SUMMARY"
+              echo '- https://launchpad.net/bugs/2119425' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          j2 -f yaml -o ./manifest.yaml .github/assets/workflows/multi-node/manifest.yaml.j2 - <<EOF
+          use_workaround: $USE_WORKAROUND
+          dockerhub_mirror: $DOCKERHUB_MIRROR
+          EOF
+          scp ./manifest.yaml sunbeam-multi-node-1:

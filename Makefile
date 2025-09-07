@@ -26,6 +26,13 @@ prerequisites:
 
 	@echo 'Please logout from the shell / SSH session and login again.'
 
+.PHONY: multi-node-demo
+multi-node-demo:
+	/usr/bin/time -f 'Workflow total time:\t%E' act \
+		-P self-hosted=-self-hosted \
+		--artifact-server-path ./artifacts/$(@)/$$(date -u -Isec) \
+		-W .github/workflows/$(@).yml
+
 .PHONY: single-node
 single-node:
 	/usr/bin/time -f 'Workflow total time:\t%E' act \
