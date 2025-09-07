@@ -25,6 +25,7 @@ defaults:
 jobs:
   snapd:
     runs-on: [self-hosted, linux, AMD64, X64, medium, noble]
+    timeout-minutes: 90
     steps:
       - name: Host snapd current status
         run: |
