@@ -250,7 +250,7 @@ jobs:
               echo '- https://launchpad.net/bugs/2098823' >> "$GITHUB_STEP_SUMMARY"
               echo '- https://launchpad.net/bugs/2119425' >> "$GITHUB_STEP_SUMMARY"
           fi
-          j2 -f yaml -o ./manifest.yaml .github/assets/workflows/multi-node/manifest.yaml.j2 - <<EOF
+          j2 -f yaml -o ./manifest.yaml .github/assets/workflows/multi-node-demo/manifest.yaml.j2 - <<EOF
           use_workaround: $USE_WORKAROUND
           dockerhub_mirror: $DOCKERHUB_MIRROR
           EOF
@@ -263,12 +263,12 @@ jobs:
               # shellcheck disable=SC2016
               timeout --foreground 30m ssh sunbeam-multi-node-1 -- '
                   set -x
-                  until sudo snap install openstack --channel 2024.1/edge; do
+                  until sudo snap install openstack; do
                     sleep "$((RANDOM % 60))"
                   done
               '
           else
-              ssh sunbeam-multi-node-1 -- sudo snap install openstack --channel 2024.1/edge
+              ssh sunbeam-multi-node-1 -- sudo snap install openstack
           fi
           # https://github.com/canonical/canonical-openstack-docs/issues/45
           # TODO: Create a LXD controller with a static IP on the host
@@ -309,7 +309,7 @@ jobs:
       - name: Sunbeam - Prepare the second and the third machines
         run: |
           for i in {2..3}; do
-              ssh "sunbeam-multi-node-${i}" -- sudo snap install openstack --channel 2024.1/edge
+              ssh "sunbeam-multi-node-${i}" -- sudo snap install openstack
               ssh "sunbeam-multi-node-${i}" -- 'sunbeam prepare-node-script | bash -x'
           done
       - name: Sunbeam - Add the second and the third machines
