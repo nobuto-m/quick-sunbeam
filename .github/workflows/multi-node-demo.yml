@@ -297,7 +297,8 @@ jobs:
         if: ${{ env.USE_WORKAROUND }}
         run: |
           # LP: #2065490
-          ssh sunbeam-multi-node-1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
+          #ssh sunbeam-multi-node-1 -- 'juju model-config -m admin/openstack-machines logging-config="<root>=INFO;unit=DEBUG"'
+          true
       - name: Sunbeam - Configure the cloud
         run: |
           ssh sunbeam-multi-node-1 -t -- sunbeam configure --openrc demo-openrc
