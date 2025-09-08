@@ -346,6 +346,11 @@ jobs:
                   sudo k8s kubectl config view --raw > ~/.kube/config
               '
           done
+      - name: Sunbeam - bump mon_max_pg_per_osd
+        if: ${{ env.USE_WORKAROUND }}
+        run: |
+          # LP: #2073734
+          ssh sunbeam-multi-node-1 -t -- sudo ceph config set osd mon_max_pg_per_osd 800
       - name: Sunbeam - enable embedded Observability
         run: |
           ssh sunbeam-multi-node-1 -t -- '
