@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
 
-  schedule:
-    - cron: '*/17 * * * *'
+  #schedule:
+  #  - cron: '*/17 * * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
