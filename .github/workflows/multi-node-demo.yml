@@ -359,6 +359,8 @@ jobs:
               sunbeam enable observability embedded
               sunbeam observability dashboard-url
               juju run --model observability grafana/leader get-admin-password
+              juju config -m observability loki retention-period=1
+              juju config -m observability prometheus metrics_retention_time=2d
           '
       - name: Collect logs
         if: ${{ !cancelled() }}
