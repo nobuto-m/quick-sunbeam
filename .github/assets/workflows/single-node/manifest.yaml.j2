@@ -32,10 +32,16 @@ core:
       loadbalancer: 192.168.124.121-192.168.124.130
     {% if use_workaround %}
     # LP: #2119425
-    traefik-endpoints:
-      traefik: ""
-      traefik-public: ""
-      traefik-rgw: ""
+    endpoints:
+      ingress-internal:
+        ip:
+        hostname:
+      ingress-public:
+        ip:
+        hostname:
+      ingress-rgw:
+        ip:
+        hostname:
     {% endif %}
     user:
       # Populate OpenStack cloud with demo user, default images, flavors etc
