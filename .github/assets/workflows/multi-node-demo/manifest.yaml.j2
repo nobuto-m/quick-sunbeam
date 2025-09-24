@@ -45,6 +45,8 @@ core:
     {% endif %}
     dpdk:
       enabled: false
+      # LP: #2125537
+      ports: {}
     user:
       # Populate OpenStack cloud with demo user, default images, flavors etc
       # If enabled, demonstration resources will be created on the cloud.
