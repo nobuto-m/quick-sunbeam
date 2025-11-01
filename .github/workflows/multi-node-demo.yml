@@ -257,19 +257,7 @@ jobs:
           scp ./manifest.yaml sunbeam-multi-node-1:
       - name: Sunbeam - Prepare the first machine
         run: |
-          # LP: #2104066
-          if [ "$USE_WORKAROUND" = true ]; then
-              echo '- https://launchpad.net/bugs/2104066' >> "$GITHUB_STEP_SUMMARY"
-              # shellcheck disable=SC2016
-              timeout --foreground 30m ssh sunbeam-multi-node-1 -- '
-                  set -x
-                  until sudo snap install openstack; do
-                    sleep "$((RANDOM % 60))"
-                  done
-              '
-          else
-              ssh sunbeam-multi-node-1 -- sudo snap install openstack
-          fi
+          ssh sunbeam-multi-node-1 -- sudo snap install openstack
           # https://github.com/canonical/canonical-openstack-docs/issues/45
           # TODO: Create a LXD controller with a static IP on the host
           ssh sunbeam-multi-node-1 -- 'sunbeam prepare-node-script --bootstrap | bash -x'

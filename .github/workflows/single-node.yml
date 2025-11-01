@@ -238,19 +238,7 @@ jobs:
           scp ./manifest.yaml sunbeam-single-node:
       - name: Sunbeam - Prepare the machine
         run: |
-          # LP: #2104066
-          if [ "$USE_WORKAROUND" = true ]; then
-              echo '- https://launchpad.net/bugs/2104066' >> "$GITHUB_STEP_SUMMARY"
-              # shellcheck disable=SC2016
-              timeout --foreground 30m ssh sunbeam-single-node -- '
-                  set -x
-                  until sudo snap install openstack --channel 2024.1/edge; do
-                    sleep "$((RANDOM % 60))"
-                  done
-              '
-          else
-              ssh sunbeam-single-node -- sudo snap install openstack --channel 2024.1/edge
-          fi
+          ssh sunbeam-single-node -- sudo snap install openstack --channel 2024.1/edge
           ssh sunbeam-single-node -- 'sunbeam prepare-node-script --bootstrap | bash -x'
       - name: Sunbeam - Bootstrap the cloud
         run: |
