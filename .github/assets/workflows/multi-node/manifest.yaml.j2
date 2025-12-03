@@ -69,6 +69,9 @@ core:
       # Local or remote access to VMs
       # VMs will be accessible only from the local host or only from remote hosts. For remote, you must specify the network interface dedicated to VM access traffic. The intended remote hosts must have connectivity to this interface.
       remote_access_location: remote
+      # Project external network name
+      # External network providing floating IPs for the demonstration user's project.
+      physnet: physnet1
     # Local Access
     # external_network:
     #   # External network - arbitrary but must not be in use
