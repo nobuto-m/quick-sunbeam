@@ -83,6 +83,8 @@ core:
     #   # External network's segmentation id
     #   # Vlan ID the external network is on.
     #   segmentation_id: 0
+
+    {% if not use_workaround %}
     # Remote Access
     external_network:
       # External network
@@ -107,7 +109,8 @@ core:
       nics:
         sunbeam-single-node.localdomain: enp9s0
 
-    {% if use_workaround %}
+    {% else %}
+
     # LP: #2133766
     external-networks:
       physnet1:
