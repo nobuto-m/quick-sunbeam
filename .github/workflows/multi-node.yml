@@ -268,9 +268,11 @@ jobs:
       - name: Sunbeam - Prepare manifest file
         run: |
           if [ "$USE_WORKAROUND" = true ]; then
-              echo '- https://launchpad.net/bugs/2098823' >> "$GITHUB_STEP_SUMMARY"
-              echo '- https://launchpad.net/bugs/2119425' >> "$GITHUB_STEP_SUMMARY"
-              echo '- https://launchpad.net/bugs/2133766' >> "$GITHUB_STEP_SUMMARY"
+              {
+                  echo '- https://launchpad.net/bugs/2098823'
+                  echo '- https://launchpad.net/bugs/2119425'
+                  echo '- https://launchpad.net/bugs/2133766'
+              } >> "$GITHUB_STEP_SUMMARY"
           fi
           j2 -f yaml -o ./manifest.yaml .github/assets/workflows/multi-node/manifest.yaml.j2 - <<EOF
           use_workaround: $USE_WORKAROUND
