@@ -109,6 +109,21 @@ core:
       # Interface used by networking layer to allow remote access to cloud instances. This interface must be unconfigured (no IP address assigned) and connected to the external network.
       nics:
         sunbeam-single-node.localdomain: enp9s0
+
+    {% if use_workaround %}
+    # LP: #2133766
+    external-networks:
+      physnet1:
+        nics:
+          sunbeam-single-node.localdomain: enp9s0
+        cidr: 192.168.124.0/24
+        gateway: 192.168.124.1
+        start: 192.168.124.151
+        end:   192.168.124.200
+        network_type: flat
+        #segmentation_id: 0
+    {% endif %}
+
     # MicroCeph config
     microceph_config:
       sunbeam-single-node.localdomain:
