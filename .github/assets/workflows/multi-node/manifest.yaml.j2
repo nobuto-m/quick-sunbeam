@@ -460,7 +460,9 @@ features:
         tempest-k8s:
           channel: 2024.1/edge
           revision: null
-          config: null
+          config:
+            # LP: #2098823
+            tempest-accounts-count: 2
     #   terraform: {}
   vault:
     # config: null
