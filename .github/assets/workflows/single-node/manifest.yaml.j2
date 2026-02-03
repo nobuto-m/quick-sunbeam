@@ -430,13 +430,9 @@ features:
     #     destroy_args: []
       charms:
         tempest-k8s:
-          # LP: #2098823
-          #channel: 2024.1/edge
-          channel: 2025.1/edge
+          channel: 2024.1/edge
           revision: null
-          config:
-            # LP: #2098823
-            tempest-accounts-count: 6  ## Cannot be lower than the hardcoded concurrency=4
+          config: null
     #   terraform: {}
   vault:
     # config: null
