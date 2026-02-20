@@ -19,6 +19,7 @@ prerequisites:
 
 	echo n | ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N '' || true
 	cat .github/assets/workflows/ssh_config | tee -a ~/.ssh/config
+	chmod 600 ~/.ssh/config
 
 	sudo -g libvirt virsh -c qemu:///system net-define .github/assets/workflows/sunbeam-virbr0.xml
 	sudo -g libvirt virsh -c qemu:///system net-autostart sunbeam-virbr0
