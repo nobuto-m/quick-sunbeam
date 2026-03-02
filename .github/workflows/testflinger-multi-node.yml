@@ -3,8 +3,8 @@ name: Testflinger - Multi-node
 on:
   workflow_dispatch:
 
-  schedule:
-    - cron: '17 17 */3 * *'
+  #schedule:
+  #  - cron: '17 17 */3 * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
