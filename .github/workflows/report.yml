@@ -3,8 +3,8 @@ name: Click to see a report
 on:
   workflow_dispatch:
 
-  schedule:
-    - cron: '21 22 * * *'
+  #schedule:
+  #  - cron: '21 22 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
