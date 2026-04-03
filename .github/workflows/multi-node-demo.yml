@@ -351,6 +351,8 @@ jobs:
               # LP: #2105962
               juju config -m observability loki retention-period=1
               juju config -m observability prometheus metrics_retention_time=1d
+              # https://github.com/canonical/charm-microceph/issues/265
+              juju exec -m admin/openstack-machines -u microceph/leader "microceph.ceph config set mgr mgr/prometheus/rbd_stats_pools '*'"
           '
       - name: Collect logs
         if: ${{ !cancelled() }}
