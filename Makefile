@@ -115,7 +115,7 @@ destroy-all-sunbeam-machines:
 
 .PHONY: suspend-all-sunbeam-machines
 suspend-all-sunbeam-machines:
-	@uvt-kvm list | grep -E -o 'sunbeam-[^ ]+\.localdomain' | xargs --no-run-if-empty -L1 -t uvt-kvm suspend
+	@uvt-kvm list | grep -E -o 'sunbeam-[^ ]+\.localdomain' | xargs --no-run-if-empty -L1 -t virsh suspend
 
 .PHONY: review-diff-scenario-single-multi
 review-diff-scenario-single-multi:
