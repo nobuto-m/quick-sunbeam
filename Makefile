@@ -113,6 +113,10 @@ destroy-all-sunbeam-machines:
 	@echo >&2
 	@uvt-kvm list | grep -E -o 'sunbeam-[^ ]+\.localdomain' | xargs --no-run-if-empty -L1 echo uvt-kvm destroy
 
+.PHONY: suspend-all-sunbeam-machines
+suspend-all-sunbeam-machines:
+	@uvt-kvm list | grep -E -o 'sunbeam-[^ ]+\.localdomain' | xargs --no-run-if-empty -L1 -t uvt-kvm suspend
+
 .PHONY: review-diff-scenario-single-multi
 review-diff-scenario-single-multi:
 	# there should be no "multi" keyword in the single node scenario
