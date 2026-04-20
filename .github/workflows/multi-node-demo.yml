@@ -363,6 +363,7 @@ jobs:
                   cd logs/
                   rsync -arv ~/snap/openstack/common/logs/ snap_openstack_common_logs/
                   cp -v ../tempest-validation*.log .
+                  grep ^Details: ../tempest-validation*.log
                   snap list | tee snap_list.txt
                   sunbeam cluster list | tee sunbeam_cluster_list.txt
                   sudo microceph status | tee microceph_status.txt
