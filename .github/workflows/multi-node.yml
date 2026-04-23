@@ -367,6 +367,8 @@ jobs:
               # wait some time to settle
               sleep 15m
           done
+          # wait additionally for things to settle, 30m in total
+          sleep 15m
           ssh sunbeam-multi-node-1 -t -- '
               set -ex
               uptime -p
