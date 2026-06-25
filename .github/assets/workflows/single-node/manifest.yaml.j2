@@ -47,6 +47,10 @@ core:
       enabled: false
       # LP: #2125537
       ports: {}
+    horizon:
+      resources:
+        # LP: 2158268
+        custom_theme: dummy.tar.gz
     user:
       # Populate OpenStack cloud with demo user, default images, flavors etc
       # If enabled, demonstration resources will be created on the cloud.

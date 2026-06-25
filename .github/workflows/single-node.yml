@@ -240,6 +240,8 @@ jobs:
           dockerhub_mirror: $DOCKERHUB_MIRROR
           EOF
           scp ./manifest.yaml sunbeam-single-node:
+          # LP: #2158268
+          ssh sunbeam-single-node -- touch dummy.tar.gz
       - name: Sunbeam - Prepare the machine
         run: |
           ssh sunbeam-single-node -- sudo snap install openstack --channel 2024.1/edge
